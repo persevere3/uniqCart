@@ -167,7 +167,7 @@ export const useCart = defineStore('cart', () => {
       return filterCart.reduce((accumulator, cartItem) => {
         let addPriceItem = cartItem.addPrice.find(addPriceItem => addPriceItem.ID == item.ID)
         if(addPriceItem) {
-          if(spec){
+          if(spec) {
             let addPriceItemSpec = addPriceItem.specArr.find(addPriceItemSpec => addPriceItemSpec.ID == spec.ID)
             if(addPriceItemSpec) return addPriceItemSpec.buyQty * 1
           }

@@ -2,40 +2,34 @@ import { defineStore, storeToRefs } from 'pinia'
 import { useCommonStore } from './common'
 import { useProductsStore } from './products'
 import { useCartStore } from './cart'
+import { useVerifyStore } from './verify'
 import { useInfoStore } from './info'
+import { useFiltersStore } from './filters'
+import { useHandlerProducts } from './handlerProducts'
+
+import { createOrderApi, registerApi } from '@/api/index'
 
 export const useHandlerCartStore = defineStore('handlerCart', () => {
   // store ==================================================
-  const { site, user_account, userInfo, getSite, get_user_account, getStore, 
-          getCategories, getUserInfo } = storeToRefs(useCommonStore())
-  const { getProducts } = storeToRefs(useProductsStore())
-  const { bonus_array, total_bonus } = storeToRefs(useCartStore())
-  const { info } = storeToRefs(useInfoStore())
-
-  // state ==================================================
-  const state = reactive({
-    
-  })
-
-
-  // watch ==================================================
-  // cart info
-  // total_bonus userInfo
-  watch(() => userInfo, (newV, oldV) => {
-    console.log('watch: userInfo', newV, oldV)
-    if(!newV.Phone && !newV.Email) {
-      user_account = '';
-      set_user_account();
-    }
-  }, {deep: true})
-  watch(() => userInfo.Wallet, (newV, oldV) => {
-    console.log('watch: userInfo.Wallet', newV, oldV)
-    total_bonus = newV * 1
-  })
+  const {
+    site, store, user_account, showPage, isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM,
+    login, set_user_account, getCategories, getUserInfo , showMessage, urlPush
+  } = storeToRefs(useCommonStore())
+  const { productCompleted, currentPage } = storeToRefs(useProductsStore())
+  const { 
+    discountCode, useCodeSuccess, total_bonus, is_use_bonus, use_bonus, member_bonus,
+    total, is_click_finish_order, isOrderIng, 
+    discount, use_bonus_handler, getTotal
+  } = storeToRefs(useCartStore())
+  const { 
+    info, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message,
+    has_address, is_save_address, userInfo,
+  } = storeToRefs(useInfoStore())
+  const { verify } = storeToRefs(useVerifyStore())
+  const { numberThousands } = storeToRefs(useFiltersStore())
+  const { getProductsHandler } = storeToRefs(useHandlerProducts())
 
   // computed ==================================================
-  // common info
-  // userInfo, info, has_address
   const receiver_address = computed(() => {
     let address = `${info.address.city_active} ${info.address.district_active} ${info.address.detail_address}`
     if(userInfo.address_obj){
@@ -52,8 +46,6 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
 
   // methods ==================================================
   const methods = reactive({
-    // common cart
-    // login, showMessage, discount
     async discountHandler() {
       let res = await discount()
       if(res.message === 'login') {
@@ -64,14 +56,29 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
 
       showMessage(res.message, res.isSuccess);
     },
-    // common cart info filters
-    // login, useCodeSuccess, is_use_bonus, use_bonus, createCartStrObj, getTotal, transport, numberThousands
     async getTotalHandler(isStepTwo) {
-      let o = methods.createCartStrObj();
-      if(!o.id && !o.specificationid) return
+      let { id, qry, additionalid, additionalqry, specificationid, specificationqty } = methods.createCartStrObj();
+      if(!id && !specificationid) return
 
       let site = JSON.parse(localStorage.getItem('site')) || {} ;
-      const params = `id=${o.id}&qry=${o.qry}&additionalid=${o.additionalid}&additionalqry=${o.additionalqry}&specificationid=${o.specificationid}&specificationqty=${o.specificationqty}&code=${useCodeSuccess}&shipping=${transport == 0 ? 0 : transport * 1 + 1}&type=${isStepTwo ? 1 : 0}&Preview=${site.Preview}&memberWallet=${is_use_bonus ? use_bonus : 0}`;
+      paramsObj = {
+        id,
+        qry,
+        additionalid,
+        additionalqry,
+        specificationid,
+        specificationqty,
+        type: isStepTwo ? 1 : 0,
+        code: useCodeSuccess,
+        shipping: transport == 0 ? 0 : transport * 1 + 1,
+        memberWallet: is_use_bonus ? use_bonus : 0, 
+        Preview: site.Preview,
+      }
+      let params = ''
+      for(let key in paramsObj) {
+        let value = paramsObj[key]
+        params += `${params ? '&' : ''}${key}=${value}`
+      }
 
       let res = await getTotal(params)
       if(res.message === 'login') {
@@ -80,9 +87,8 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
         return
       }
     },
-    // getTotal, createOrder
     createCartStrObj() {
-      let o = {
+      let cartStrObj = {
         'id': '',
         'price': '',
         'qry': '',
@@ -96,25 +102,25 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
 
         'ItemName': '',
       };
-      state.cart.forEach(function(cartItem) {
+      cart.forEach(function(cartItem) {
         let nowPriceStr = numberThousands(cartItem.NowPrice);
 
         // 有規格
         if(cartItem.specArr) {
           cartItem.specArr.forEach(spec => {
             if(spec.buyQty != 0) {
-              o.specificationid += (o.specificationid ? ',' : '') + spec.ID
-              o.specificationqty += (o.specificationqty ? ',' : '') + spec.buyQty
-              o.ItemName +=  (o.ItemName ? '#' : '') + `${cartItem.Name} (${spec.Name}) NT$${nowPriceStr} x ${spec.buyQty}`
+              cartStrObj.specificationid += (cartStrObj.specificationid ? ',' : '') + spec.ID
+              cartStrObj.specificationqty += (cartStrObj.specificationqty ? ',' : '') + spec.buyQty
+              cartStrObj.ItemName +=  (cartStrObj.ItemName ? '#' : '') + `${cartItem.Name} (${spec.Name}) NT$${nowPriceStr} x ${spec.buyQty}`
             }
           })
         }
         // 沒規格
         else {
-          o.id += (o.id ? ',' : '') + cartItem.ID
-          o.price += (o.price ? ',' : '') + cartItem.NowPrice
-          o.qry += (o.qry ? ',' : '') + cartItem.buyQty
-          o.ItemName += (o.ItemName ? '#' : '') + + `${cartItem.Name} NT$${nowPriceStr} x ${cartItem.buyQty}`
+          cartStrObj.id += (cartStrObj.id ? ',' : '') + cartItem.ID
+          cartStrObj.price += (cartStrObj.price ? ',' : '') + cartItem.NowPrice
+          cartStrObj.qry += (cartStrObj.qry ? ',' : '') + cartItem.buyQty
+          cartStrObj.ItemName += (cartStrObj.ItemName ? '#' : '') + + `${cartItem.Name} NT$${nowPriceStr} x ${cartItem.buyQty}`
         }
         
         // 加價購
@@ -126,34 +132,27 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
             if(addPriceItem.specArr) {
               addPriceItem.specArr.forEach(addPriceSpec => {
                 if(addPriceSpec.buyQty) {
-                  o.specificationid += (o.specificationid ? ',' : '') + addPriceSpec.ID
-                  o.specificationqty += (o.specificationqty ? ',' : '') + addPriceSpec.buyQty                
-                  o.ItemName +=  (o.ItemName ? '#' : '') + + `加價購 ${addPriceItem.Name} (${addPriceSpec.Name}) NT$${addPriceStr} x ${addPriceSpec.buyQty}`
+                  cartStrObj.specificationid += (cartStrObj.specificationid ? ',' : '') + addPriceSpec.ID
+                  cartStrObj.specificationqty += (cartStrObj.specificationqty ? ',' : '') + addPriceSpec.buyQty                
+                  cartStrObj.ItemName +=  (cartStrObj.ItemName ? '#' : '') + + `加價購 ${addPriceItem.Name} (${addPriceSpec.Name}) NT$${addPriceStr} x ${addPriceSpec.buyQty}`
                 }
               })
             }
             // 沒規格
             else {
               if(addPriceItem.buyQty != 0){
-                o.additionalid += (o.additionalid ? ',' : '') + addPriceItem.ID
-                o.additionalprice += (o.additionalprice ? ',' : '') + addPriceItem.Price
-                o.additionalqry += (o.additionalqry ? ',' : '') + addPriceItem.buyQty              
-                o.ItemName +=  (o.ItemName ? '#' : '') + `加價購 ${addPriceItem.Name} NT$${addPriceStr} x ${addPriceItem.buyQty}` 
+                cartStrObj.additionalid += (cartStrObj.additionalid ? ',' : '') + addPriceItem.ID
+                cartStrObj.additionalprice += (cartStrObj.additionalprice ? ',' : '') + addPriceItem.Price
+                cartStrObj.additionalqry += (cartStrObj.additionalqry ? ',' : '') + addPriceItem.buyQty              
+                cartStrObj.ItemName +=  (cartStrObj.ItemName ? '#' : '') + `加價購 ${addPriceItem.Name} NT$${addPriceStr} x ${addPriceItem.buyQty}` 
               }
             }
           })
         }
       })
-      return o;
+      return cartStrObj;
     },
 
-    // currentPage
-    // common cart info verify product
-    // site, store, userInfo, protocol, api, showPage, isConfirmToPay, isConfirmIsRegister, isConfirmATM, getCategories
-    // showMessage, urlPush, discountCode, useCodeSuccess, use_bonus, member_bonus, is_click_finish_order, isOrderIng, total
-    // isConfirmDiscountCodeUsed, use_bonus_handler, createOrder, ECPay_form, payResult, bank
-    // info, info_message, is_save_address, has_address, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, verify
-    // getProducts productCompleted currentPage
     async checkOrder() {
       let site = JSON.parse(localStorage.getItem('site')) || {} ;
       if(site.Preview == 2) {
@@ -180,7 +179,7 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
             )
           ) {
           await use_bonus_handler();
-          createOrder();
+          methods.createOrder();
         }
       }
     },
@@ -200,13 +199,13 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
       let saveAddressStr = '';
       if(userInfo.address_obj && Object.keys(userInfo.address_obj).length < 3 && !has_address && is_save_address) {
         saveAddressStr = `${id}_ _${receiver_address.value.replace(/ /g, '_ _')}`
-      }
+      } 
       let formDataObj = {
         // 商店
         'Site': site.Site,
         'StoreName': site.Name,
         'productName': store.Name,
-        'LogoUrl': protocol + '//' + api + store.PayLogo,
+        'LogoUrl': location.origin + store.PayLogo,
         'Preview': site.Preview,
 
         // 商品
@@ -346,15 +345,16 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
       }
       // company account
       else if(pay_method == 'ATM' && store.ATM == 1){
-        bank = require('../assets/bank.json');
+        bank = require('@/json/bank.json');
         isConfirmATM = true;
       }
-      else if(state.pay_method == 'PayOnDelivery') {
+      else if(pay_method == 'PayOnDelivery') {
 
       }
       // ecpay
       else {
-        if(api.indexOf('demo.uniqcarttest') > -1){
+
+        if(location.origin.indexOf('demo.uniqcarttest') > -1){
           ECPay_form = `<form id="ECPay_form" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
         } else {
           ECPay_form = `<form id="ECPay_form" action="https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
@@ -386,14 +386,12 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
       showPage = 'main'
       
       getCategories();
-      getProducts();
+      getProductsHandler();
       currentPage = 1;
     }
   })
 
   return {
-    ...toRefs(state),
-
     ...toRefs(methods)
   }
 })

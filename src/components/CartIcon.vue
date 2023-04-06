@@ -1,0 +1,25 @@
+<template>
+  <!-- icon -->
+  <div class="cartIcon" :class="{shrink:isShrink}" v-show="showPage === 'main'" @click="showPage = 'cart'">
+    <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
+    <div class="num">
+      {{cartLength}}
+    </div>
+  </div>
+
+  <!-- 動畫 -->
+  <div class="flyImg" :style="`top: ${flyImgTop}px; left: ${flyImgLeft}px`" v-if="flyItem">
+    <img :src="flyItem.Img1" alt="">
+  </div>
+</template>
+
+<script setup>
+  // store
+  import { useCommon }  from '@/stores/common'
+  import { useCart }  from '@/stores/cart'
+  import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
+
+  const { showPage } = useCommon()
+  const { cartLength } = useCart()
+  const { flyItem, flyImgTop, flyImgLeft, isShrink} = useHandlerChangeQty()
+</script>

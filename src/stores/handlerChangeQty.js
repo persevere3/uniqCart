@@ -2,19 +2,20 @@ import { useCommon } from './common'
 import { useProducts } from './products'
 import { useCart } from './cart'
 import { useFilters } from './filters'
+import { useHandlerProducts } from './handlerProducts'
 
 import { getAmountApi } from '@/api/index';
 
 export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   // store ==================================================
   const { login, showMessage } = storeToRefs(useCommon())
-  const { products, getProducts, mainTotalQty } = storeToRefs(useProducts())
+  const { products, mainTotalQty } = storeToRefs(useProducts())
   const { cart, setCart, getTotal, othersAddPriceBuyQty } = storeToRefs(useCart())
   const { number } = storeToRefs(useFilters())
+  const { getProductsHandler } = storeToRefs(useHandlerProducts())
 
   // state ==================================================
   const state = reactive({
-    //
     flyItem: null,
     flyImgTop: 100,
     flyImgLeft: 0,
@@ -33,7 +34,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         let isMarket = await methods.getAmount(main, null, target)
         if(!isMarket) {
           showMessage('此規格已下架', false)
-          getProducts()
+          getProductsHandler()
           return
         }
       }
@@ -41,7 +42,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         let isMarket = await methods.getAmount(target)
         if(!isMarket) {
           showMessage('此商品已下架', false)
-          getProducts()
+          getProductsHandler()
           return
         }
       }
@@ -134,7 +135,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         let isMarket = await methods.getAmount(main, addPriceItem, target)
         if(!isMarket) {
           showMessage('此規格已下架', false)
-          getProducts()
+          getProductsHandler()
           return
         }
       }
@@ -142,7 +143,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         let isMarket = await methods.getAmount(main, target);
         if(!isMarket) {
           showMessage('此商品已下架', false)
-          getProducts()
+          getProductsHandler()
           return
         }
       }

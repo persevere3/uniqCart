@@ -1,0 +1,127 @@
+<template>
+  <div class="tr p-1" v-show="buyQty != 0 || buyQty === ''">
+    <div class="td picName jcs">
+      <div class="pic" :style="{backgroundImage :`url(${addPrice ? product.Img : product.Img1})`}">
+        <div class="tag" v-if="addPrice">加價購</div>
+      </div>
+      <div class="name">{{product.Name}}</div>
+    </div>
+    <div class="td spec">
+      <template v-if="spec">
+        <!-- rwd -->
+        <div class="specButton" @click="cartSpecCheckedId = cartSpecCheckedId == spec.ID ? -1 : spec.ID"> 
+          規格 <i :class="{iActive:cartSpecCheckedId == spec.ID}" class="fa fa-caret-down" aria-hidden="true"></i>  
+        </div>
+        <div class="specText" :class="{specTextShow:cartSpecCheckedId == spec.ID}"> {{spec.Name}} </div>
+      </template>
+    </div>
+    <div class="td price">  NT$ {{numberThousands(product[addPrice ? 'Price' : 'NowPrice'])}} </div>
+    <div class="td qty">
+      <div class="qtyBox" v-show="store.Enable === '1'">
+        <template v-if="!addPrice">
+          <div class="reduce" :class="{qtyDisabled:buyQty < 1}" @click="changeMainBuyQty(product, specIndex, buyQty - 1)"><i class="fa fa-minus"></i></div>
+          <input type="text" class="number" size="3" maxlength="3" 
+            v-model="buyQty"
+            @keyup.enter="changeMainBuyQty(product, specIndex, buyQty)"
+            @blur="changeMainBuyQty(product, specIndex, buyQty)" 
+          >
+          <div class="add" :class="{qtyDisabled:(productSpec.Enable == 1 && buyQty > productSpec.Amount - 1) || buyQty > 998 }" @click="changeMainBuyQty(product, specIndex, buyQty * 1 + 1)"><i class="fa fa-plus"></i></div>
+        </template>
+        <template v-else>
+          <div class="reduce" :class="{qtyDisabled:buyQty < 1}" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty - 1)"><i class="fa fa-minus"></i></div>
+          <input type="text" class="number" size="3" maxlength="3"
+            v-model="buyQty"
+            @keyup.enter="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty)"
+            @blur="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty)" 
+          >
+          <div class="add" :class="{qtyDisabled:buyQty > mainTotalQty(main) - 1 || (productSpec.Enable == 1 && buyQty > productSpec.Amount - 1) || buyQty > 998 }" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty * 1 + 1)"><i class="fa fa-plus"></i></div>
+        </template>
+      </div>
+      <div class="discontinued" v-show="store.Enable === '0'">停售中</div>
+    </div>
+    <div class="td subtotal"> 
+      <div class="priceTitle">小計</div>
+      <div class="priceText"> 
+        NT$ {{numberThousands(product[addPrice ? 'Price' : 'NowPrice'] * (isNaN(buyQty) ? 0 : buyQty))}} </div> 
+    </div>
+    <div class="td delete">
+      <div class="deleteButton"
+        @click="!addPrice ? changeMainBuyQty(product, specIndex, 0)
+                          : changeAddpriceBuyQty(main, addPriceIndex, specIndex, 0)"
+      > 
+        刪除 
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+  props: ['main', 'addPrice', 'spec', 'cartSpecCheckedId']
+
+  // store ==================================================
+  const { store } = storeToRefs(useCommonStore())
+  const { mainTotalQty } = storeToRefs(useProductsStore())
+  const { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useChangeQtyStore())
+  const { numberThousands } = storeToRefs(useFilterStore())
+
+  // state ==================================================
+  const state = reactive({
+
+  })
+
+  // computed ==================================================
+  const product = computed(() => {
+    return props.addPrice ? props.addPrice : props.main
+  })
+
+  const productSpec = computed(() => {
+    return props.spec ? props.spec : product.value
+  })
+
+  const addPriceIndex = computed(() => {
+    if(props.addPrice) {
+      return props.main.addPrice.map(item => item.ID).indexOf(props.addPrice.ID);
+    }
+    return null
+  })
+
+  const specIndex = computed(() => {
+    if(props.spec) {
+      return product.value.specArr.map(item => item.ID).indexOf(props.spec.ID);
+    }
+    return null
+  })
+
+  const buyQty = computed({
+    get() {
+      return productSpec.value['buyQty']
+    },
+    set(newBuyQty) {
+      productSpec.value['buyQty'] = newBuyQty
+    }
+  })
+  
+  // methods ==================================================
+  const methods = reactive({
+    
+  })
+
+  return {
+    store,
+    mainTotalQty,
+    changeMainBuyQty,
+    changeAddpriceBuyQty,
+    numberThousands,
+
+    ...toRefs(state),
+
+    // computed
+    product,
+    productSpec,
+    addPriceIndex,
+    specIndex,
+    buyQty,
+
+    ...toRefs(methods)
+  }
+</script>
