@@ -34,13 +34,13 @@
   import { useProducts }  from '@/stores/products'
   import { useFilters }  from '@/stores/filters'
 
-  const { showPage } = useCommon()
-  const { favorite, showFavorite, toggleFavorite } = useProducts()
-  const { numberThousands } = useFilters()
+  let { showPage } = useCommon()
+  let { favorite, showFavorite, toggleFavorite } = useProducts()
+  let { numberThousands } = useFilters()
 
   // state ==================================================
   const state = reactive({
     isShowFavorite: false,
   })
-  const { isShowFavorite } = toRefs(state)
+  let { isShowFavorite } = toRefs(state)
 </script>

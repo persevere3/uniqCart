@@ -1,33 +1,33 @@
 import { defineStore, storeToRefs } from 'pinia'
-import { useCommonStore } from './common'
-import { useProductsStore } from './products'
-import { useCartStore } from './cart'
-import { useVerifyStore } from './verify'
-import { useInfoStore } from './info'
-import { useFiltersStore } from './filters'
+import { useCommon } from './common'
+import { useProducts } from './products'
+import { useCart } from './cart'
+import { useVerify } from './verify'
+import { useInfo } from './info'
+import { useFilters } from './filters'
 import { useHandlerProducts } from './handlerProducts'
 
 import { createOrderApi, registerApi } from '@/api/index'
 
-export const useHandlerCartStore = defineStore('handlerCart', () => {
+export const useHandlerCart = defineStore('handlerCart', () => {
   // store ==================================================
-  const {
+  let {
     site, store, user_account, showPage, isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM,
     login, set_user_account, getCategories, getUserInfo , showMessage, urlPush
-  } = storeToRefs(useCommonStore())
-  const { productCompleted, currentPage } = storeToRefs(useProductsStore())
-  const { 
+  } = storeToRefs(useCommon())
+  let { productCompleted, currentPage } = storeToRefs(useProducts())
+  let { 
     discountCode, useCodeSuccess, total_bonus, is_use_bonus, use_bonus, member_bonus,
     total, is_click_finish_order, isOrderIng, 
     discount, use_bonus_handler, getTotal
-  } = storeToRefs(useCartStore())
-  const { 
+  } = storeToRefs(useCart())
+  let { 
     info, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
-  } = storeToRefs(useInfoStore())
-  const { verify } = storeToRefs(useVerifyStore())
-  const { numberThousands } = storeToRefs(useFiltersStore())
-  const { getProductsHandler } = storeToRefs(useHandlerProducts())
+  } = storeToRefs(useInfo())
+  let { verify } = storeToRefs(useVerify())
+  let { numberThousands } = storeToRefs(useFilters())
+  let { getProductsHandler } = storeToRefs(useHandlerProducts())
 
   // computed ==================================================
   const receiver_address = computed(() => {
@@ -203,7 +203,7 @@ export const useHandlerCartStore = defineStore('handlerCart', () => {
       let formDataObj = {
         // 商店
         'Site': site.Site,
-        'StoreName': site.Name,
+        'Name': site.Name,
         'productName': store.Name,
         'LogoUrl': location.origin + store.PayLogo,
         'Preview': site.Preview,

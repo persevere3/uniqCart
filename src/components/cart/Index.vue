@@ -28,7 +28,7 @@
       </div>
       <div class="footer">
         <div class="top"></div>
-        <div class="bottom">POWERED AND SECURED BY HONG BO</div>
+        <div class="bottom">POWERED AND SECURED BY UNIQ Micronet</div>
       </div>
 
       <div class="ECPay_form_container" v-html="ECPay_form"></div>
@@ -54,30 +54,27 @@
 
 <script setup>
   // component ==================================================
-  import cartStepOne from '@/components/CartStepOne.vue'
-  import cartStepTwo from '@/components/CartStepTwo.vue'
+  import cartStepOne from '@/components/cart/CartStepOne.vue'
+  import cartStepTwo from '@/components/cart/CartStepTwo.vue'
 
   // store ==================================================
-  const commonStore = {...storeToRefs(useCommonStore())}
-  const cartStore = {...storeToRefs(useCartStore())}
+  import { useCommon }  from '@/stores/common'
+  import { useCart }  from '@/stores/cart'
+  import { useHandlerInit }  from '@/stores/handlerInit'
+  import { useHandlerCart }  from '@/stores/handlerCart'
 
-  // state ==================================================
-  const state = reactive({
-    
-  })
+  let { user_account, showPage, isConfirmDiscountCodeUsed } = useCommon()
+  let { cartLength, ECPay_form, stepPage, getTotal } = useCart()
+  let { getUserInfoHandler } = useHandlerInit()
+  let { cancelDiscountCodeCreateOrder } = useHandlerCart()
 
   // ref 
   const cartModal = ref(null)
 
   // watch ==================================================
-  watch(() => cartStore.stepPage, (newV, oldV) => {
+  watch(stepPage, (newV, oldV) => {
     cartModal.value.scrollTop = 0;
-    if(commonStore.showPage == 'cart') cartStore.getTotal(newV - 1)
+    if(showPage == 'cart') getTotal(newV - 1)
     if(newV == 2) getUserInfoHandler()
-  })
-  
-  // methods ==================================================
-  const methods = reactive({
-    
   })
 </script>

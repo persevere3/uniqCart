@@ -96,9 +96,9 @@
   import { useProducts }  from '@/stores/products'
   import { useFilters } from '@/stores/filters'
 
-  const { store, categories, arrangement, showPage, urlPush } = useCommon()
-  const { products, productCompleted, pageNum, totalPage, currentPage, favorite, showSelect, toggleFavorite } = useProducts()
-  const { numberThousands } = useFilters()
+  let { store, categories, category, arrangement, showPage, urlPush } = useCommon()
+  let { products, productCompleted, pageNum, totalPage, currentPage, favorite, showSelect, toggleFavorite } = useProducts()
+  let { numberThousands } = useFilters()
 
   // computed ==================================================
   const filterProducts = computed(() => {

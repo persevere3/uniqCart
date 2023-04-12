@@ -42,39 +42,16 @@
 
 <script setup>
   // store ==================================================
-  const { user_account } = storeToRefs(useCommonStore())
-  const { stepPage, total, is_use_bonus, use_bonus, member_bonus } = storeToRefs(useCartStore())
-  const { numberThousands } = storeToRefs(useFilterStore())
+  import { useCommon }  from '@/stores/common'
+  import { useCart }  from '@/stores/cart'
+  import { useFilters }  from '@/stores/filters'
 
-  // state ==================================================
-  const state = reactive({
-    
-  })
+  let { user_account } = useCommon()
+  let { stepPage, total, is_use_bonus, use_bonus, member_bonus } = storeToRefs(useCart())
+  let { numberThousands } = useFilters()
 
   // computed ==================================================
   let subtotal = computed(() => {
     return parseInt(total.Total) - parseInt(total.Discount) - parseInt(total.DiscountCode)
   })
-  
-  // methods ==================================================
-  const methods = reactive({
-    
-  })
-
-  return {
-    user_account,
-    stepPage,
-    total,
-    is_use_bonus, 
-    use_bonus,
-    member_bonus,
-    numberThousands,
-
-    ...toRefs(state),
-
-    // computed
-    subtotal,
-
-    ...toRefs(methods)
-  }
 </script>

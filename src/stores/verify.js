@@ -1,9 +1,4 @@
 export const useVerify = defineStore('verify', () => {
-  // state ==================================================
-  const state = reactive({
-    
-  })
-
   // methods ==================================================
   const methods = reactive({
     required_verify(item) {
@@ -97,8 +92,6 @@ export const useVerify = defineStore('verify', () => {
   })
 
   return {
-    ...toRefs(state),
-
     ...toRefs(methods)
   }
 })

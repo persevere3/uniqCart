@@ -49,16 +49,16 @@
 
 <script setup>
   // store ==================================================
-  import { useCommonStore }  from '@/stores/common'
-  import { useProductsStore }  from '@/stores/products'
-  import { useChangeQtyStore }  from '@/stores/changeQty'
+  import { useCommon }  from '@/stores/common'
+  import { useProducts }  from '@/stores/products'
+  import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
 
-  const { store } = storeToRefs(useCommonStore())
-  const { mainTotalQty } = storeToRefs(useProductsStore())
-  const { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useChangeQtyStore())
+  let { store } = storeToRefs(useCommon())
+  let { mainTotalQty } = storeToRefs(useProducts())
+  let { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useHandlerChangeQty())
 
   // props ==================================================
-  const props = defineProps(['main', 'addPrice', 'event'])
+  let props = defineProps(['main', 'addPrice', 'event'])
 
   // computed ==================================================
   const product = computed(() => {

@@ -19,7 +19,7 @@
   import { useCart }  from '@/stores/cart'
   import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
 
-  const { showPage } = useCommon()
-  const { cartLength } = useCart()
-  const { flyItem, flyImgTop, flyImgLeft, isShrink} = useHandlerChangeQty()
+  let { showPage } = useCommon()
+  let { cartLength } = useCart()
+  let { flyItem, flyImgTop, flyImgLeft, isShrink} = useHandlerChangeQty()
 </script>

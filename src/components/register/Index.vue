@@ -67,21 +67,21 @@
 
 <script setup>
   // component ==================================================
-  import RegisterInput from '@/components/RegisterInput.vue'
+  import RegisterInput from '@/components/register/RegisterInput.vue'
 
   // api ==================================================
   import { send_verify_codeApi, registerApi } from '@/api/index'
 
   // store ==================================================
-  import { useCommonStore } from '@/stores/common'
-  import { useCartStore } from '@/stores/cart'
-  import { useInfoStore } from '@/stores/info'
-  import { useFilterStore } from '@/stores/filters'
+  import { useCommon } from '@/stores/common'
+  import { useCart } from '@/stores/cart'
+  import { useInfo } from '@/stores/info'
+  import { useFilters } from '@/stores/filters'
 
-  const { site, store, isConfirmRegister, login, showMessage } = storeToRefs(useCommonStore())
-  const { toPay } = storeToRefs(useCartStore())
-  const { info, pay_method } = storeToRefs(useInfoStore())
-  const { unescapeHTML } = storeToRefs(useFilterStore())
+  let { site, store, isConfirmRegister, login, showMessage } = storeToRefs(useCommon())
+  let { toPay } = storeToRefs(useCart())
+  let { info, pay_method } = storeToRefs(useInfo())
+  let { unescapeHTML } = storeToRefs(useFilters())
 
   // state ==================================================
   const state = reactive({
@@ -220,137 +220,136 @@
     // 會員條款與隱私權政策
     is_userModal: false,
   })
-  state.r_confirm_password.rules.confirm.password = state.r_password
+  let { r_name, r_account, r_verify_code, r_mail, r_verify_code2, second, r_birthday, sex, r_password, r_confirm_password, r_is_agree, is_userModal } = toRefs(state)
+  r_confirm_password.rules.confirm.password = r_password
 
   // watch ==================================================
   watch(() => isConfirmRegister, (v) => {
     if(v) {
-      state.r_account.value = info.purchaser_number.value;
-      state.r_name.value = info.purchaser_name.value;
-      state.r_mail.value = info.purchaser_email.value;
+      r_account.value = info.purchaser_number.value;
+      r_name.value = info.purchaser_name.value;
+      r_mail.value = info.purchaser_email.value;
     }
   })
   
   // methods ==================================================
-  const methods = reactive({
-    async send_verify_code(){
-      if(state.second > 0) return
+  async function send_verify_code(){
+    if(state.second > 0) return
 
-      if(store.NotificationSystem == 0) {
-        if( !verify(state.r_mail) ) return
-      }
-      else if(store.NotificationSystem == 1) {
-        if( !verify(state.r_account) ) return
-      }
-      else {
-        if( !verify(state.r_account) || !verify(state.r_mail) ) return
-      }
+    if(store.NotificationSystem == 0) {
+      if( !verify(state.r_mail) ) return
+    }
+    else if(store.NotificationSystem == 1) {
+      if( !verify(state.r_account) ) return
+    }
+    else {
+      if( !verify(state.r_account) || !verify(state.r_mail) ) return
+    }
 
-      let formData = new FormData();
-      formData.append("phone", state.r_account.value.trim());
-      formData.append("mail", state.r_mail.value.trim());
+    let formData = new FormData();
+    formData.append("phone", state.r_account.value.trim());
+    formData.append("mail", state.r_mail.value.trim());
 
-      formData.append("notificationsystem", store.NotificationSystem)
-      formData.append("type", store.NotificationSystem)
+    formData.append("notificationsystem", store.NotificationSystem)
+    formData.append("type", store.NotificationSystem)
 
-      formData.append("storeName", store.Name);
-      formData.append("storeid", site.Name);
+    formData.append("storeName", store.Name);
+    formData.append("storeid", site.Name);
 
-      try {
-        let res = await send_verify_codeApi(formData)
-        if(res.data.errormessage) {
-          await login();
-          methods.send_verify_code()
-          return
-        }
-
-        if(res.data.status){
-          state.second = 300;
-          let interval =  setInterval(() => {
-            state.second -= 1;
-            if(state.second < 1){
-              clearInterval(interval);
-            }
-          }, 1000)
-          showMessage(res.data.msg, true)
-        } else {
-          showMessage(res.data.msg, false)
-        }
-      } catch (error) {
-        throw new Error(error)
-      }
-    },
-    async register() {
-      if (!state.r_is_agree) return
-
-      let verify_code = [];
-      if(store.NotificationSystem == 0) {
-        verify_code.push(state.r_verify_code2)
-      }
-      else if(store.NotificationSystem == 1) {
-        verify_code.push(state.r_verify_code)
-      }
-      else {
-        verify_code.push(state.r_verify_code)
-        verify_code.push(state.r_verify_code2)
-      }
-
-      if (!verify(state.r_name, state.r_mail, state.r_birthday, state.r_account, ...verify_code, state.r_password, state.r_confirm_password)) {
+    try {
+      let res = await send_verify_codeApi(formData)
+      if(res.data.errormessage) {
+        await login();
+        methods.send_verify_code()
         return
       }
-      
-      let formData = new FormData();
-      formData.append("storeid", site.Name);
-      formData.append("phone", state.r_account.value);
-      
-      if(store.NotificationSystem == 0) {
-        formData.append("validate2", state.r_verify_code2.value);
-      }
-      else if(store.NotificationSystem == 1) {
-        formData.append("validate", state.r_verify_code.value);
-      }
-      else {
-        formData.append("validate", state.r_verify_code.value);
-        formData.append("validate2", state.r_verify_code2.value);
-      }
-      formData.append("type", store.NotificationSystem)
 
-      formData.append("name", state.r_name.value);
-      formData.append("email", state.r_mail.value);
-      formData.append("password", state.r_password.value);
-      let b = state.r_birthday.value
-      let birthday
-      if(b) {
-        birthday = `${b.getFullYear()}/${b.getMonth() + 1 < 10  ? '0' : '' }${b.getMonth() + 1}/${b.getDate() < 10  ? '0' : '' }${b.getDate()}`
+      if(res.data.status){
+        state.second = 300;
+        let interval =  setInterval(() => {
+          state.second -= 1;
+          if(state.second < 1){
+            clearInterval(interval);
+          }
+        }, 1000)
+        showMessage(res.data.msg, true)
+      } else {
+        showMessage(res.data.msg, false)
       }
-      else {
-        birthday = ''
-      }
-      formData.append("birthday", birthday);
-      formData.append("gender", state.sex == 'male' ? 1 : 0 );
-      formData.append("recommender", '');
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+  async function register() {
+    if (!state.r_is_agree) return
 
-      try {
-        let res = await registerApi(formData)
-        if(res.data.errormessage) {
-          await login();
-          methods.register()
-          return
-        }
+    let verify_code = [];
+    if(store.NotificationSystem == 0) {
+      verify_code.push(state.r_verify_code2)
+    }
+    else if(store.NotificationSystem == 1) {
+      verify_code.push(state.r_verify_code)
+    }
+    else {
+      verify_code.push(state.r_verify_code)
+      verify_code.push(state.r_verify_code2)
+    }
 
-        if(res.data.status){
-          showMessage(res.data.msg, true)
-          setTimeout(function() {
-            isConfirmRegister = false;
-            toPay()
-          }, 3000)
-        }
-        else{
-          showMessage(res.data.msg, false)
-        }
-      } catch (error) {
-        throw new Error(error)
+    if (!verify(state.r_name, state.r_mail, state.r_birthday, state.r_account, ...verify_code, state.r_password, state.r_confirm_password)) {
+      return
+    }
+    
+    let formData = new FormData();
+    formData.append("storeid", site.Name);
+    formData.append("phone", state.r_account.value);
+    
+    if(store.NotificationSystem == 0) {
+      formData.append("validate2", state.r_verify_code2.value);
+    }
+    else if(store.NotificationSystem == 1) {
+      formData.append("validate", state.r_verify_code.value);
+    }
+    else {
+      formData.append("validate", state.r_verify_code.value);
+      formData.append("validate2", state.r_verify_code2.value);
+    }
+    formData.append("type", store.NotificationSystem)
+
+    formData.append("name", state.r_name.value);
+    formData.append("email", state.r_mail.value);
+    formData.append("password", state.r_password.value);
+    let b = state.r_birthday.value
+    let birthday
+    if(b) {
+      birthday = `${b.getFullYear()}/${b.getMonth() + 1 < 10  ? '0' : '' }${b.getMonth() + 1}/${b.getDate() < 10  ? '0' : '' }${b.getDate()}`
+    }
+    else {
+      birthday = ''
+    }
+    formData.append("birthday", birthday);
+    formData.append("gender", state.sex == 'male' ? 1 : 0 );
+    formData.append("recommender", '');
+
+    try {
+      let res = await registerApi(formData)
+      if(res.data.errormessage) {
+        await login();
+        methods.register()
+        return
       }
-    },
-  })
+
+      if(res.data.status){
+        showMessage(res.data.msg, true)
+        setTimeout(function() {
+          isConfirmRegister = false;
+          toPay()
+        }, 3000)
+      }
+      else{
+        showMessage(res.data.msg, false)
+      }
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 </script>

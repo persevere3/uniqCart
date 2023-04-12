@@ -12,11 +12,11 @@
   import { useCommon }  from '@/stores/common'
   import { useFilters }  from '@/stores/filters'
 
-  const { store, showPage } = useCommon()
-  const { unescapeHTML } = useFilters()
+  let { store, showPage } = useCommon()
+  let { unescapeHTML } = useFilters()
 
   // props ==================================================
-  const { innerHeight } = defineProps(['innerHeight'])
+  let { innerHeight } = defineProps(['innerHeight'])
 
   // ref ==================================================
   const notice_page_content = ref(null)

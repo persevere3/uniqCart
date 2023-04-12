@@ -56,18 +56,19 @@
 </template>
 
 <script setup>
-  props: ['main', 'addPrice', 'spec', 'cartSpecCheckedId']
-
   // store ==================================================
-  const { store } = storeToRefs(useCommonStore())
-  const { mainTotalQty } = storeToRefs(useProductsStore())
-  const { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useChangeQtyStore())
-  const { numberThousands } = storeToRefs(useFilterStore())
+  import { useCommon }  from '@/stores/common'
+  import { useProducts }  from '@/stores/products'
+  import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
+  import { useFilters } from '@/stores/filters'
 
-  // state ==================================================
-  const state = reactive({
+  let { store } = storeToRefs(useCommon())
+  let { mainTotalQty } = storeToRefs(useProducts())
+  let { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useHandlerChangeQty())
+  let { numberThousands } = storeToRefs(useFilters())
 
-  })
+  // props ==================================================
+  const props = defineProps(['main', 'addPrice', 'spec', 'cartSpecCheckedId'])
 
   // computed ==================================================
   const product = computed(() => {
@@ -100,28 +101,4 @@
       productSpec.value['buyQty'] = newBuyQty
     }
   })
-  
-  // methods ==================================================
-  const methods = reactive({
-    
-  })
-
-  return {
-    store,
-    mainTotalQty,
-    changeMainBuyQty,
-    changeAddpriceBuyQty,
-    numberThousands,
-
-    ...toRefs(state),
-
-    // computed
-    product,
-    productSpec,
-    addPriceIndex,
-    specIndex,
-    buyQty,
-
-    ...toRefs(methods)
-  }
 </script>

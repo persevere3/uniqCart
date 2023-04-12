@@ -170,27 +170,33 @@
 
 <script setup>
   // component ==================================================
-  import CartStepTotal from '@/components/CartStepTotal.vue'
-
-  // json ==================================================
-  import city_district from '../assets/city_district.json';
+  import CartStepTotal from '@/components/cart/CartStepTotal.vue'
 
   // store ==================================================
-  const { site, store, user_account, userInfo, showMessage, urlPush } = storeToRefs(useCommonStore())
-  const { stepPage, cartLength, is_click_finish_order, isOrderIng, total_bonus, is_use_bonus, use_bonus, bonus_array, getTotal, use_bonus_handler, checkOrder, createOrder } = storeToRefs(useCartStore())
-  const { info, has_address, is_save_address, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber} = storeToRefs(useInfoStore())
-  const { verify } = storeToRefs(useVerifyStore())
-  const { number, numberThousands } = storeToRefs(useFiltersStore())
+  import { useCommon }  from '@/stores/common'
+  import { useCart }  from '@/stores/cart'
+  import { useInfo }  from '@/stores/info'
+  import { useVerify }  from '@/stores/verify'
+  import { useFilters }  from '@/stores/filters'
+
+  let { store, user_account, userInfo, urlPush } = storeToRefs(useCommon())
+  let { stepPage, is_click_finish_order, isOrderIng, total_bonus, is_use_bonus, use_bonus, bonus_array, getTotal, use_bonus_handler, checkOrder } = storeToRefs(useCart())
+  let { info, has_address, is_save_address, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message} = storeToRefs(useInfo())
+  let { verify } = storeToRefs(useVerify())
+  let { number, numberThousands } = storeToRefs(useFilters())
+
+  // props ==================================================
+  let props = defineProps(['main', 'addPrice', 'event'])
 
   // state ==================================================
   const state = reactive({
     isSame: false,
-
-    city_district,
+    city_district: require('@/json/city_district.json')
   })
+  let { isSame, city_district } = toRefs(state)
 
   // watch ==================================================
-  watch(() => state.isSame, (v) => {
+  watch(() => isSame, (v) => {
     if(v) {
       info.receiver_name.value = info.purchaser_name.value;
       info.receiver_number.value = info.purchaser_number.value;
@@ -207,52 +213,16 @@
   }, {immediate: true})
   
   // methods ==================================================
-  const methods = reactive({
-    // 同步 購買人 收件人 資訊 
-    pInput(){
-      if(state.isSame){
-        info.receiver_name.value = info.purchaser_name.value;
-        info.receiver_number.value = info.purchaser_number.value;
-        verify(info.receiver_name, info.receiver_number)
-      }
-    },
-    // 留言字數控制在150以下
-    info_message_input() {
-      if(info_message.length > 150) info_message = info_message.substring(0, 150);
-    },
-  })
-
-  return {
-    store,
-    user_account,
-    userInfo,
-    urlPush,
-    
-    cartLength,
-    stepPage,
-    is_save_address,
-    total_bonus,
-    bonus_array,
-    is_use_bonus,
-    use_bonus,
-    is_click_finish_order,
-    isOrderIng,
-    checkOrder,
-    
-    info,
-    has_address,
-    transport,
-    pay_method,
-    invoice_type, 
-    invoice_title,
-    invoice_uniNumber,
-    
-    verify,
-
-    numberThousands,
-
-    ...toRefs(state),
-
-    ...toRefs(methods)
+  // 同步 購買人 收件人 資訊 
+  function pInput() {
+    if(state.isSame){
+      info.receiver_name.value = info.purchaser_name.value;
+      info.receiver_number.value = info.purchaser_number.value;
+      verify(info.receiver_name, info.receiver_number)
+    }
+  }
+  // 留言字數控制在150以下
+  function info_message_input() {
+    if(info_message.length > 150) info_message = info_message.substring(0, 150);
   }
 </script>

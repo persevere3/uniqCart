@@ -86,11 +86,11 @@
   import { useInfo }  from '@/stores/info'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  const { 
+  let { 
     store, isConfirmToPay, isConfirmATM, isConfirmIsRegister, isConfirmRegister,
     copy, urlPush 
   } = useCommon()
-  const { bank } = useCart()
-  const { info, pay_method } = useInfo()
-  const { toPay } = useHandlerCart()
+  let { bank } = useCart()
+  let { info, pay_method } = useInfo()
+  let { toPay } = useHandlerCart()
 </script>

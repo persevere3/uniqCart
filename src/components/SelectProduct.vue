@@ -79,9 +79,9 @@
   import { useProducts }  from '@/stores/products'
   import { useFilters }  from '@/stores/filters'
 
-  const { showPage, copy, showMessage } = storeToRefs(useCommon())
-  const { selectProduct, favorite, mainTotalQty, toggleFavorite } = storeToRefs(useProducts())
-  const { numberThousands, unescapeHTML, unescapeEnter } = storeToRefs(useFilters())
+  let { showPage, copy, showMessage } = storeToRefs(useCommon())
+  let { selectProduct, favorite, mainTotalQty, toggleFavorite } = storeToRefs(useProducts())
+  let { numberThousands, unescapeHTML, unescapeEnter } = storeToRefs(useFilters())
 
   // state ==================================================
   const state = reactive({
@@ -93,10 +93,10 @@
 
   // onMounted ==================================================
   onMounted(() => {
-    window.addEventListener('resize', methods.computedPic)
+    window.addEventListener('resize', computedPic)
   })
   onUnmounted(() => {
-    window.removeEventListener('resize', methods.computedPic)
+    window.removeEventListener('resize', computedPic)
   })
 
   // ref ==================================================
@@ -114,16 +114,14 @@
   })
   
   // methods ==================================================
-  const methods = reactive({
-    computedPic(){
-      state.liWidth = (mainPicWidth.value.offsetWidth) / 3;
-      state.picHeight = state.liWidth;
-      state.picWidth = state.liWidth - 10;
-    },
+  function computedPic(){
+    state.liWidth = (mainPicWidth.value.offsetWidth) / 3;
+    state.picHeight = state.liWidth;
+    state.picWidth = state.liWidth - 10;
+  }
 
-    click_share_link() {
-      copy( `${protocol}//${api}/cart/?id=${selectProduct.ID}`, '.copy_input');
-      showMessage('複製分享連結', true);
-    },
-  })
+  function click_share_link() {
+    copy( `${protocol}//${api}/cart/?id=${selectProduct.ID}`, '.copy_input');
+    showMessage('複製分享連結', true);
+  }
 </script>

@@ -8,11 +8,11 @@ import { getAmountApi } from '@/api/index';
 
 export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   // store ==================================================
-  const { login, showMessage } = storeToRefs(useCommon())
-  const { products, mainTotalQty } = storeToRefs(useProducts())
-  const { cart, setCart, getTotal, othersAddPriceBuyQty } = storeToRefs(useCart())
-  const { number } = storeToRefs(useFilters())
-  const { getProductsHandler } = storeToRefs(useHandlerProducts())
+  let { login, showMessage } = storeToRefs(useCommon())
+  let { products, mainTotalQty } = storeToRefs(useProducts())
+  let { cart, setCart, getTotal, othersAddPriceBuyQty } = storeToRefs(useCart())
+  let { number } = storeToRefs(useFilters())
+  let { getProductsHandler } = storeToRefs(useHandlerProducts())
 
   // state ==================================================
   const state = reactive({

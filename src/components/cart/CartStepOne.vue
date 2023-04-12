@@ -11,7 +11,7 @@
       </div>
       <div class="tbody">
         <template>
-          <div v-for="item in cart ">
+          <div v-for="item in cart">
             <!-- 有規格 -->
             <template v-if="item.specArr">
               <template v-for="spec in item.specArr " :key="spec.ID">
@@ -48,8 +48,8 @@
       <h5 v-show="store.Discount == 2" style="color: red; white-space: nowrap">消費滿{{store.Price}}元 ，打{{(100 - store.Ratio) % 10 === 0 ? (100 - store.Ratio)/10 : 100 - store.Ratio }}折 。</h5>
       <p>如果要使用折扣碼，請在此填入</p>
       <div class="discountBox">
-        <input type="text" v-model.trim="discountCode" @keyup.enter="discount">
-        <div class="button" @click="discount">使用折扣碼</div>
+        <input type="text" v-model.trim="discountCode" @keyup.enter="discountHandler">
+        <div class="button" @click="discountHandler">使用折扣碼</div>
         <div class="button" @click="unDiscount">取消折扣碼</div>
       </div>
       <div class="discountError" v-if="discountErrorMessage">{{ discountErrorMessage }}</div>
@@ -63,20 +63,21 @@
 
 <script setup>
   // component ==================================================
-  import CartStepOneTr from '@/components/CartStepOneTr.vue'
-  import CartStepTotal from '@/components/CartStepTotal.vue'
+  import CartStepOneTr from '@/components/cart/CartStepOneTr.vue'
+  import CartStepTotal from '@/components/cart/CartStepTotal.vue'
 
   // store ==================================================
-  const commonStore = {...storeToRefs(useCommonStore())}
-  const cartStore = {...storeToRefs(useCartStore())}
+  import { useCommon }  from '@/stores/common'
+  import { useCart }  from '@/stores/cart'
+  import { useHandlerCart }  from '@/stores/handlerCart'
+
+  let { store } = storeToRefs(useCommon())
+  let { cart, discountCode, discountErrorMessage, total, stepPage, unDiscount } = storeToRefs(useCart())
+  let { discountHandler } = storeToRefs(useHandlerCart())
 
   // state ==================================================
   const state = reactive({
     cartSpecCheckedId: -1,
   })
-  
-  // methods ==================================================
-  const methods = reactive({
-
-  })
+  let { cartSpecCheckedId } = toRefs(state)
 </script>

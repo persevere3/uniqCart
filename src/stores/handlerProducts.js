@@ -4,9 +4,9 @@ import { useCart } from './cart'
 
 export const useHandlerProducts = defineStore('handlerProducts', () => {
   // store ==================================================
-  const { site, user_account, category, showPage, login, showMessage } = storeToRefs(useCommon())
-  const { products, getProducts, getAddPrice, getFavorite, showSelect, mainTotalQty } = storeToRefs(useProducts())
-  const { 
+  let { site, user_account, category, showPage, login, showMessage } = storeToRefs(useCommon())
+  let { products, getProducts, getAddPrice, getFavorite, showSelect, mainTotalQty } = storeToRefs(useProducts())
+  let { 
     cart, cartOLength, cartLength,
     getCart, setCart, computedCartLength, othersAddPriceBuyQty, use_bonus_handler 
   } = storeToRefs(useCart())

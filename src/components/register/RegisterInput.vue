@@ -30,10 +30,10 @@
 
 <script setup>
   // store ==================================================
-  import { useFilterStore } from '@/stores/filters'
+  import { useFilters } from '@/stores/filters'
 
-  const { verify } = storeToRefs(useFilterStore())
+  let { verify } = storeToRefs(useFilters())
 
   // props
-  const { input } = defineProps(['input']) 
+  let { input } = defineProps(['input']) 
 </script>

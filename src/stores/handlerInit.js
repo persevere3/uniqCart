@@ -1,3 +1,4 @@
+import { storeToRefs } from 'pinia'
 import { useCommon } from './common'
 import { useCart } from './cart'
 import { useInfo } from './info'
@@ -5,15 +6,17 @@ import { useHandlerProducts } from './handlerProducts'
 
 export const useHandlerInit = defineStore('handlerInit', () => {
   // store ==================================================
-  const { site, user_account, login, getSite, get_user_account, getStore, getCategories, showMessage } = storeToRefs(useCommon())
-  const { bonus_array } = storeToRefs(useCart())
-  const { getUserInfo } = storeToRefs(useInfo())
-  const { getProductsHandler } = storeToRefs(useHandlerProducts())
+  let { test, site, user_account, login, getSite, get_user_account, getStore, getCategories, showMessage } = storeToRefs(useCommon())
+  let { bonus_array } = storeToRefs(useCart())
+  let { getUserInfo } = storeToRefs(useInfo())
+  let { getProductsHandler } = storeToRefs(useHandlerProducts())
+
+  console.log(storeToRefs(useCommon()))
 
   // methods ==================================================
   const methods = reactive({
     async getSiteHandler() {
-      let res = await getSite()
+      let res = await getSite.value()
       if(res.isSuccess) {
         get_user_account()
         getStore();

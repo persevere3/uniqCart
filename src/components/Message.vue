@@ -12,6 +12,6 @@
   // store
   import { useCommon }  from '@/stores/common'
 
-  const { messageArr } = useCommon()
+  let { messageArr } = useCommon()
 </script>
 
