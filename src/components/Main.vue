@@ -33,7 +33,7 @@
       <ul>
         <li v-for="item in pageFilterProducts" :key="item.ID" >
           <div class="pic_div">
-            <div class="pic" :style="{backgroundImage :`url(${item.Img1})`}" @click="showSelect(item)">
+            <div class="pic" :style="{backgroundImage :`url(${item.imgArr[0]})`}" @click="showSelect(item)">
               <div class="detailButton">
                 查看詳情
                 <i class="fas fa-heart" :class="{is_favorite : favorite[item.ID]}" @click.stop="toggleFavorite(item.ID)"></i>
@@ -49,23 +49,23 @@
           </div>
         </li>
       </ul>
-      <div class="no_item" v-if="productCompleted && pageFilterProducts.length === 0">
+      <div class="no_item" v-if="productsRerndered && pageFilterProducts.length === 0">
         目前沒有銷售任何產品
       </div>
     </div>
     <div class="pages" v-if="pageFilterProducts.length !== 0">
       <ul>
-        <li :class="{'pageDisabled':currentPage === 1}" @click="pageChange(currentPage - 1)">
+        <li :class="{'pageDisabled':currentPage === 1}" @click="changePage(currentPage - 1)">
           Previous
         </li>
 
         <li v-for="page in totalPage" :key="`page_${page}`" 
             :class="{'liActive':currentPage === page}"
-            @click="pageChange(page)">
+            @click="changePage(page)">
           {{page}}
         </li>
 
-        <li :class="{'pageDisabled':currentPage === totalPage}" @click="pageChange(currentPage + 1)">
+        <li :class="{'pageDisabled':currentPage === totalPage}" @click="changePage(currentPage + 1)">
           Next
         </li>
       </ul>
@@ -96,33 +96,48 @@
   import { useProducts }  from '@/stores/products'
   import { useFilters } from '@/stores/filters'
 
-  let { store, categories, category, arrangement, showPage, urlPush } = useCommon()
-  let { products, productCompleted, pageNum, totalPage, currentPage, favorite, showSelect, toggleFavorite } = useProducts()
+  let { store, categories, category, arrangement, showPage } = storeToRefs(useCommon())
+  let { urlPush } = useCommon()
+  let { products, productsRerndered, favorite } = storeToRefs(useProducts())
+  let { showSelect, toggleFavorite } = useProducts()
   let { numberThousands } = useFilters()
+
+  // state ==================================================
+  const state = reactive({
+    pageNum: 12,
+    totalPage: 0,
+    currentPage: 1
+  })
+  let { pageNum, totalPage, currentPage } = toRefs(state)
 
   // computed ==================================================
   const filterProducts = computed(() => {
     let arr = [];
-    if(category === '0') arr = products 
+    if(category.value === '0') arr = products.value 
     else {
-      arr = products.filter(product => {
+      arr = products.value.filter(product => {
         return product.categoryArr.find(category => category === category)
       })
     }
-    totalPage = Math.ceil(arr.length / pageNum);
+    state.totalPage = Math.ceil(arr.length / state.pageNum);
     return arr;
   })
   const pageFilterProducts = computed(() => {
-    let startIndex = (currentPage - 1) * pageNum;
-    let endIndex = currentPage * pageNum - 1;
+    let startIndex = (state.currentPage - 1) * state.pageNum;
+    let endIndex = state.currentPage * state.pageNum - 1;
     return filterProducts.value.filter((product, index) => {
       return index >= startIndex && index <= endIndex
     })
   })
 
+  // watch ==================================================
+  watch(products, () => {
+    console.log('watch: products')
+    state.currentPage = 1;
+  })
+
   // methods ==================================================
-  function pageChange(p) {
-    p = p < 1 ? 1 : (p > totalPage ? totalPage : p);
-    currentPage = p;
+  function changePage(p) {
+    state.currentPage = p < 1 ? 1 : (p > state.totalPage ? state.totalPage : p);
   }
 </script>

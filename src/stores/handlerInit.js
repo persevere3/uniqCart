@@ -1,4 +1,6 @@
 import { storeToRefs } from 'pinia'
+
+import { useAll }  from '@/stores/all'
 import { useCommon } from './common'
 import { useCart } from './cart'
 import { useInfo } from './info'
@@ -6,39 +8,39 @@ import { useHandlerProducts } from './handlerProducts'
 
 export const useHandlerInit = defineStore('handlerInit', () => {
   // store ==================================================
-  let { test, site, user_account, login, getSite, get_user_account, getStore, getCategories, showMessage } = storeToRefs(useCommon())
+  let { site, user_account } = storeToRefs(useAll())
+  let { login } = useAll()
+  let { getSite, getStore, getCategories } = useCommon()
   let { bonus_array } = storeToRefs(useCart())
-  let { getUserInfo } = storeToRefs(useInfo())
-  let { getProductsHandler } = storeToRefs(useHandlerProducts())
-
-  console.log(storeToRefs(useCommon()))
+  let { getUserInfo } = useInfo()
+  let { getProductsHandler } = useHandlerProducts()
 
   // methods ==================================================
-  const methods = reactive({
+  const methods = {
     async getSiteHandler() {
-      let res = await getSite.value()
+      let res = await getSite()
       if(res.isSuccess) {
-        get_user_account()
+        user_account.value = localStorage.getItem('user_account')
         getStore();
         getCategories();
         getProductsHandler();
-        getUserInfo(user_account);
+        getUserInfo();
         
-        if(site.FeedbackFund) bonus_array = JSON.parse(site.FeedbackFund)
+        if(site.value.FeedbackFund) bonus_array.value = JSON.parse(site.value.FeedbackFund)
       }
     },
     
     async getUserInfoHandler() {
-      let res = await getUserInfo(user_account)
+      let res = await getUserInfo()
       if(res.message === 'login') {
         await login();
         methods.getUserInfoHandler()
         return
       }
     },
-  })
+  }
 
   return {
-    ...toRefs(methods)
+    ...methods
   }
 })

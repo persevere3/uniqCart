@@ -32,7 +32,7 @@
   // store ==================================================
   import { useFilters } from '@/stores/filters'
 
-  let { verify } = storeToRefs(useFilters())
+  let { verify } = useFilters()
 
   // props
   let { input } = defineProps(['input']) 

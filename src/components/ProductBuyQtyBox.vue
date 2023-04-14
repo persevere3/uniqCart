@@ -21,12 +21,12 @@
         <template v-if="addPrice">
           <div class="reduce" :class="{qtyDisabled:buyQty < 1}" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty - 1)"><i class="fa fa-minus"></i></div>
           <input class="number" type="text" size="3" maxlength="3"
-            :disabled="mainTotalQty(main) < 1"
+            :disabled="getMainTotalQty(main) < 1"
             v-model="buyQty"
             @blur="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty)" 
             @keyup.enter="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty)"
           >
-          <div class="add" :class="{qtyDisabled: buyQty > mainTotalQty(main) - 1 || (productSpec.Enable == 1 && buyQty > productSpec.Amount - 1) || buyQty > 998 }" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty * 1 + 1)"><i class="fa fa-plus"></i></div>
+          <div class="add" :class="{qtyDisabled: buyQty > getMainTotalQty(main) - 1 || (productSpec.Enable == 1 && buyQty > productSpec.Amount - 1) || buyQty > 998 }" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty * 1 + 1)"><i class="fa fa-plus"></i></div>
         </template>
         <template v-else>
           <div class="reduce" :class="{qtyDisabled:buyQty < 1}" @click="changeMainBuyQty(main, specIndex, buyQty - 1, event ? $event : null)"> <i class="fa fa-minus"></i> </div>
@@ -54,8 +54,8 @@
   import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
 
   let { store } = storeToRefs(useCommon())
-  let { mainTotalQty } = storeToRefs(useProducts())
-  let { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useHandlerChangeQty())
+  let { getMainTotalQty } = useProducts()
+  let { changeMainBuyQty, changeAddpriceBuyQty } = useHandlerChangeQty()
 
   // props ==================================================
   let props = defineProps(['main', 'addPrice', 'event'])
@@ -69,7 +69,7 @@
     // 沒規格
     if(!product.value.selectSpecItem) {
       return product.value
-    } 
+    }
     // 有規格
     else {
       // 沒選
@@ -108,7 +108,7 @@
 
   const productSpecStatus = computed(() => {
     // 停售中 -1
-    if(store.Enable == 0) return -1
+    if(store.value.Enable == 0) return -1
     // 暫無庫存 0
     if(productSpec.value !== -1 && productSpec.value.Enable == 1 && productSpec.value.Amount == 0) return 0
 

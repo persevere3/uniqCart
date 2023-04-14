@@ -178,12 +178,20 @@
   import { useInfo }  from '@/stores/info'
   import { useVerify }  from '@/stores/verify'
   import { useFilters }  from '@/stores/filters'
+  import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { store, user_account, userInfo, urlPush } = storeToRefs(useCommon())
-  let { stepPage, is_click_finish_order, isOrderIng, total_bonus, is_use_bonus, use_bonus, bonus_array, getTotal, use_bonus_handler, checkOrder } = storeToRefs(useCart())
-  let { info, has_address, is_save_address, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message} = storeToRefs(useInfo())
-  let { verify } = storeToRefs(useVerify())
-  let { number, numberThousands } = storeToRefs(useFilters())
+  let { store, user_account } = storeToRefs(useCommon())
+  let { urlPush } = useCommon()
+  let { stepPage, is_click_finish_order, isOrderIng, 
+    total_bonus, is_use_bonus, use_bonus, bonus_array 
+  } = storeToRefs(useCart())
+  let { use_bonus_handler, checkOrder } = useCart()
+  let { info, has_address, is_save_address, transport, pay_method, 
+    invoice_type, invoice_title, invoice_uniNumber, info_message, userInfo
+  } = storeToRefs(useInfo())
+  let { verify } = useVerify()
+  let { number, numberThousands } = useFilters()
+  let { getTotalHandler } = useHandlerCart()
 
   // props ==================================================
   let props = defineProps(['main', 'addPrice', 'event'])
@@ -196,16 +204,16 @@
   let { isSame, city_district } = toRefs(state)
 
   // watch ==================================================
-  watch(() => isSame, (v) => {
+  watch(isSame, (v) => {
     if(v) {
-      info.receiver_name.value = info.purchaser_name.value;
-      info.receiver_number.value = info.purchaser_number.value;
+      info.value.receiver_name.value = info.value.purchaser_name.value;
+      info.value.receiver_number.value = info.value.purchaser_number.value;
     }
-    verify(info.receiver_name, info.receiver_number)
+    verify(info.value.receiver_name, info.value.receiver_number)
   })
 
-  watch(() => transport, (v) => {
-    getTotal(1);
+  watch(transport, (v) => {
+    getTotalHandler(1);
   })
 
   watch(use_bonus, (v) => {
@@ -216,13 +224,13 @@
   // 同步 購買人 收件人 資訊 
   function pInput() {
     if(state.isSame){
-      info.receiver_name.value = info.purchaser_name.value;
-      info.receiver_number.value = info.purchaser_number.value;
-      verify(info.receiver_name, info.receiver_number)
+      info.value.receiver_name.value = info.value.purchaser_name.value;
+      info.value.receiver_number.value = info.value.purchaser_number.value;
+      verify(info.value.receiver_name, info.value.receiver_number)
     }
   }
   // 留言字數控制在150以下
   function info_message_input() {
-    if(info_message.length > 150) info_message = info_message.substring(0, 150);
+    if(info_message.value.length > 150) info_message.value = info_message.value.substring(0, 150);
   }
 </script>

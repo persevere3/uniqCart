@@ -34,7 +34,7 @@
             @keyup.enter="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty)"
             @blur="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty)" 
           >
-          <div class="add" :class="{qtyDisabled:buyQty > mainTotalQty(main) - 1 || (productSpec.Enable == 1 && buyQty > productSpec.Amount - 1) || buyQty > 998 }" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty * 1 + 1)"><i class="fa fa-plus"></i></div>
+          <div class="add" :class="{qtyDisabled:buyQty > getMainTotalQty(main) - 1 || (productSpec.Enable == 1 && buyQty > productSpec.Amount - 1) || buyQty > 998 }" @click="changeAddpriceBuyQty(main, addPriceIndex, specIndex, buyQty * 1 + 1)"><i class="fa fa-plus"></i></div>
         </template>
       </div>
       <div class="discontinued" v-show="store.Enable === '0'">停售中</div>
@@ -63,9 +63,9 @@
   import { useFilters } from '@/stores/filters'
 
   let { store } = storeToRefs(useCommon())
-  let { mainTotalQty } = storeToRefs(useProducts())
-  let { changeMainBuyQty, changeAddpriceBuyQty } = storeToRefs(useHandlerChangeQty())
-  let { numberThousands } = storeToRefs(useFilters())
+  let { getMainTotalQty } = useProducts()
+  let { changeMainBuyQty, changeAddpriceBuyQty } = useHandlerChangeQty()
+  let { numberThousands } = useFilters()
 
   // props ==================================================
   const props = defineProps(['main', 'addPrice', 'spec', 'cartSpecCheckedId'])

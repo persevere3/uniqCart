@@ -3,17 +3,12 @@ import { loginApi, getSiteApi, getStoreApi, getCategoriesApi } from '@/api/index
 export const useCommon = defineStore('common', () => {
   // state ==================================================
   const state = reactive({
-    site: {},
-    user_account: '',
     store: {},
     arrangement: 0,
     categories: [],
     category: '',
     
     showPage: 'main',
-
-    //
-    messageArr: [],
     
     // ================================================== 
 
@@ -27,17 +22,7 @@ export const useCommon = defineStore('common', () => {
   })
 
   // methods ==================================================
-  const methods = reactive({
-    login() {
-      state.site = JSON.parse(localStorage.getItem('site')) || {} ;      
-      let params = `site=${state.site.Site}&store=${state.site.Name}&Preview=${state.site.Preview}&WebPreview=${state.site.WebPreview}`;
-      try {
-        loginApi(params)
-      }
-      catch (error) {
-        throw new Error(error)
-      }
-    },
+  const methods = {
     // return {isSuccess, message}
     async getSite() {
       try {
@@ -55,12 +40,6 @@ export const useCommon = defineStore('common', () => {
         throw new Error(error)
       }
     },
-    get_user_account() {
-      state.user_account = localStorage.getItem('user_account');
-    },
-    set_user_account() {
-      localStorage.setItem('user_account', state.user_account);
-    },
     async getStore() {
       let params = `Preview=${state.site.Preview}`;
       try {
@@ -74,6 +53,7 @@ export const useCommon = defineStore('common', () => {
         state.store = res.data.data[0];
         state.arrangement = state.store.Sort || "0";
         document.title = state.store.Name;
+        if(process.env.NODE_ENV === 'development') state.store.Logo = 'https://demo.uniqcarttest.tk' + state.store.Logo
       } catch (error) {
         throw new Error(error)
       }
@@ -104,42 +84,6 @@ export const useCommon = defineStore('common', () => {
     },
 
     // 
-    async showMessage(messageStr, isSuccess) {
-      let message = state.messageArr.find(message => message.messageStr === messageStr)
-      if(message) return
-
-      let id = new Date().getTime();
-      state.messageArr.push({
-        id,
-        messageStr,
-        isSuccess,
-        messageActive: false,
-        messagefadeout: false
-      })
-
-      await methods.promiseSetTimeout(() => {
-        state.messageArr.find(item => item.id === id).messageActive = true;
-      }, 100)
-
-      await methods.promiseSetTimeout(() => {
-        state.messageArr.find(item => item.id === id).messagefadeout = true;
-      }, 5000)
-
-      await methods.promiseSetTimeout(() => {
-        let index = state.messageArr.map(item => item.id).indexOf(id)
-        state.messageArr.splice(index, 1);
-      }, 500)
-    },
-    promiseSetTimeout(func, ms) {
-      return new Promise(resolve => {
-        setTimeout(() => {
-          func()
-          resolve()
-        }, ms)
-      })
-    },
-
-    // 
     urlPush(url, is_open) {
       if(is_open) {
         window.open(url);
@@ -148,11 +92,11 @@ export const useCommon = defineStore('common', () => {
         window.location.href = url;
       }
     },
-  })
+  }
 
   return {
     ...toRefs(state),
 
-    ...toRefs(methods)
+    ...methods
   }
 })

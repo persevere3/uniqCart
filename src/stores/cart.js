@@ -1,6 +1,12 @@
 import { getTotalApi, discountApi } from '@/api/index'
 
+import { useAll }  from '@/stores/all'
+
 export const useCart = defineStore('cart', () => {
+  // store ==================================================
+  let { site, user_account } = storeToRefs(useAll())
+  let { login, showMessage } = useAll()
+
   // state ==================================================
   const state = reactive({
     cart: [],
@@ -12,7 +18,7 @@ export const useCart = defineStore('cart', () => {
     total: {},
 
     discountCode: '',
-    useCodeSuccess: '',
+    successUsedDiscountCode: '',
     discountErrorMessage: '',
 
     bonus_array: [],
@@ -44,7 +50,7 @@ export const useCart = defineStore('cart', () => {
   })
 
   // methods ==================================================
-  const methods = reactive({
+  const methods = {
     getCart() {
       let site = JSON.parse(localStorage.getItem('site')) || {} ;
       let user_account = localStorage.getItem('user_account')
@@ -98,41 +104,44 @@ export const useCart = defineStore('cart', () => {
       console.log('getTotal')
       try {
         let res = await getTotalApi(params)
-        if(res.data.errormessage) return {isSuccess: false, message: 'login'}
+        if(res.data.errormessage) {
+          await login();
+          methods.getTotal(params)
+          return
+        }
 
         state.total = res.data.data[0];
-        return {isSuccess: true, message: ''}
       } catch (error) {
         throw new Error(error)
       }
     },
 
-    // return {isSuccess, message}
     async discount() {
-      if(!state.discountCode){
+      if(!state.discountCode) {
         state.discountErrorMessage = '請輸入折扣碼';
         return;
       }
-      let site = JSON.parse(localStorage.getItem('site')) || {} ;
-      const params = `code=${state.discountCode}&Preview=${site.Preview}`;
+      const params = `code=${state.discountCode}&Preview=${site.value.Preview}`;
       try {
         let res = await discountApi(params)
-        if(res.data.errormessage) return {isSuccess: false, message: 'login'}
+        if(res.data.errormessage) {
+          await login();
+          methods.discount()
+          return
+        }
 
         let status = res.data.data[0].status;
-        if(status === '1'){
-          state.useCodeSuccess = state.discountCode;
+        if(status === '1') {
+          state.successUsedDiscountCode = state.discountCode;
           state.discountErrorMessage = '';
-          methods.getTotal(0);
-          return {isSuccess: true, message: '套用優惠碼成功'}
+          showMessage('套用優惠碼成功', true);
         }
         else {
           state.discountCode = '';
-          state.useCodeSuccess = '';
+          state.successUsedDiscountCode = '';
           if(status === '0') state.discountErrorMessage = '查無此折扣碼' 
           else if (status === '2') state.discountErrorMessage = '折扣碼已用完'
-          methods.getTotal(0);
-          return {isSuccess: false, message: state.discountErrorMessage}
+          showMessage(state.discountErrorMessage, false);
         }
       } catch (error) {
         throw new Error(error)
@@ -140,8 +149,7 @@ export const useCart = defineStore('cart', () => {
     },
     unDiscount(){
       state.discountCode = '';
-      state.useCodeSuccess = '';
-      methods.getTotal(0);
+      state.successUsedDiscountCode = '';
     },
 
     //
@@ -158,7 +166,7 @@ export const useCart = defineStore('cart', () => {
         if(state.use_bonus > use_bonus_max) state.use_bonus = use_bonus_max
       }
       if(notGetTotal) return
-      await methods.getTotal(1)
+      await methods.getTotal(1) // ???
     },
 
     // 其他主商品下 此加價購商品的購買數量 總和
@@ -175,13 +183,13 @@ export const useCart = defineStore('cart', () => {
         }
       }, 0)
     },
-  })
+  }
 
   return {
     ...toRefs(state),
 
     member_bonus,
 
-    ...toRefs(methods),
+    ...methods
   }
 }) 

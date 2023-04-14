@@ -1,18 +1,21 @@
+import { useAll }  from '@/stores/all'
 import { useCommon } from './common'
 import { useProducts } from './products'
 import { useCart } from './cart'
 
 export const useHandlerProducts = defineStore('handlerProducts', () => {
   // store ==================================================
-  let { site, user_account, category, showPage, login, showMessage } = storeToRefs(useCommon())
-  let { products, getProducts, getAddPrice, getFavorite, showSelect, mainTotalQty } = storeToRefs(useProducts())
-  let { 
-    cart, cartOLength, cartLength,
-    getCart, setCart, computedCartLength, othersAddPriceBuyQty, use_bonus_handler 
-  } = storeToRefs(useCart())
+  let { site, user_account } = storeToRefs(useAll())
+  let { login } = useAll()
+  let { category, showPage } = storeToRefs(useCommon())
+  let { showMessage } = useCommon()
+  let { products } = storeToRefs(useProducts())
+  let { getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
+  let { cart, cartOLength, cartLength } = storeToRefs(useCart())
+  let { getCart, setCart, computedCartLength, othersAddPriceBuyQty, use_bonus_handler } = useCart()
 
   // methods ==================================================
-  const methods = reactive({
+  const methods = {
     async getProductsHandler() {
       let res = await getProducts()
       if(res.message === 'login') {
@@ -21,8 +24,8 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
         return
       }
 
-      if(res.success) {
-        category = '0'
+      if(res.isSuccess) {
+        category.value = '0'
 
         let searchArr = location.search.substring(1).split('&')
         let searchObj = {}
@@ -39,24 +42,24 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
         let RtnMsg = searchObj['RtnMsg']
         if(RtnMsg && RtnMsg == 'Succeeded') {
           window.history.replaceState({}, document.title, replaceUrl);
-          if(user_account) {
-            localStorage.removeItem(`${site.Name}@${user_account}@cart`);
+          if(user_account.value) {
+            localStorage.removeItem(`${site.value.Name}@${user_account.value}@cart`);
           }
           else {
-            localStorage.removeItem(`${site.Name}@cart`);
+            localStorage.removeItem(`${site.value.Name}@cart`);
           }
           showMessage('付款成功', true)
         }
   
         getFavorite();
         console.log('getProducts => getCart ====================')
-        await getCartHandler();
+        await methods.getCartHandler();
   
         // id 查看某商品
         let id = searchObj['id']
         let replace = searchObj['replace']
         if(id) {
-          let product = products.find(product => product.ID == id)
+          let product = products.value.find(product => product.ID == id)
           if(product) {
             showSelect(product)
             if(!replace) window.history.replaceState({}, document.title, replaceUrl);
@@ -66,7 +69,7 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
         let is_open_cart = searchObj['open_cart']
         if(is_open_cart) {
           window.history.replaceState({}, document.title, replaceUrl);
-          showPage = 'cart'
+          showPage.value = 'cart'
         }
       }
     },
@@ -78,8 +81,8 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
         // 購物車有商品，列表沒有 => 商品從購物車中移除
         // 購物車商品有加價購，列表商品沒有加價購 => getAddPrice()
         let promises = []
-        cart.forEach(cartItem => {
-          let product = products.find(product => product.ID == cartItem.ID)
+        cart.value.forEach(cartItem => {
+          let product = products.value.find(product => product.ID == cartItem.ID)
           // 購物車有商品，列表沒有
           if(!product) {
             cartItem = null
@@ -89,14 +92,14 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
             promises.push(getAddPrice(product))
           }
         })
-        cart = cart.filter(item => item)
+        cart.value = cart.value.filter(item => item)
 
         Promise.all(promises).then(() => {
           console.log('Promise.all')
 
           methods.asyncCart()
           computedCartLength();
-          if(cartOLength != cartLength) showMessage('部分商品下架，請重新確認', false);
+          if(cartOLength.value != cartLength.value) showMessage('部分商品下架，請重新確認', false);
           use_bonus_handler('notGetTotal')
 
           resolve()
@@ -107,10 +110,10 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
     },
     asyncCart() {
       console.log('asyncCart')
-      cart.forEach((cartItem, cartIndex) => {
+      cart.value.forEach((cartItem, cartIndex) => {
         let isContinue = true;
 
-        let product = products.find(product => product.ID == cartItem.ID)
+        let product = products.value.find(product => product.ID == cartItem.ID)
         
         // 都有規格
         if(cartItem.specArr && product.specArr) {
@@ -133,7 +136,7 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
         }
 
         // product的購買數量如果為0設為null
-        let mainTotalQty = mainTotalQty(product)
+        let mainTotalQty = getMainTotalQty(product)
         if(mainTotalQty < 1) {
           cartItem = null
           isContinue = false
@@ -144,15 +147,15 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
           methods.asyncAddPrice(cartItem, product)
 
           // copy列表item => 購物車item
-          cart[cartIndex] = JSON.parse(JSON.stringify(product))
+          cart.value[cartIndex] = JSON.parse(JSON.stringify(product))
         }
       })
-      cart = cart.filter(item => item)
+      cart.value = cart.value.filter(item => item)
 
       setCart();
     },
     asyncAddPrice(cartItem, product) {
-      let mainTotalQty = mainTotalQty(product)
+      let mainTotalQty = getMainTotalQty(product)
       if(cartItem.addPrice && product.addPrice) {
         cartItem.addPrice.forEach(cartAddPriceItem => {
           let productAddPriceItem = product.addPrice.find(productAddPriceItem => productAddPriceItem.ID == cartAddPriceItem.ID)
@@ -214,9 +217,9 @@ export const useHandlerProducts = defineStore('handlerProducts', () => {
         })
       }
     },
-  })
+  }
 
   return {
-    ...toRefs(methods)
+    ...methods
   }
 })

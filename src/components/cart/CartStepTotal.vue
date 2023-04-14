@@ -46,12 +46,12 @@
   import { useCart }  from '@/stores/cart'
   import { useFilters }  from '@/stores/filters'
 
-  let { user_account } = useCommon()
+  let { user_account } = storeToRefs(useCommon())
   let { stepPage, total, is_use_bonus, use_bonus, member_bonus } = storeToRefs(useCart())
   let { numberThousands } = useFilters()
 
   // computed ==================================================
   let subtotal = computed(() => {
-    return parseInt(total.Total) - parseInt(total.Discount) - parseInt(total.DiscountCode)
+    return parseInt(total.value.Total) - parseInt(total.value.Discount) - parseInt(total.value.DiscountCode)
   })
 </script>

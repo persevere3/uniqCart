@@ -1,11 +1,6 @@
 export const useFilters = defineStore('filters', () => {
-  // state ==================================================
-  const state = reactive({
-    
-  })
-
   // methods ==================================================
-  const methods = reactive({
+  const methods = {
     // number
     number(number) {
       let regExp = /^[0-9]+$/;
@@ -25,11 +20,9 @@ export const useFilters = defineStore('filters', () => {
     unescapeHTML(text) {
       return String(text).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
     },
-  })
+  }
 
   return {
-    ...toRefs(state),
-
-    ...toRefs(methods)
+    ...methods
   }
 })

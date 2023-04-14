@@ -9,7 +9,7 @@
 
   <!-- 動畫 -->
   <div class="flyImg" :style="`top: ${flyImgTop}px; left: ${flyImgLeft}px`" v-if="flyItem">
-    <img :src="flyItem.Img1" alt="">
+    <img :src="flyItem.imgArr[0]" alt="">
   </div>
 </template>
 
@@ -19,7 +19,7 @@
   import { useCart }  from '@/stores/cart'
   import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
 
-  let { showPage } = useCommon()
-  let { cartLength } = useCart()
-  let { flyItem, flyImgTop, flyImgLeft, isShrink} = useHandlerChangeQty()
+  let { showPage } = storeToRefs(useCommon())
+  let { cartLength } = storeToRefs(useCart())
+  let { flyItem, flyImgTop, flyImgLeft, isShrink} = storeToRefs(useHandlerChangeQty())
 </script>

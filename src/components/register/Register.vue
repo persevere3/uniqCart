@@ -78,10 +78,11 @@
   import { useInfo } from '@/stores/info'
   import { useFilters } from '@/stores/filters'
 
-  let { site, store, isConfirmRegister, login, showMessage } = storeToRefs(useCommon())
-  let { toPay } = storeToRefs(useCart())
+  let { site, store, isConfirmRegister } = storeToRefs(useCommon())
+  let { login, showMessage } = useCommon()
+  let { toPay } = useCart()
   let { info, pay_method } = storeToRefs(useInfo())
-  let { unescapeHTML } = storeToRefs(useFilters())
+  let { unescapeHTML } = useFilters()
 
   // state ==================================================
   const state = reactive({
@@ -224,11 +225,11 @@
   r_confirm_password.rules.confirm.password = r_password
 
   // watch ==================================================
-  watch(() => isConfirmRegister, (v) => {
+  watch(isConfirmRegister, (v) => {
     if(v) {
-      r_account.value = info.purchaser_number.value;
-      r_name.value = info.purchaser_name.value;
-      r_mail.value = info.purchaser_email.value;
+      state.r_account = info.value.purchaser_number.value;
+      state.r_name = info.value.purchaser_name.value;
+      state.r_mail = info.value.purchaser_email.value;
     }
   })
   
@@ -236,10 +237,10 @@
   async function send_verify_code(){
     if(state.second > 0) return
 
-    if(store.NotificationSystem == 0) {
+    if(store.value.NotificationSystem == 0) {
       if( !verify(state.r_mail) ) return
     }
-    else if(store.NotificationSystem == 1) {
+    else if(store.value.NotificationSystem == 1) {
       if( !verify(state.r_account) ) return
     }
     else {
@@ -250,11 +251,11 @@
     formData.append("phone", state.r_account.value.trim());
     formData.append("mail", state.r_mail.value.trim());
 
-    formData.append("notificationsystem", store.NotificationSystem)
-    formData.append("type", store.NotificationSystem)
+    formData.append("notificationsystem", store.value.NotificationSystem)
+    formData.append("type", store.value.NotificationSystem)
 
-    formData.append("storeName", store.Name);
-    formData.append("storeid", site.Name);
+    formData.append("storeName", store.value.Name);
+    formData.append("storeid", site.value.Name);
 
     try {
       let res = await send_verify_codeApi(formData)
@@ -284,10 +285,10 @@
     if (!state.r_is_agree) return
 
     let verify_code = [];
-    if(store.NotificationSystem == 0) {
+    if(store.value.NotificationSystem == 0) {
       verify_code.push(state.r_verify_code2)
     }
-    else if(store.NotificationSystem == 1) {
+    else if(store.value.NotificationSystem == 1) {
       verify_code.push(state.r_verify_code)
     }
     else {
@@ -300,20 +301,20 @@
     }
     
     let formData = new FormData();
-    formData.append("storeid", site.Name);
+    formData.append("storeid", site.value.Name);
     formData.append("phone", state.r_account.value);
     
-    if(store.NotificationSystem == 0) {
+    if(store.value.NotificationSystem == 0) {
       formData.append("validate2", state.r_verify_code2.value);
     }
-    else if(store.NotificationSystem == 1) {
+    else if(store.value.NotificationSystem == 1) {
       formData.append("validate", state.r_verify_code.value);
     }
     else {
       formData.append("validate", state.r_verify_code.value);
       formData.append("validate2", state.r_verify_code2.value);
     }
-    formData.append("type", store.NotificationSystem)
+    formData.append("type", store.value.NotificationSystem)
 
     formData.append("name", state.r_name.value);
     formData.append("email", state.r_mail.value);
@@ -341,7 +342,7 @@
       if(res.data.status){
         showMessage(res.data.msg, true)
         setTimeout(function() {
-          isConfirmRegister = false;
+          isConfirmRegister.value = false;
           toPay()
         }, 3000)
       }

@@ -72,8 +72,9 @@
   import { useHandlerCart }  from '@/stores/handlerCart'
 
   let { store } = storeToRefs(useCommon())
-  let { cart, discountCode, discountErrorMessage, total, stepPage, unDiscount } = storeToRefs(useCart())
-  let { discountHandler } = storeToRefs(useHandlerCart())
+  let { cart, discountCode, discountErrorMessage, total, stepPage } = storeToRefs(useCart())
+  let { unDiscount } = useCart()
+  let { discountHandler } = useHandlerCart()
 
   // state ==================================================
   const state = reactive({

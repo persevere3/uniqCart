@@ -2,17 +2,21 @@ import { useCommon } from './common'
 import { useProducts } from './products'
 import { useCart } from './cart'
 import { useFilters } from './filters'
+import { useHandlerCart } from './handlerCart'
 import { useHandlerProducts } from './handlerProducts'
 
 import { getAmountApi } from '@/api/index';
 
 export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   // store ==================================================
-  let { login, showMessage } = storeToRefs(useCommon())
-  let { products, mainTotalQty } = storeToRefs(useProducts())
-  let { cart, setCart, getTotal, othersAddPriceBuyQty } = storeToRefs(useCart())
-  let { number } = storeToRefs(useFilters())
-  let { getProductsHandler } = storeToRefs(useHandlerProducts())
+  let { login, showMessage } = useCommon()
+  let { products } = storeToRefs(useProducts())
+  let { getMainTotalQty } = useProducts()
+  let { cart } = storeToRefs(useCart())
+  let { setCart, othersAddPriceBuyQty } = useCart()
+  let { number } = useFilters()
+  let { getTotalHandler } = useHandlerCart()
+  let { getProductsHandler } = useHandlerProducts()
 
   // state ==================================================
   const state = reactive({
@@ -23,7 +27,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   })
 
   // methods ==================================================
-  const methods = reactive({
+  const methods = {
     // 改變 主商品數量 ==================================================
     async changeMainBuyQty(main, specIndex, qty, e) {
       let spec = specIndex == null ? null : main.specArr[specIndex]
@@ -63,7 +67,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       }
 
       // 更新 產品列表
-      let product = products.find(product => product.ID == main.ID)
+      let product = products.value.find(product => product.ID == main.ID)
       let productSpec
       if(spec) {
         productSpec = product.specArr.find(productSpec => productSpec.ID == spec.ID)
@@ -72,14 +76,14 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       else product.buyQty = qty;
 
       // 更新 購物車
-      let mainTotalQty = mainTotalQty(product);
-      let cartItemIndex = cart.map(cartItem => cartItem.ID)
+      let mainTotalQty = getMainTotalQty(product);
+      let cartItemIndex = cart.value.map(cartItem => cartItem.ID)
                                  .indexOf(main.ID)
       // 購物車原本就有
       if(cartItemIndex > -1) {
         // 要放進購物車
         if(mainTotalQty) {
-          let cartItem = cart[cartItemIndex]
+          let cartItem = cart.value[cartItemIndex]
           if(productSpec) {
             cartItem.specArr.find(cartSpec => cartSpec.ID == productSpec.ID).buyQty = productSpec.buyQty
           }
@@ -87,18 +91,18 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         } 
         // 不用放進購物車
         else {
-          cart.splice(cartItemIndex, 1);
+          cart.value.splice(cartItemIndex, 1);
 
           setCart()
           
-          getTotal(0);
+          getTotalHandler(0);
           return
         }
       }
       // 購物車原本沒有
       else {
         // 要放進購物車
-        if(mainTotalQty) cart.push(JSON.parse(JSON.stringify(product)))
+        if(mainTotalQty) cart.value.push(JSON.parse(JSON.stringify(product)))
       }
 
      setCart()
@@ -122,7 +126,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       }
 
       // 取得 金額總計
-      getTotal(0);
+      getTotalHandler(0);
     },
     // 改變 加價購數量 ==================================================
     async changeAddpriceBuyQty(main, addPriceIndex, specIndex, qty){
@@ -172,11 +176,11 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         }
       }
       // 主商品總數量限制校驗
-      let maxBuyQty = mainTotalQty(main)
+      let maxBuyQty = getMainTotalQty(main)
       if(qty > maxBuyQty) qty = maxBuyQty
 
       // 更新 產品列表
-      let product = products.find(product => product.ID == main.ID)
+      let product = products.value.find(product => product.ID == main.ID)
       let productAddPriceItem = product.addPrice.find(productAddPriceItem => productAddPriceItem.ID == addPriceItem.ID)
       if(addPriceItemSpec) {
         let productAddPriceItemSpec = productAddPriceItem.specArr.find(productAddPriceItemSpec => productAddPriceItemSpec.ID == target.ID)
@@ -185,11 +189,11 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       else productAddPriceItem.buyQty = qty
 
       // 更新 購物車
-      cart.find(cartItem => cartItem.ID == main.ID).addPrice = JSON.parse(JSON.stringify(product.addPrice))
+      cart.value.find(cartItem => cartItem.ID == main.ID).addPrice = JSON.parse(JSON.stringify(product.addPrice))
       setCart()
 
       // 取得 金額總計
-      getTotal(0);
+      getTotalHandler(0);
     },
 
     // 取得 庫存 type 1: 沒有規格主商品, 2: 沒有規格加價購, 3: 有規格主商品和加價購
@@ -290,11 +294,11 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         state.isShrink = 0;
       }, 200);
     },
-  })
+  }
 
   return {
     ...toRefs(state),
 
-    ...toRefs(methods)
+    ...methods
   }
 })

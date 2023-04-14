@@ -48,7 +48,7 @@
       <div class="addPrice" v-if="selectProduct.addPrice && selectProduct.addPrice.length">
         <div class="title">加價購</div>
         <ul>
-          <div class="ulMask" v-if="!mainTotalQty(selectProduct)"></div>
+          <div class="ulMask" v-if="!getMainTotalQty(selectProduct)"></div>
           <li v-for="item in selectProduct.addPrice" :key="item.ID">
             <div class="pic_div">
               <div class="pic" :style="{backgroundImage :`url(${item.Img})`,}"></div>
@@ -79,9 +79,11 @@
   import { useProducts }  from '@/stores/products'
   import { useFilters }  from '@/stores/filters'
 
-  let { showPage, copy, showMessage } = storeToRefs(useCommon())
-  let { selectProduct, favorite, mainTotalQty, toggleFavorite } = storeToRefs(useProducts())
-  let { numberThousands, unescapeHTML, unescapeEnter } = storeToRefs(useFilters())
+  let { showPage } = storeToRefs(useCommon())
+  let { copy, showMessage } = useCommon()
+  let { selectProduct, favorite } = storeToRefs(useProducts())
+  let { getMainTotalQty, toggleFavorite } = useProducts()
+  let { numberThousands, unescapeHTML, unescapeEnter } = useFilters()
 
   // state ==================================================
   const state = reactive({
@@ -104,12 +106,12 @@
 
   // computed ==================================================
   const isShowGoToCart = computed(() => {
-    if(selectProduct.specArr) {
-      let specBuyQty = selectProduct.selectSpecItem.buyQty
+    if(selectProduct.value.specArr) {
+      let specBuyQty = selectProduct.value.selectSpecItem.buyQty
       return specBuyQty && specBuyQty != 0
     }
     else {
-      return selectProduct.buyQty != 0
+      return selectProduct.value.buyQty != 0
     }
   })
   

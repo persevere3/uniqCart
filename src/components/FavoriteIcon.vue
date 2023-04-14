@@ -11,9 +11,9 @@
   <div class="favorite_container" v-show="showPage === 'main' && Object.keys(favorite).length" :class="{hover : isShowFavorite}">
     <ul class="favorite_items">
       <template v-for="item in favorite">
-        <li @click.stop="showFavorite(item.ID)">
+        <li @click.stop="showSelect(item.ID)">
           <div class="img_and_name">
-            <div class="img" :style="{backgroundImage: `url(${item.Img1})`}"></div>
+            <div class="img" :style="{backgroundImage: `url(${item.imgArr[0]})`}"></div>
             <div class="name"> {{ item.Name }} </div>
           </div>
           <div class="price_and_delete">
@@ -34,8 +34,9 @@
   import { useProducts }  from '@/stores/products'
   import { useFilters }  from '@/stores/filters'
 
-  let { showPage } = useCommon()
-  let { favorite, showFavorite, toggleFavorite } = useProducts()
+  let { showPage } = storeToRefs(useCommon())
+  let { favorite } = storeToRefs(useProducts())
+  let { toggleFavorite } = useProducts()
   let { numberThousands } = useFilters()
 
   // state ==================================================

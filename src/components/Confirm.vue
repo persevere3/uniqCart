@@ -78,7 +78,7 @@
 
 <script setup>
   // component ==================================================
-  import Register  from '@/components/register/Index.vue'
+  import Register  from '@/components/register/Register.vue'
 
   // store ==================================================
   import { useCommon }  from '@/stores/common'
@@ -86,11 +86,9 @@
   import { useInfo }  from '@/stores/info'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { 
-    store, isConfirmToPay, isConfirmATM, isConfirmIsRegister, isConfirmRegister,
-    copy, urlPush 
-  } = useCommon()
-  let { bank } = useCart()
-  let { info, pay_method } = useInfo()
+  let { store, isConfirmToPay, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useCommon())
+  let { copy, urlPush } = useCommon()
+  let { bank } = storeToRefs(useCart())
+  let { info, pay_method } = storeToRefs(useInfo())
   let { toPay } = useHandlerCart()
 </script>

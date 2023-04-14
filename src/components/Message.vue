@@ -12,6 +12,6 @@
   // store
   import { useCommon }  from '@/stores/common'
 
-  let { messageArr } = useCommon()
+  let { messageArr } = storeToRefs(useCommon())
 </script>
 

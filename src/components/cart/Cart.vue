@@ -59,14 +59,13 @@
 
   // store ==================================================
   import { useCommon }  from '@/stores/common'
-  import { useCart }  from '@/stores/cart'
   import { useHandlerInit }  from '@/stores/handlerInit'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { user_account, showPage, isConfirmDiscountCodeUsed } = useCommon()
-  let { cartLength, ECPay_form, stepPage, getTotal } = useCart()
+  let { user_account, showPage, isConfirmDiscountCodeUsed } = storeToRefs(useCommon())
+  let { cartLength, successUsedDiscountCode, stepPage, ECPay_form } = storeToRefs(useCart())
   let { getUserInfoHandler } = useHandlerInit()
-  let { cancelDiscountCodeCreateOrder } = useHandlerCart()
+  let { getTotalHandler, cancelDiscountCodeCreateOrder } = useHandlerCart()
 
   // ref 
   const cartModal = ref(null)
@@ -74,7 +73,11 @@
   // watch ==================================================
   watch(stepPage, (newV, oldV) => {
     cartModal.value.scrollTop = 0;
-    if(showPage == 'cart') getTotal(newV - 1)
+    if(showPage.value == 'cart') getTotalHandler(newV - 1)
     if(newV == 2) getUserInfoHandler()
+  })
+
+  watch(successUsedDiscountCode, () => {
+    getTotalHandler(0)
   })
 </script>

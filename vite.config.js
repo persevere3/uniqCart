@@ -7,6 +7,7 @@ import AutoImport from 'unplugin-auto-import/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.NODE_ENV === 'development' ? "/" : "/carts",
   plugins: [
     vue(),
     AutoImport({ 
@@ -15,7 +16,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     }
   },
   server: {

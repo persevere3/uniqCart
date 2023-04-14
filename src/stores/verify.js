@@ -1,6 +1,6 @@
 export const useVerify = defineStore('verify', () => {
   // methods ==================================================
-  const methods = reactive({
+  const methods = {
     required_verify(item) {
       if(item.hasOwnProperty('value')) {
         if (!item.value) {
@@ -89,9 +89,9 @@ export const useVerify = defineStore('verify', () => {
       }
       return is_valid;
     },
-  })
+  }
 
   return {
-    ...toRefs(methods)
+    ...methods
   }
 })

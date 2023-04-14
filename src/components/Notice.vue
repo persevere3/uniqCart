@@ -12,7 +12,7 @@
   import { useCommon }  from '@/stores/common'
   import { useFilters }  from '@/stores/filters'
 
-  let { store, showPage } = useCommon()
+  let { store, showPage } = storeToRefs(useCommon())
   let { unescapeHTML } = useFilters()
 
   // props ==================================================

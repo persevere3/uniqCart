@@ -1,6 +1,11 @@
 import { getUserInfoApi } from '@/api/index'
 
+import { useAll }  from '@/stores/all'
+
 export const useInfo = defineStore('info', () => {
+  // store ==================================================
+  let { site, user_account } = storeToRefs(useAll())
+  let { login } = useAll()
 
   // state ==================================================
   const state = reactive({
@@ -83,7 +88,7 @@ export const useInfo = defineStore('info', () => {
     is_save_address: false,
 
     // 運送方式
-    transport: '0', // 1一般宅配 2到店自取
+    transport: '0', // 1一般宅配 2到店自取 3 7-11
     // 支付方式, PayType: store[pay_method]
     pay_method: '0', // CreditCard ATM PayCode PayBarCode PayOnDelivery LinePay
 
@@ -100,40 +105,29 @@ export const useInfo = defineStore('info', () => {
   })
 
   // methods ==================================================
-  const methods = reactive({
-    async getUserInfo(origin_user_account) {
-      let site = JSON.parse(localStorage.getItem('site')) || {} ;
-      let user_account = localStorage.getItem('user_account') ;
+  const methods = {
+    async getUserInfo() {
       let formData = new FormData();
-      formData.append("storeid", site.Name);
-      formData.append("phone", user_account);
+      formData.append("storeid", site.value.Name);
+      formData.append("phone", user_account.value);
       try {
         let res = await getUserInfoApi(formData)
-        if(res.data.errormessage) return {isSuccess: false, message: 'login'}
+        if(res.data.errormessage) {
+          await login();
+          methods.getUserInfo()
+          return
+        }
 
         if(res.data.status) {
           state.userInfo = res.data.datas[0][0]
           state.userInfo.address_obj = methods.createAddressObj(state.userInfo.address)
 
-          state.info.purchaser_email.value = userInfo.Email;
-          state.info.purchaser_name.value = userInfo.Name;
-          state.info.purchaser_number.value = userInfo.Phone;
-
-          return {isSuccess: true, message: ''}
+          info.value.purchaser_email.value = userInfo.value.Email;
+          info.value.purchaser_name.value = userInfo.value.Name;
+          info.value.purchaser_number.value = userInfo.value.Phone;
         }
         else {
-          state.userInfo = {};
-
-          // 登入 => 登出
-          if(origin_user_account != user_account) {
-            info.purchaser_email.value = '';
-            info.purchaser_name.value = '';
-            info.purchaser_number.value = '';
-            info.receiver_name.value = '';
-            info.receiver_number.value = '';
-          }
-
-          return {isSuccess: false, message: 'logout'}
+          user_account.value = '';
         }
       } catch (error) {
         throw new Error(error)
@@ -145,7 +139,7 @@ export const useInfo = defineStore('info', () => {
       let address_obj = {};
       let address_arr = address.split('_#_');
       address_arr.length -= 1;
-      for(let address of address_arr){
+      for(let address of address_arr) {
         let item = address.split('_ _');
         address_obj[item[0]] = {
           id: item[0],
@@ -154,11 +148,11 @@ export const useInfo = defineStore('info', () => {
       }
       return address_obj;
     }
-  })
+  }
 
   return {
     ...toRefs(state),
 
-    ...toRefs(methods)
+    ...methods
   }
 })
