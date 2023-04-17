@@ -1,5 +1,5 @@
 <template>
-  <!-- @click.stop="isShowFavorite = false" ????? -->
+  <!-- @click.stop="isShowFavorite = false" ??? -->
   <div class="productContainer">
     <Main />
     <SelectProduct v-if="selectProduct.ID" :style="`height:${innerHeight}px`" />
@@ -27,7 +27,7 @@
 
   // store ==================================================
   import { useAll }  from '@/stores/all'
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useProducts }  from '@/stores/products'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
@@ -35,7 +35,7 @@
 
   let { user_account } = storeToRefs(useAll())
   let {  } = useAll()
-  let { showPage } = storeToRefs(useCommon())
+  let { showPage } = storeToRefs(useAll())
   let { selectProduct } = storeToRefs(useProducts())
   let { stepPage, total_bonus } = storeToRefs(useCart())
   let { info, userInfo } = storeToRefs(useInfo())

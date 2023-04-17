@@ -1,13 +1,23 @@
-
+import { getSiteApi, getStoreApi } from '@/api/index';
 
 export const useAll = defineStore('all', () => {
   // state ==================================================
   const state = reactive({
     site: {},
     user_account: '',
+    store: {},
+    arrangement: 0,
+
+    showPage: 'main',
 
     //
     messageArr: [],
+
+    // ??? 
+    isConfirmToPay: false,
+    isConfirmIsRegister: false,
+    isConfirmATM: false,
+    isConfirmRegister: false,
   })
 
   // methods ==================================================
@@ -19,6 +29,41 @@ export const useAll = defineStore('all', () => {
         loginApi(params)
       }
       catch (error) {
+        throw new Error(error)
+      }
+    },
+
+    async getSite() {
+      try {
+        let res = await getSiteApi()
+        if(res.data.errormessage) {
+          await methods.login();
+          methods.getSite();
+          return
+        }
+
+        state.site = res.data.data[0];
+        localStorage.setItem('site', JSON.stringify(state.site));
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+
+    async getStore() {
+      let params = `Preview=${state.site.Preview}`;
+      try {
+        let res = await getStoreApi(params)
+        if(res.data.errormessage) {
+          await methods.login();
+          methods.getStore();
+          return
+        }
+
+        state.store = res.data.data[0];
+        state.arrangement = state.store.Sort || "0";
+        document.title = state.store.Name;
+        if(process.env.NODE_ENV === 'development') state.store.Logo = 'https://demo.uniqcarttest.tk' + state.store.Logo
+      } catch (error) {
         throw new Error(error)
       }
     },
@@ -56,6 +101,20 @@ export const useAll = defineStore('all', () => {
           resolve()
         }, ms)
       })
+    },
+
+    //
+    copy(text, selector) {
+      let copy_input = document.querySelector(selector);
+      copy_input.value = text;
+      copy_input.select();
+      document.execCommand('copy');
+    },
+
+    // 
+    urlPush(url, is_open) {
+      if(is_open) window.open(url);
+      else window.location.href = url;
     },
   }
 

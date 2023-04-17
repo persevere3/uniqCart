@@ -58,13 +58,17 @@
   import cartStepTwo from '@/components/cart/CartStepTwo.vue'
 
   // store ==================================================
-  import { useCommon }  from '@/stores/common'
-  import { useHandlerInit }  from '@/stores/handlerInit'
+  import { useAll } from '@/stores/all'
+  import { useAll }  from '@/stores/all'
+  import { useInfo }  from '@/stores/info'
+  import { useCart }  from '@/stores/cart'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { user_account, showPage, isConfirmDiscountCodeUsed } = storeToRefs(useCommon())
+  let { site, user_account, showPage } = storeToRefs(useAll())
+  let { login } = useAll()
+  let { isConfirmDiscountCodeUsed } = storeToRefs(useAll())
+  let { getUserInfo } = useInfo()
   let { cartLength, successUsedDiscountCode, stepPage, ECPay_form } = storeToRefs(useCart())
-  let { getUserInfoHandler } = useHandlerInit()
   let { getTotalHandler, cancelDiscountCodeCreateOrder } = useHandlerCart()
 
   // ref 
@@ -74,7 +78,7 @@
   watch(stepPage, (newV, oldV) => {
     cartModal.value.scrollTop = 0;
     if(showPage.value == 'cart') getTotalHandler(newV - 1)
-    if(newV == 2) getUserInfoHandler()
+    if(newV == 2) getUserInfo()
   })
 
   watch(successUsedDiscountCode, () => {

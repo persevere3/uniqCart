@@ -173,25 +173,25 @@
   import CartStepTotal from '@/components/cart/CartStepTotal.vue'
 
   // store ==================================================
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useVerify }  from '@/stores/verify'
   import { useFilters }  from '@/stores/filters'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { store, user_account } = storeToRefs(useCommon())
-  let { urlPush } = useCommon()
+  let { store, user_account } = storeToRefs(useAll())
+  let { urlPush } = useAll()
   let { stepPage, is_click_finish_order, isOrderIng, 
     total_bonus, is_use_bonus, use_bonus, bonus_array 
   } = storeToRefs(useCart())
-  let { use_bonus_handler, checkOrder } = useCart()
+  let { checkOrder } = useCart()
   let { info, has_address, is_save_address, transport, pay_method, 
     invoice_type, invoice_title, invoice_uniNumber, info_message, userInfo
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
   let { number, numberThousands } = useFilters()
-  let { getTotalHandler } = useHandlerCart()
+  let { getTotalHandler, use_bonus_handler } = useHandlerCart()
 
   // props ==================================================
   let props = defineProps(['main', 'addPrice', 'event'])

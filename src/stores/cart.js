@@ -15,11 +15,11 @@ export const useCart = defineStore('cart', () => {
 
     stepPage: 1,
 
-    total: {},
-
     discountCode: '',
     successUsedDiscountCode: '',
     discountErrorMessage: '',
+
+    total: {},
 
     bonus_array: [],
     total_bonus: 0,
@@ -37,14 +37,17 @@ export const useCart = defineStore('cart', () => {
   })
 
   // computed ==================================================
+  // 回饋%數
   const bonus_percent = computed(() => {
+    let bonus_percent = 0
     for(let item of state.bonus_array) {
       if((parseInt(state.total.Sum) - parseInt(state.total.Shipping)) >= item.lower) {
-        return item.shipping;
+        bonus_percent = item.shipping;
       }
     }
-    return 0
+    return bonus_percent
   })
+  // 消費回饋
   const member_bonus = computed(() => {
     return Math.floor((state.total.Sum - state.total.Shipping) * (bonus_percent.value / 100))
   })
@@ -52,18 +55,14 @@ export const useCart = defineStore('cart', () => {
   // methods ==================================================
   const methods = {
     getCart() {
-      let site = JSON.parse(localStorage.getItem('site')) || {} ;
-      let user_account = localStorage.getItem('user_account')
-      if(user_account) state.cart = JSON.parse(localStorage.getItem(`${site.Name}@${user_account}@cart`)) || [];
-      else state.cart = JSON.parse(localStorage.getItem(`${site.Name}@cart`)) || [];
+      if(user_account.value) state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@${user_account.value}@cart`)) || [];
+      else state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@cart`)) || [];
 
       methods.computedCartLength();
       state.cartOLength = state.cartLength;
     },
     setCart() {
-      let site = JSON.parse(localStorage.getItem('site')) || {} ;
-      let user_account = localStorage.getItem('user_account')
-      let key = user_account ? `${site.Name}@${user_account}@cart` : `${site.Name}@cart`
+      let key = user_account.value ? `${site.value.Name}@${user_account.value}@cart` : `${site.value.Name}@cart`
       localStorage.setItem(key, JSON.stringify(state.cart));
       methods.computedCartLength();
     },
@@ -72,25 +71,17 @@ export const useCart = defineStore('cart', () => {
 
       state.cart.forEach(cartItem => {
         // 有規格
-        if(cartItem.specArr) {
-          cartLength += cartItem.specArr.filter(spec => spec.buyQty > 0).length
-        }
+        if(cartItem.specArr) cartLength += cartItem.specArr.filter(spec => spec.buyQty > 0).length
         // 沒規格
-        else {
-          cartLength += 1
-        }
+        else cartLength += 1
 
         // 加價購
         if(cartItem.addPrice) {
           cartItem.addPrice.forEach(addPriceItem => {
             // 有規格
-            if(addPriceItem.specArr) {
-              cartLength += addPriceItem.specArr.filter(spec => spec.buyQty > 0).length
-            }
+            if(addPriceItem.specArr) cartLength += addPriceItem.specArr.filter(spec => spec.buyQty > 0).length
             // 沒規格
-            else {
-              if(addPriceItem.buyQty > 0) cartLength += 1;
-            }
+            else if(addPriceItem.buyQty > 0) cartLength += 1;
           })
         }
       })
@@ -99,7 +90,6 @@ export const useCart = defineStore('cart', () => {
     },
 
     // 取得 金額, 折扣, 運費, 總計 
-    // return {isSuccess, message}
     async getTotal(params) {
       console.log('getTotal')
       try {
@@ -150,23 +140,6 @@ export const useCart = defineStore('cart', () => {
     unDiscount(){
       state.discountCode = '';
       state.successUsedDiscountCode = '';
-    },
-
-    //
-    async use_bonus_handler(notGetTotal) {
-      let user_account = localStorage.getItem('user_account')
-      if(!user_account) {
-        state.is_use_bonus = false;
-        state.use_bonus = 0;
-        return
-      }
-      
-      if(state.use_bonus > 0) {
-        let use_bonus_max = Math.min(state.total_bonus * 1, state.total.Total * 1 - state.total.Discount * 1 - state.total.DiscountCode * 1)
-        if(state.use_bonus > use_bonus_max) state.use_bonus = use_bonus_max
-      }
-      if(notGetTotal) return
-      await methods.getTotal(1) // ???
     },
 
     // 其他主商品下 此加價購商品的購買數量 總和

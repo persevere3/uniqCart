@@ -75,12 +75,12 @@
   import ProductBuyQtyBox from '@/components/ProductBuyQtyBox.vue'
 
   // store ==================================================
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useProducts }  from '@/stores/products'
   import { useFilters }  from '@/stores/filters'
 
-  let { showPage } = storeToRefs(useCommon())
-  let { copy, showMessage } = useCommon()
+  let { showPage } = storeToRefs(useAll())
+  let { copy, showMessage } = useAll()
   let { selectProduct, favorite } = storeToRefs(useProducts())
   let { getMainTotalQty, toggleFavorite } = useProducts()
   let { numberThousands, unescapeHTML, unescapeEnter } = useFilters()
@@ -123,7 +123,7 @@
   }
 
   function click_share_link() {
-    copy( `${protocol}//${api}/cart/?id=${selectProduct.ID}`, '.copy_input');
+    copy( `${location.origin}/cart/?id=${selectProduct.ID}`, '.copy_input');
     showMessage('複製分享連結', true);
   }
 </script>

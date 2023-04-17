@@ -81,13 +81,13 @@
   import Register  from '@/components/register/Register.vue'
 
   // store ==================================================
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { store, isConfirmToPay, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useCommon())
-  let { copy, urlPush } = useCommon()
+  let { store, isConfirmToPay, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useAll())
+  let { copy, urlPush } = useAll()
   let { bank } = storeToRefs(useCart())
   let { info, pay_method } = storeToRefs(useInfo())
   let { toPay } = useHandlerCart()

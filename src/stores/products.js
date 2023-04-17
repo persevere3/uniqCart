@@ -1,4 +1,4 @@
-import { getProductsApi, getAddPriceApi, getFavoriteApi, deleteFavoriteApi, addFavoriteApi } from '@/api/index';
+import { getCategoriesApi, getProductsApi, getAddPriceApi, getFavoriteApi, deleteFavoriteApi, addFavoriteApi } from '@/api/index';
 
 import { useAll }  from '@/stores/all'
 
@@ -9,6 +9,9 @@ export const useProducts = defineStore('products', () => {
 
   // state ==================================================
   const state = reactive({
+    categories: [],
+    category: '',
+
     products: [],
     productsRerndered: false,
     
@@ -21,7 +24,23 @@ export const useProducts = defineStore('products', () => {
 
   // methods ==================================================
   const methods = {
-    // return {isSuccess, message}
+    async getCategories() {
+      let params = `Preview=${site.Preview}`;
+      try {
+        let res = await getCategoriesApi(params)
+        if(res.data.errormessage) {
+          await login();
+          methods.getCategories();
+          return
+        }
+
+        state.category = '0';
+        state.categories = [{ID: "0", Name: "所有分類商品", Show: "1"}, ...res.data.data];
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+
     async getProducts() {
       let params = `Preview=${site.value.Preview}`;
       try {

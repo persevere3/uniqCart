@@ -9,10 +9,10 @@
 
 <script setup>
   // store ==================================================
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useFilters }  from '@/stores/filters'
 
-  let { store, showPage } = storeToRefs(useCommon())
+  let { store, showPage } = storeToRefs(useAll())
   let { unescapeHTML } = useFilters()
 
   // props ==================================================

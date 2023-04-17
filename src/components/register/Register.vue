@@ -78,8 +78,8 @@
   import { useInfo } from '@/stores/info'
   import { useFilters } from '@/stores/filters'
 
-  let { site, store, isConfirmRegister } = storeToRefs(useCommon())
-  let { login, showMessage } = useCommon()
+  let { site, store, isConfirmRegister } = storeToRefs(useAll())
+  let { login, showMessage } = useAll()
   let { toPay } = useCart()
   let { info, pay_method } = storeToRefs(useInfo())
   let { unescapeHTML } = useFilters()

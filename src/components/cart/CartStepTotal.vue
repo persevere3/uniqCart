@@ -42,11 +42,11 @@
 
 <script setup>
   // store ==================================================
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useCart }  from '@/stores/cart'
   import { useFilters }  from '@/stores/filters'
 
-  let { user_account } = storeToRefs(useCommon())
+  let { user_account } = storeToRefs(useAll())
   let { stepPage, total, is_use_bonus, use_bonus, member_bonus } = storeToRefs(useCart())
   let { numberThousands } = useFilters()
 

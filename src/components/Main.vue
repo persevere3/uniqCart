@@ -92,12 +92,12 @@
   import ProductBuyQtyBox from '@/components/ProductBuyQtyBox.vue'
 
   // store
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useProducts }  from '@/stores/products'
   import { useFilters } from '@/stores/filters'
 
-  let { store, categories, category, arrangement, showPage } = storeToRefs(useCommon())
-  let { urlPush } = useCommon()
+  let { store, categories, category, arrangement, showPage } = storeToRefs(useAll())
+  let { urlPush } = useAll()
   let { products, productsRerndered, favorite } = storeToRefs(useProducts())
   let { showSelect, toggleFavorite } = useProducts()
   let { numberThousands } = useFilters()

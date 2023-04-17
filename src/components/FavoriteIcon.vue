@@ -30,11 +30,11 @@
 
 <script setup>
   // store
-  import { useCommon }  from '@/stores/common'
+  import { useAll }  from '@/stores/all'
   import { useProducts }  from '@/stores/products'
   import { useFilters }  from '@/stores/filters'
 
-  let { showPage } = storeToRefs(useCommon())
+  let { showPage } = storeToRefs(useAll())
   let { favorite } = storeToRefs(useProducts())
   let { toggleFavorite } = useProducts()
   let { numberThousands } = useFilters()

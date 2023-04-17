@@ -1,11 +1,9 @@
-import { defineStore, storeToRefs } from 'pinia'
-import { useCommon } from './common'
-import { useProducts } from './products'
+import { useAll }  from '@/stores/all'
 import { useCart } from './cart'
-import { useVerify } from './verify'
 import { useInfo } from './info'
+import { useVerify } from './verify'
 import { useFilters } from './filters'
-import { useHandlerProducts } from './handlerProducts'
+import { useHandlerInit }  from '@/stores/handlerInit'
 
 import { createOrderApi, registerApi } from '@/api/index'
 
@@ -13,21 +11,21 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   // store ==================================================
   let { site, store, user_account, showPage, 
     isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM 
-  } = storeToRefs(useCommon())
-  let { login, getCategories, getUserInfo , showMessage, urlPush } = useCommon()
+  } = storeToRefs(useAll())
+  let { login, getCategories, getUserInfo , showMessage, urlPush } = useAll()
   let { discountCode, successUsedDiscountCode, total_bonus, is_use_bonus, use_bonus, member_bonus,
     total, is_click_finish_order, isOrderIng 
   } = storeToRefs(useCart())
-  let { discount, use_bonus_handler, getTotal } = useCart()
+  let { discount, getTotal } = useCart()
   let { 
     info, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
   let { numberThousands } = useFilters()
-  let { getProductsHandler } = useHandlerProducts()
+  let { getProductsHandler } = useHandlerInit()
 
-  // computed ==================================================
+  // computed ==================================================  
   const receiver_address = computed(() => {
     let address = `${info.value.address.city_active} ${info.value.address.district_active} ${info.value.address.detail_address}`
     if(userInfo.value.address_obj){
@@ -136,6 +134,22 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       return cartStrObj;
     },
 
+    async use_bonus_handler() {
+      if(!user_account.value) {
+        is_use_bonus.value = false;
+        use_bonus.value = 0;
+        return
+      }
+      
+      if(use_bonus.value > 0) {
+        let use_bonus_max = Math.min(total_bonus.value * 1, total.value.Total * 1 - total.value.Discount * 1 - total.value.DiscountCode * 1)
+        if(use_bonus.value > use_bonus_max) use_bonus.value = use_bonus_max
+      }
+
+      if(notGetTotal) return
+      await getTotal(1)
+    },
+
     async checkOrder() {
       let site = JSON.parse(localStorage.getItem('site')) || {} ;
       if(site.Preview == 2) {
@@ -161,7 +175,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
               )
             )
           ) {
-          await use_bonus_handler();
+          await methods.use_bonus_handler();
           methods.createOrder();
         }
       }

@@ -1,22 +1,22 @@
-import { useCommon } from './common'
+import { useAll } from './all'
 import { useProducts } from './products'
 import { useCart } from './cart'
 import { useFilters } from './filters'
 import { useHandlerCart } from './handlerCart'
-import { useHandlerProducts } from './handlerProducts'
+import { useHandlerInit }  from '@/stores/handlerInit'
 
 import { getAmountApi } from '@/api/index';
 
 export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   // store ==================================================
-  let { login, showMessage } = useCommon()
+  let { login, showMessage } = useAll()
   let { products } = storeToRefs(useProducts())
   let { getMainTotalQty } = useProducts()
   let { cart } = storeToRefs(useCart())
   let { setCart, othersAddPriceBuyQty } = useCart()
   let { number } = useFilters()
   let { getTotalHandler } = useHandlerCart()
-  let { getProductsHandler } = useHandlerProducts()
+  let { getProductsHandler } = useHandlerInit()
 
   // state ==================================================
   const state = reactive({
@@ -217,7 +217,8 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         let res = await getAmountApi(formData)
         if(res.data.errormessage) {
           await login();
-          return await methods.getAmount(type, id, pid)
+          await methods.getAmount(type, id, pid)
+          return
         }
 
         if(!res.data.data[0]) return false
@@ -278,11 +279,11 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         state.flyImgTop += moveY;
         state.flyImgLeft += moveX;
 
-        if(intervalTimes < 1){
+        if(intervalTimes < 1) {
           clearInterval(interval);
           state.flyItem = null;
           
-          if(variation > 0){
+          if(variation > 0) {
             methods.shrinkHandler();
           }
         }

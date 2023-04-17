@@ -1,20 +1,18 @@
 cart
-common
 handlerCart
-handlerChangeQty
-handlerInit
-handlerProducts
 
 Cart
 CartStepOne
 CartStepOneTr
 CartStepTotal
 CartStepTwo
+
 Register
 RegisterInput
 CartIcon
 Confirm
 FavoriteIcon
+
 Home
 Message
 Notice
@@ -22,9 +20,12 @@ ProductBuyQtyBox
 SelectProduct
 
 // ok
+all
 filters
+handlerChangeQty
+handlerInit
 info
-products: getMainTotalQty 
+products: getMainTotalQty
 verify
 
 Main
