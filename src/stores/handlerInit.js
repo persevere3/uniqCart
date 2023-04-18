@@ -11,9 +11,8 @@ export const useHandlerInit = defineStore('handlerInit', () => {
   let { category, products } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
   let { cart, cartOLength, cartLength, bonus_array } = storeToRefs(useCart())
-  let { getCart, setCart, computedCartLength, othersAddPriceBuyQty } = useCart()
+  let { getCart, setCart, computedCartLength, filter_use_bonus, othersAddPriceBuyQty } = useCart()
   let { getUserInfo } = useInfo()
-  let { use_bonus_handler } = useHandlerCart()
 
   // methods ==================================================
   const methods = {
@@ -68,8 +67,8 @@ export const useHandlerInit = defineStore('handlerInit', () => {
           methods.asyncCart()
           computedCartLength();
           if(cartOLength.value != cartLength.value) showMessage('部分商品下架，請重新確認', false);
-          use_bonus_handler()
-
+          filter_use_bonus()
+          
           resolve()
         });
 

@@ -1,4 +1,3 @@
-cart
 handlerCart
 
 Cart
@@ -21,7 +20,9 @@ SelectProduct
 
 // ok
 all
+cart
 filters
+
 handlerChangeQty
 handlerInit
 info

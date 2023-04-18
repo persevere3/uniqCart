@@ -147,9 +147,9 @@
             購物金餘額: <span class="bonus"> {{numberThousands(total_bonus < 0 ? 0 : total_bonus)}} 點 </span>
           </div>
           <div class="box" v-if="total_bonus * 1">
-            <input type="checkbox" id="is_use_bonus" v-model="is_use_bonus" @change="use_bonus_handler"> 
+            <input type="checkbox" id="is_use_bonus" v-model="is_use_bonus" @change="filter_use_bonus(); getTotalHandler()"> 
             <label for="is_use_bonus" > 使用購物金 </label>
-            <input type="number" placeholder="購物金" v-model="use_bonus" @blur="use_bonus_handler">
+            <input type="number" placeholder="購物金" v-model="use_bonus" @blur="filter_use_bonus(); getTotalHandler()">
           </div>
         </div>
         <div class="right"></div>
@@ -185,13 +185,13 @@
   let { stepPage, is_click_finish_order, isOrderIng, 
     total_bonus, is_use_bonus, use_bonus, bonus_array 
   } = storeToRefs(useCart())
-  let { checkOrder } = useCart()
+  let { filter_use_bonus } = useCart()
   let { info, has_address, is_save_address, transport, pay_method, 
     invoice_type, invoice_title, invoice_uniNumber, info_message, userInfo
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
   let { number, numberThousands } = useFilters()
-  let { getTotalHandler, use_bonus_handler } = useHandlerCart()
+  let { getTotalHandler, checkOrder } = useHandlerCart()
 
   // props ==================================================
   let props = defineProps(['main', 'addPrice', 'event'])

@@ -13,10 +13,10 @@ export const useHandlerCart = defineStore('handlerCart', () => {
     isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM 
   } = storeToRefs(useAll())
   let { login, getCategories, getUserInfo , showMessage, urlPush } = useAll()
-  let { discountCode, successUsedDiscountCode, total_bonus, is_use_bonus, use_bonus, member_bonus,
+  let { successUsedDiscountCode, total_bonus, is_use_bonus, use_bonus, member_bonus,
     total, is_click_finish_order, isOrderIng 
   } = storeToRefs(useCart())
-  let { discount, getTotal } = useCart()
+  let { unDiscount, getTotal, filter_use_bonus } = useCart()
   let { 
     info, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
@@ -28,11 +28,11 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   // computed ==================================================  
   const receiver_address = computed(() => {
     let address = `${info.value.address.city_active} ${info.value.address.district_active} ${info.value.address.detail_address}`
-    if(userInfo.value.address_obj){
+    if(userInfo.value.address_obj) {
       has_address.value = false;
       for(let key in userInfo.value.address_obj) {
         let item = userInfo.value.address_obj[key];
-        if(item.address == address){
+        if(item.address == address) {
           has_address.value = true;
         }
       }
@@ -46,7 +46,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       let { id, qry, additionalid, additionalqry, specificationid, specificationqty } = methods.createCartStrObj();
       if(!id && !specificationid) return
 
-      let site = JSON.parse(localStorage.getItem('site')) || {} ;
       paramsObj = {
         id,
         qry,
@@ -105,7 +104,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         }
         
         // 加價購
-        if(cartItem.addPrice){
+        if(cartItem.addPrice) {
           cartItem.addPrice.forEach(addPriceItem => {
             let addPriceStr = numberThousands(addPriceItem.Price);
 
@@ -134,25 +133,8 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       return cartStrObj;
     },
 
-    async use_bonus_handler() {
-      if(!user_account.value) {
-        is_use_bonus.value = false;
-        use_bonus.value = 0;
-        return
-      }
-      
-      if(use_bonus.value > 0) {
-        let use_bonus_max = Math.min(total_bonus.value * 1, total.value.Total * 1 - total.value.Discount * 1 - total.value.DiscountCode * 1)
-        if(use_bonus.value > use_bonus_max) use_bonus.value = use_bonus_max
-      }
-
-      if(notGetTotal) return
-      await getTotal(1)
-    },
-
     async checkOrder() {
-      let site = JSON.parse(localStorage.getItem('site')) || {} ;
-      if(site.Preview == 2) {
+      if(site.value.Preview == 2) {
         showMessage( '預覽模式不開放完成訂單', false);
         return;
       }
@@ -175,14 +157,14 @@ export const useHandlerCart = defineStore('handlerCart', () => {
               )
             )
           ) {
-          await methods.use_bonus_handler();
+          filter_use_bonus();
+          await methods.getTotalHandler();  
           methods.createOrder();
         }
       }
     },
     async cancelDiscountCodeCreateOrder() {
-      discountCode.value = '';
-      successUsedDiscountCode.value = '';
+      unDiscount()
       await methods.getTotalHandler(1)
       isConfirmDiscountCodeUsed.value = false;
       methods.createOrder();
@@ -235,7 +217,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         // 運送方式 支付方式
         'SendWay': transport.value * 1,
         'PayMethod': pay_method.value,
-        'PayType': store.value[pay_method],
+        'PayType': store.value[pay_method.value],
 
         // 金額
         'Discount': total.value.Discount * 1,
@@ -257,28 +239,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
           methods.createOrder()
           return
         }
-        if(!res.data.success) {
-          if(res.data.message.indexOf('已使用過折扣碼') > -1) {
-            isOrderIng.value = false;
-            isConfirmDiscountCodeUsed.value = true;
-            return;
-          }
-  
-          if(res.data.message.indexOf('數量不足') > -1) {
-            methods.clearCart();
-          }
-          if(res.data.message.indexOf('購物金不足') > -1) {
-            await getUserInfo();
-            use_bonus.value = 0;
-            methods.getTotalHandler(1);
-          }
-  
-          isOrderIng.value = false;
-          showMessage(res.data.message, false)
-        }
-        else {
-          isOrderIng.value = false;
-  
+        if(res.data.success) {
           payResult.value = res.data;
   
           // 沒有開啟會員功能
@@ -298,6 +259,26 @@ export const useHandlerCart = defineStore('handlerCart', () => {
           }
   
           methods.clearCart();
+
+          isOrderIng.value = false;
+        }
+        else {
+          if(res.data.message.indexOf('已使用過折扣碼') > -1) {
+            isOrderIng.value = false;
+            isConfirmDiscountCodeUsed.value = true;
+            return;
+          }
+          
+          if(res.data.message.indexOf('數量不足') > -1) {
+            methods.clearCart();
+          }
+          if(res.data.message.indexOf('購物金不足') > -1) {
+            await getUserInfo();
+            use_bonus.value = 0;
+            methods.getTotalHandler(1);
+          }
+          isOrderIng.value = false;
+          showMessage(res.data.message, false)
         }
       } catch (error) {
         throw new Error(error)
@@ -350,17 +331,18 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       }
       // ecpay
       else {
-
         if(location.origin.indexOf('demo.uniqcarttest') > -1){
           ECPay_form.value = `<form id="ECPay_form" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
         } else {
           ECPay_form.value = `<form id="ECPay_form" action="https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
         }
-        for(let item in payResult){
+
+        for(let item in payResult) {
           if(item === 'success' || item === 'message' || item === 'membered') continue
           // EncryptType, TotalAmount, ExpireDate: number，other: string
           ECPay_form.value += `<input type="${item == 'EncryptType' || item == 'TotalAmount' || item == 'ExpireDate' ? 'number' : 'text'}" name="${item}" value="${payResult.value[item]}">`;
         }
+
         ECPay_form.value += `</form>`;
 
         setTimeout(()=> {
@@ -373,8 +355,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       cart.value = [];
       setCart();
   
-      discountCode.value = '';
-      successUsedDiscountCode.value = '';
+      unDiscount()
 
       is_use_bonus.value = false;
       use_bonus.value = 0;

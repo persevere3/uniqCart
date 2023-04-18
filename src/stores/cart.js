@@ -137,9 +137,23 @@ export const useCart = defineStore('cart', () => {
         throw new Error(error)
       }
     },
-    unDiscount(){
+    unDiscount() {
       state.discountCode = '';
       state.successUsedDiscountCode = '';
+    },
+
+    // 
+    async filter_use_bonus() {
+      if(!user_account.value) {
+        is_use_bonus.value = false;
+        use_bonus.value = 0;
+        return
+      }
+      
+      if(use_bonus.value > 0) {
+        let use_bonus_max = Math.min(total_bonus.value * 1, total.value.Total * 1 - total.value.Discount * 1 - total.value.DiscountCode * 1)
+        if(use_bonus.value > use_bonus_max) use_bonus.value = use_bonus_max
+      }
     },
 
     // 其他主商品下 此加價購商品的購買數量 總和
