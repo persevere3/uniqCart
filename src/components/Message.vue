@@ -10,8 +10,8 @@
 
 <script setup>
   // store
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
 
-  let { messageArr } = storeToRefs(useAll())
+  let { messageArr } = storeToRefs(useCommon())
 </script>
 

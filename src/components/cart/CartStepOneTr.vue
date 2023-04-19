@@ -1,5 +1,5 @@
 <template>
-  <div class="tr p-1" v-show="buyQty != 0 || buyQty === ''">
+  <div class="tr p-1">
     <div class="td picName jcs">
       <div class="pic" :style="{backgroundImage :`url(${addPrice ? product.Img : product.Img1})`}">
         <div class="tag" v-if="addPrice">加價購</div>
@@ -57,15 +57,14 @@
 
 <script setup>
   // store ==================================================
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
   import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
-  import { useFilters } from '@/stores/filters'
 
-  let { store } = storeToRefs(useAll())
+  let { store } = storeToRefs(useCommon())
+  let { numberThousands } = useCommon()
   let { getMainTotalQty } = useProducts()
   let { changeMainBuyQty, changeAddpriceBuyQty } = useHandlerChangeQty()
-  let { numberThousands } = useFilters()
 
   // props ==================================================
   const props = defineProps(['main', 'addPrice', 'spec', 'cartSpecCheckedId'])

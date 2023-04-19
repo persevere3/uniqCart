@@ -13,7 +13,7 @@ export const useFilters = defineStore('filters', () => {
     },
 
     // ↵ => <br>
-    unescapeEnter(text){
+    unescapeEnter(text) {
       return String(text).replace(/↵/g, '<br>');
     },
     // => <, >, &, ", '
@@ -23,6 +23,6 @@ export const useFilters = defineStore('filters', () => {
   }
 
   return {
-    ...methods
+    methods
   }
 })

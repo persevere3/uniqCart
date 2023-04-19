@@ -49,11 +49,11 @@
 
 <script setup>
   // store ==================================================
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
   import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
 
-  let { store } = storeToRefs(useAll())
+  let { store } = storeToRefs(useCommon())
   let { getMainTotalQty } = useProducts()
   let { changeMainBuyQty, changeAddpriceBuyQty } = useHandlerChangeQty()
 

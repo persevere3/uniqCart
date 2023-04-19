@@ -966,6 +966,11 @@ input:focus, textarea:focus, select:focus{
   
       .discount{
         margin-bottom: 20px;
+
+        .notice {
+          color: red; 
+          white-space: nowrap;
+        }
         p{
           margin-bottom: 5px;
         }

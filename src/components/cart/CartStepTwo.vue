@@ -14,13 +14,13 @@
         <label for="name">購買人姓名</label>
         <input type="text" :readonly="userInfo.Name" id="name" placeholder="姓名" 
           :class="{inputError:info.purchaser_name.is_error}" v-model="info.purchaser_name.value" 
-          @blur="verify(info.purchaser_name)" @change="pInput">
+          @blur="verify(info.purchaser_name)" @change="input_purchaser">
         <div class="prompt">{{ info.purchaser_name.message }}</div>
 
         <label for="phone">購買人手機號碼</label>
         <input type="text" :readonly="userInfo.Phone" id="phone" placeholder="購買人手機號碼" 
           :class="{inputError:info.purchaser_number.is_error}"  v-model="info.purchaser_number.value" 
-          @blur="verify(info.purchaser_number)" @change="pInput">
+          @blur="verify(info.purchaser_number)" @change="input_purchaser">
         <div class="prompt">{{ info.purchaser_number.message }}</div>
 
         <div class="box">
@@ -98,7 +98,7 @@
         </template>
 
         <label for="feedback">留言給我們</label>
-        <textarea name="" id="feedback" cols="30" rows="5" placeholder="留言給我們" v-model="info_message" @input="info_message_input"></textarea>
+        <textarea name="" id="feedback" cols="30" rows="5" placeholder="留言給我們" v-model="info_message" @input="input_info_message"></textarea>
         <div class="info_messageLength"> {{info_message.length}}/150 </div>
 
         <template v-if="store.Receipt === '1'">
@@ -147,9 +147,9 @@
             購物金餘額: <span class="bonus"> {{numberThousands(total_bonus < 0 ? 0 : total_bonus)}} 點 </span>
           </div>
           <div class="box" v-if="total_bonus * 1">
-            <input type="checkbox" id="is_use_bonus" v-model="is_use_bonus" @change="filter_use_bonus(); getTotalHandler()"> 
+            <input type="checkbox" id="is_use_bonus" v-model="is_use_bonus" @change="filter_use_bonus"> 
             <label for="is_use_bonus" > 使用購物金 </label>
-            <input type="number" placeholder="購物金" v-model="use_bonus" @blur="filter_use_bonus(); getTotalHandler()">
+            <input type="number" placeholder="購物金" v-model="use_bonus" @blur="filter_use_bonus">
           </div>
         </div>
         <div class="right"></div>
@@ -159,11 +159,14 @@
       </div>
     </template>
 
-    <CartStepTotal v-if="total" />
+    <CartStepTotal />
     
     <div class="buttonGroup">
       <div class="button" @click="stepPage = 1">上一步</div>
-      <div class="button" @click="checkOrder()"><i  v-show="isOrderIng" class="fas fa-spinner fa-spin" style="margin-right: 5px"></i>完成訂單</div>
+      <div class="button" @click="checkOrder()">
+        <i  v-show="isOrderIng" class="fas fa-spinner fa-spin" style="margin-right: 5px"></i>
+        完成訂單
+      </div>
     </div>
   </div>
 </template>
@@ -173,25 +176,24 @@
   import CartStepTotal from '@/components/cart/CartStepTotal.vue'
 
   // store ==================================================
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useVerify }  from '@/stores/verify'
-  import { useFilters }  from '@/stores/filters'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { store, user_account } = storeToRefs(useAll())
-  let { urlPush } = useAll()
-  let { stepPage, is_click_finish_order, isOrderIng, 
+  let { store, user_account } = storeToRefs(useCommon())
+  let { urlPush } = useCommon()
+  let { numberThousands } = useCommon()
+  let { stepPage, is_click_finish_order, isOrderIng, transport, pay_method,
     total_bonus, is_use_bonus, use_bonus, bonus_array 
   } = storeToRefs(useCart())
-  let { filter_use_bonus } = useCart()
-  let { info, has_address, is_save_address, transport, pay_method, 
-    invoice_type, invoice_title, invoice_uniNumber, info_message, userInfo
+  let { getTotal, filter_use_bonus } = useCart()
+  let { info, has_address, is_save_address, invoice_type, invoice_title,
+    invoice_uniNumber, info_message, userInfo
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
-  let { number, numberThousands } = useFilters()
-  let { getTotalHandler, checkOrder } = useHandlerCart()
+  let { checkOrder } = useHandlerCart()
 
   // props ==================================================
   let props = defineProps(['main', 'addPrice', 'event'])
@@ -213,24 +215,20 @@
   })
 
   watch(transport, (v) => {
-    getTotalHandler(1);
+    getTotal(1);
   })
-
-  watch(use_bonus, (v) => {
-    use_bonus = number(v)
-  }, {immediate: true})
   
   // methods ==================================================
   // 同步 購買人 收件人 資訊 
-  function pInput() {
-    if(state.isSame){
+  function input_purchaser() {
+    if(state.isSame) {
       info.value.receiver_name.value = info.value.purchaser_name.value;
       info.value.receiver_number.value = info.value.purchaser_number.value;
       verify(info.value.receiver_name, info.value.receiver_number)
     }
   }
   // 留言字數控制在150以下
-  function info_message_input() {
+  function input_info_message() {
     if(info_message.value.length > 150) info_message.value = info_message.value.substring(0, 150);
   }
 </script>

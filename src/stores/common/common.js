@@ -1,12 +1,16 @@
 import { getSiteApi, getStoreApi } from '@/api/index';
 
-export const useAll = defineStore('all', () => {
+import { useFilters }  from './filters'
+
+export const useCommon = defineStore('common', () => {
   // state ==================================================
   const state = reactive({
     site: {},
     user_account: '',
     store: {},
     arrangement: 0,
+
+    isShowFavorite,
 
     showPage: 'main',
 
@@ -15,13 +19,16 @@ export const useAll = defineStore('all', () => {
 
     // ??? 
     isConfirmToPay: false,
-    isConfirmIsRegister: false,
+    isConfirmDiscountCodeUsed: false,
     isConfirmATM: false,
+    isConfirmIsRegister: false,
     isConfirmRegister: false,
   })
 
   // methods ==================================================
   const methods = {
+    ...useFilters().methods,
+
     login() {
       state.site = JSON.parse(localStorage.getItem('site')) || {} ;
       let params = `site=${state.site.Site}&store=${state.site.Name}&Preview=${state.site.Preview}&WebPreview=${state.site.WebPreview}`;

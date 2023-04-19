@@ -18,6 +18,22 @@
     </div>
   </div>
 
+  <!-- 該mail已使用過折扣碼 -->
+  <div class="confirm" v-if="isConfirmDiscountCodeUsed">
+    <div class="frame">
+      <div class="border"></div>
+      <div class="confirm_title"> 
+        <i class="fa fa-question-circle" aria-hidden="true"></i>
+      </div>
+      <div class="message" v-if="!user_account"> 該手機已使用過此折扣碼，按確定取消折扣碼優惠直接完成訂單，按取消重新輸入手機或折扣碼 </div>
+      <div class="message" v-else> 該會員已使用過此折扣碼，按確定取消折扣碼優惠直接完成訂單，按取消重新輸入折扣碼 </div>
+      <div class="buttonGroup">
+        <div class="button cancel" @click=" isConfirmDiscountCodeUsed = false;"> 取消 </div>
+        <div class="button determine" @click="cancelDiscountCodeCreateOrder()"> 確定  </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ATM 匯款訊息 -->
   <div class="confirm" v-if="isConfirmATM">
     <div class="frame">
@@ -81,14 +97,14 @@
   import Register  from '@/components/register/Register.vue'
 
   // store ==================================================
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { store, isConfirmToPay, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useAll())
-  let { copy, urlPush } = useAll()
+  let { user_account, store, isConfirmToPay, isConfirmDiscountCodeUsed, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useCommon())
+  let { copy, urlPush } = useCommon()
   let { bank } = storeToRefs(useCart())
   let { info, pay_method } = storeToRefs(useInfo())
-  let { toPay } = useHandlerCart()
+  let { cancelDiscountCodeCreateOrder, toPay } = useHandlerCart()
 </script>

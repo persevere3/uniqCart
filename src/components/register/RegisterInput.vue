@@ -30,9 +30,9 @@
 
 <script setup>
   // store ==================================================
-  import { useFilters } from '@/stores/filters'
+  import { useVerify } from '@/stores/verify'
 
-  let { verify } = useFilters()
+  let { verify } = useVerify()
 
   // props
   let { input } = defineProps(['input']) 

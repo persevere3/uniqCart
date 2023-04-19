@@ -2,23 +2,16 @@
   <div class="notice_page">
     <div class="background" >
       <div class="close" @click="showPage = 'main'"> <i class="fa fa-times" aria-hidden="true"></i> </div>
-      <div class="content ql-editor" ref='notice_page_content' v-html="unescapeHTML(store[showPage])"></div>
+      <div class="content ql-editor" v-html="unescapeHTML(store[showPage])"></div>
     </div>
   </div>
 </template>
 
 <script setup>
   // store ==================================================
-  import { useAll }  from '@/stores/all'
-  import { useFilters }  from '@/stores/filters'
+  import { useCommon }  from '@/stores/common/common'
 
-  let { store, showPage } = storeToRefs(useAll())
-  let { unescapeHTML } = useFilters()
-
-  // props ==================================================
-  let { innerHeight } = defineProps(['innerHeight'])
-
-  // ref ==================================================
-  const notice_page_content = ref(null)
+  let { store, showPage } = storeToRefs(useCommon())
+  let { unescapeHTML } = useCommon()
   
 </script>

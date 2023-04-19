@@ -1,6 +1,5 @@
 <template>
-  <!-- @click.stop="isShowFavorite = false" ??? -->
-  <div class="productContainer">
+  <div class="productContainer" @click.stop="isShowFavorite = false">
     <Main />
     <SelectProduct v-if="selectProduct.ID" :style="`height:${innerHeight}px`" />
     <Cart v-if="showPage === 'cart'" :style="`height:${innerHeight}px`" />
@@ -26,16 +25,13 @@
   import Message from '@/components/Message.vue'
 
   // store ==================================================
-  import { useAll }  from '@/stores/all'
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useHandlerInit }  from '@/stores/handlerInit'
 
-  let { user_account } = storeToRefs(useAll())
-  let {  } = useAll()
-  let { showPage } = storeToRefs(useAll())
+  let { user_account, isShowFavorite, showPage } = storeToRefs(useCommon())
   let { selectProduct } = storeToRefs(useProducts())
   let { stepPage, total_bonus } = storeToRefs(useCart())
   let { info, userInfo } = storeToRefs(useInfo())

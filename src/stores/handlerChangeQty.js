@@ -1,21 +1,18 @@
-import { useAll } from './all'
+import { useCommon } from './common/common'
 import { useProducts } from './products'
 import { useCart } from './cart'
-import { useFilters } from './filters'
-import { useHandlerCart } from './handlerCart'
 import { useHandlerInit }  from '@/stores/handlerInit'
 
 import { getAmountApi } from '@/api/index';
 
 export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   // store ==================================================
-  let { login, showMessage } = useAll()
+  let { login, showMessage } = useCommon()
+  let { number } = useCommon()
   let { products } = storeToRefs(useProducts())
   let { getMainTotalQty } = useProducts()
   let { cart } = storeToRefs(useCart())
-  let { setCart, othersAddPriceBuyQty } = useCart()
-  let { number } = useFilters()
-  let { getTotalHandler } = useHandlerCart()
+  let { setCart, getTotal, othersAddPriceBuyQty } = useCart()
   let { getProductsHandler } = useHandlerInit()
 
   // state ==================================================
@@ -95,7 +92,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
 
           setCart()
           
-          getTotalHandler(0);
+          getTotal(0);
           return
         }
       }
@@ -126,7 +123,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       }
 
       // 取得 金額總計
-      getTotalHandler(0);
+      getTotal(0);
     },
     // 改變 加價購數量 ==================================================
     async changeAddpriceBuyQty(main, addPriceIndex, specIndex, qty){
@@ -193,7 +190,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       setCart()
 
       // 取得 金額總計
-      getTotalHandler(0);
+      getTotal(0);
     },
 
     // 取得 庫存 type 1: 沒有規格主商品, 2: 沒有規格加價購, 3: 有規格主商品和加價購

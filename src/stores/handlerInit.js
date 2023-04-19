@@ -1,4 +1,4 @@
-import { useAll }  from '@/stores/all'
+import { useCommon }  from '@/stores/common/common'
 import { useProducts } from './products'
 import { useCart } from './cart'
 import { useInfo } from './info'
@@ -6,8 +6,8 @@ import { useHandlerCart } from '@/stores/handlerCart'
 
 export const useHandlerInit = defineStore('handlerInit', () => {
   // store ==================================================
-  let { site, user_account, showPage } = storeToRefs(useAll())
-  let { getSite, getStore, showMessage } = useAll()
+  let { site, user_account, showPage } = storeToRefs(useCommon())
+  let { getSite, getStore, showMessage } = useCommon()
   let { category, products } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
   let { cart, cartOLength, cartLength, bonus_array } = storeToRefs(useCart())
@@ -61,14 +61,13 @@ export const useHandlerInit = defineStore('handlerInit', () => {
         })
         cart.value = cart.value.filter(item => item)
 
-        Promise.all(promises).then(() => {
+        Promise.all(promises).then(async() => {
           console.log('Promise.all')
 
           methods.asyncCart()
           computedCartLength();
           if(cartOLength.value != cartLength.value) showMessage('部分商品下架，請重新確認', false);
-          filter_use_bonus()
-          
+          await filter_use_bonus()
           resolve()
         });
 

@@ -1,11 +1,11 @@
 import { getUserInfoApi } from '@/api/index'
 
-import { useAll }  from '@/stores/all'
+import { useCommon }  from '@/stores/common/common'
 
 export const useInfo = defineStore('info', () => {
   // store ==================================================
-  let { site, user_account } = storeToRefs(useAll())
-  let { login } = useAll()
+  let { site, user_account } = storeToRefs(useCommon())
+  let { login } = useCommon()
 
   // state ==================================================
   const state = reactive({
@@ -86,11 +86,6 @@ export const useInfo = defineStore('info', () => {
     },
     has_address: false,
     is_save_address: false,
-
-    // 運送方式
-    transport: '0', // 1一般宅配 2到店自取 3 7-11
-    // 支付方式, PayType: store[pay_method]
-    pay_method: '0', // CreditCard ATM PayCode PayBarCode PayOnDelivery LinePay
 
     //
     info_message:'',

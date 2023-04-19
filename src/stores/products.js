@@ -1,11 +1,11 @@
 import { getCategoriesApi, getProductsApi, getAddPriceApi, getFavoriteApi, deleteFavoriteApi, addFavoriteApi } from '@/api/index';
 
-import { useAll }  from '@/stores/all'
+import { useCommon }  from '@/stores/common/common'
 
 export const useProducts = defineStore('products', () => {
   // store ==================================================
-  let { site, user_account } = storeToRefs(useAll())
-  let { login } = useAll()
+  let { site, user_account } = storeToRefs(useCommon())
+  let { login } = useCommon()
 
   // state ==================================================
   const state = reactive({

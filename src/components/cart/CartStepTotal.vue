@@ -42,13 +42,12 @@
 
 <script setup>
   // store ==================================================
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useCart }  from '@/stores/cart'
-  import { useFilters }  from '@/stores/filters'
 
-  let { user_account } = storeToRefs(useAll())
+  let { user_account } = storeToRefs(useCommon())
+  let { numberThousands } = useCommon()
   let { stepPage, total, is_use_bonus, use_bonus, member_bonus } = storeToRefs(useCart())
-  let { numberThousands } = useFilters()
 
   // computed ==================================================
   let subtotal = computed(() => {

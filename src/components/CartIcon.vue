@@ -15,11 +15,11 @@
 
 <script setup>
   // store
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useCart }  from '@/stores/cart'
   import { useHandlerChangeQty }  from '@/stores/handlerChangeQty'
 
-  let { showPage } = storeToRefs(useAll())
+  let { showPage } = storeToRefs(useCommon())
   let { cartLength } = storeToRefs(useCart())
   let { flyItem, flyImgTop, flyImgLeft, isShrink} = storeToRefs(useHandlerChangeQty())
 </script>

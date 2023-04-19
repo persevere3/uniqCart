@@ -30,18 +30,12 @@
 
 <script setup>
   // store
-  import { useAll }  from '@/stores/all'
+  import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
-  import { useFilters }  from '@/stores/filters'
 
-  let { showPage } = storeToRefs(useAll())
+  let { isShowFavorite, showPage } = storeToRefs(useCommon())
+  let { numberThousands } = useCommon()
   let { favorite } = storeToRefs(useProducts())
-  let { toggleFavorite } = useProducts()
-  let { numberThousands } = useFilters()
+  let { showSelect, toggleFavorite } = useProducts()
 
-  // state ==================================================
-  const state = reactive({
-    isShowFavorite: false,
-  })
-  let { isShowFavorite } = toRefs(state)
 </script>

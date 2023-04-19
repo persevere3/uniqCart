@@ -76,13 +76,12 @@
   import { useCommon } from '@/stores/common'
   import { useCart } from '@/stores/cart'
   import { useInfo } from '@/stores/info'
-  import { useFilters } from '@/stores/filters'
 
-  let { site, store, isConfirmRegister } = storeToRefs(useAll())
-  let { login, showMessage } = useAll()
+  let { site, store, isConfirmRegister } = storeToRefs(useCommon())
+  let { login, showMessage } = useCommon()
+  let { unescapeHTML } = useCommon()
   let { toPay } = useCart()
   let { info, pay_method } = storeToRefs(useInfo())
-  let { unescapeHTML } = useFilters()
 
   // state ==================================================
   const state = reactive({
@@ -265,7 +264,7 @@
         return
       }
 
-      if(res.data.status){
+      if(res.data.status) {
         state.second = 300;
         let interval =  setInterval(() => {
           state.second -= 1;

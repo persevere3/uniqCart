@@ -1,8 +1,7 @@
-import { useAll }  from '@/stores/all'
+import { useCommon }  from '@/stores/common/common'
 import { useCart } from './cart'
 import { useInfo } from './info'
 import { useVerify } from './verify'
-import { useFilters } from './filters'
 import { useHandlerInit }  from '@/stores/handlerInit'
 
 import { createOrderApi, registerApi } from '@/api/index'
@@ -11,18 +10,16 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   // store ==================================================
   let { site, store, user_account, showPage, 
     isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM 
-  } = storeToRefs(useAll())
-  let { login, getCategories, getUserInfo , showMessage, urlPush } = useAll()
-  let { successUsedDiscountCode, total_bonus, is_use_bonus, use_bonus, member_bonus,
-    total, is_click_finish_order, isOrderIng 
+  } = storeToRefs(useCommon())
+  let { login, getCategories, getUserInfo , showMessage, urlPush } = useCommon()
+  let { successUsedDiscountCode, total, transport, pay_method, 
+    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng 
   } = storeToRefs(useCart())
-  let { unDiscount, getTotal, filter_use_bonus } = useCart()
-  let { 
-    info, transport, pay_method, invoice_type, invoice_title, invoice_uniNumber, info_message,
+  let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
+  let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
-  let { numberThousands } = useFilters()
   let { getProductsHandler } = useHandlerInit()
 
   // computed ==================================================  
@@ -42,97 +39,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
 
   // methods ==================================================
   const methods = {
-    async getTotalHandler(isStepTwo) {
-      let { id, qry, additionalid, additionalqry, specificationid, specificationqty } = methods.createCartStrObj();
-      if(!id && !specificationid) return
-
-      paramsObj = {
-        id,
-        qry,
-        additionalid,
-        additionalqry,
-        specificationid,
-        specificationqty,
-        type: isStepTwo ? 1 : 0,
-        code: successUsedDiscountCode.value,
-        shipping: transport.value == 0 ? 0 : transport.value * 1 + 1,
-        memberWallet: is_use_bonus.value ? use_bonus.value : 0, 
-        Preview: site.value.Preview,
-      }
-      let params = ''
-      for(let key in paramsObj) {
-        let value = paramsObj[key]
-        params += `${params ? '&' : ''}${key}=${value}`
-      }
-
-      getTotal(params)
-    },
-    createCartStrObj() {
-      let cartStrObj = {
-        'id': '',
-        'price': '',
-        'qry': '',
-
-        'additionalid':'',
-        'additionalprice':'',
-        'additionalqry':'',
-
-        'specificationid':'',
-        'specificationqty':'',
-
-        'ItemName': '',
-      };
-      cart.value.forEach(function(cartItem) {
-        let nowPriceStr = numberThousands(cartItem.NowPrice);
-
-        // 有規格
-        if(cartItem.specArr) {
-          cartItem.specArr.forEach(spec => {
-            if(spec.buyQty != 0) {
-              cartStrObj.specificationid += (cartStrObj.specificationid ? ',' : '') + spec.ID
-              cartStrObj.specificationqty += (cartStrObj.specificationqty ? ',' : '') + spec.buyQty
-              cartStrObj.ItemName +=  (cartStrObj.ItemName ? '#' : '') + `${cartItem.Name} (${spec.Name}) NT$${nowPriceStr} x ${spec.buyQty}`
-            }
-          })
-        }
-        // 沒規格
-        else {
-          cartStrObj.id += (cartStrObj.id ? ',' : '') + cartItem.ID
-          cartStrObj.price += (cartStrObj.price ? ',' : '') + cartItem.NowPrice
-          cartStrObj.qry += (cartStrObj.qry ? ',' : '') + cartItem.buyQty
-          cartStrObj.ItemName += (cartStrObj.ItemName ? '#' : '') + + `${cartItem.Name} NT$${nowPriceStr} x ${cartItem.buyQty}`
-        }
-        
-        // 加價購
-        if(cartItem.addPrice) {
-          cartItem.addPrice.forEach(addPriceItem => {
-            let addPriceStr = numberThousands(addPriceItem.Price);
-
-            // 有規格
-            if(addPriceItem.specArr) {
-              addPriceItem.specArr.forEach(addPriceSpec => {
-                if(addPriceSpec.buyQty) {
-                  cartStrObj.specificationid += (cartStrObj.specificationid ? ',' : '') + addPriceSpec.ID
-                  cartStrObj.specificationqty += (cartStrObj.specificationqty ? ',' : '') + addPriceSpec.buyQty                
-                  cartStrObj.ItemName +=  (cartStrObj.ItemName ? '#' : '') + + `加價購 ${addPriceItem.Name} (${addPriceSpec.Name}) NT$${addPriceStr} x ${addPriceSpec.buyQty}`
-                }
-              })
-            }
-            // 沒規格
-            else {
-              if(addPriceItem.buyQty != 0){
-                cartStrObj.additionalid += (cartStrObj.additionalid ? ',' : '') + addPriceItem.ID
-                cartStrObj.additionalprice += (cartStrObj.additionalprice ? ',' : '') + addPriceItem.Price
-                cartStrObj.additionalqry += (cartStrObj.additionalqry ? ',' : '') + addPriceItem.buyQty              
-                cartStrObj.ItemName +=  (cartStrObj.ItemName ? '#' : '') + `加價購 ${addPriceItem.Name} NT$${addPriceStr} x ${addPriceItem.buyQty}` 
-              }
-            }
-          })
-        }
-      })
-      return cartStrObj;
-    },
-
     async checkOrder() {
       if(site.value.Preview == 2) {
         showMessage( '預覽模式不開放完成訂單', false);
@@ -157,22 +63,21 @@ export const useHandlerCart = defineStore('handlerCart', () => {
               )
             )
           ) {
-          filter_use_bonus();
-          await methods.getTotalHandler();  
+          await filter_use_bonus();
           methods.createOrder();
         }
       }
     },
     async cancelDiscountCodeCreateOrder() {
       unDiscount()
-      await methods.getTotalHandler(1)
+      await getTotal(1)
       isConfirmDiscountCodeUsed.value = false;
       methods.createOrder();
     },
     async createOrder() {
       isOrderIng.value = true;
 
-      let cartStrObj = methods.createCartStrObj();
+      let cartStrObj = createCartStrObj();
 
       let id = new Date().getTime();
       let saveAddressStr = '';
@@ -275,7 +180,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
           if(res.data.message.indexOf('購物金不足') > -1) {
             await getUserInfo();
             use_bonus.value = 0;
-            methods.getTotalHandler(1);
+            getTotal(1);
           }
           isOrderIng.value = false;
           showMessage(res.data.message, false)
