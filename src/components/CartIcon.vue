@@ -1,6 +1,6 @@
 <template>
   <!-- icon -->
-  <div class="cartIcon" :class="{shrink:isShrink}" v-show="showPage === 'main'" @click="showPage = 'cart'">
+  <div class="cartIcon" :class="{shrink:isShrink}" @click="showPage = 'cart'">
     <i class="fa fa-shopping-cart fa-2x" aria-hidden="true"></i>
     <div class="num">
       {{cartLength}}

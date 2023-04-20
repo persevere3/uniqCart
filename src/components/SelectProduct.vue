@@ -1,25 +1,24 @@
 <template>
   <div class="selectProduct">
     <div class="background">
-      <div class="close" @click="showPage = 'main'"> <i class="fa fa-times" aria-hidden="true"></i> </div>
+      <div class="close" @click="selectProduct = {}"> <i class="fa fa-times" aria-hidden="true"></i> </div>
       <div class="picContent">
-        <div class="pic" ref="mainPicWidth">
-          <div class="mainPic" :style="{backgroundImage :`url(${selectProduct.imgArr[selectProduct.mainImgIndex]})`}">
-          </div>
-          <div class="allPic" :style="{height:`${picHeight}px`}">
-            <ul :style="`left: -${picUlleft * liWidth}px; width: ${selectProduct.allPicLength * liWidth}px;`" >
-              <li v-for = "(item, index) in selectProduct.imgArr" :key="`${item}_${index}`" 
-                v-show="item" @click="selectProduct.mainImgIndex = index"   
+        <div class="pic">
+          <div class="mainPic" :style="{backgroundImage :`url(${selectProduct.imgArr[selectProduct.mainImgIndex]})`}"></div>
+          <div class="allPic">
+            <swiper :slides-per-view="3" @swiper="onSwiper">
+              <swiper-slide          
+                v-for="(item, index) in selectProduct.imgArr" :key="`${item}_${index}`"
+                :class="{active:selectProduct.mainImgIndex === index}"
               >
-                <div class="img" :style="{backgroundImage :`url(${item})`, width: `${picWidth}px`}"
-                    :class="{imgActive:selectProduct.mainImgIndex === index}">
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="controller" :style="{height:`${picHeight}px`}">
-            <div class="left" :class="{disabled:picUlleft < 1}" @click="picUlleft < 1 ? picUlleft : picUlleft--"> <i class="fa fa-chevron-left" aria-hidden="true"></i> </div>
-            <div class="right" :class="{disabled:picUlleft + 1 > selectProduct.allPicLength - 3}" @click=" picUlleft + 1 > selectProduct.allPicLength - 3 ? picUlleft : picUlleft++"> <i class="fa fa-chevron-right" aria-hidden="true"></i> </div>
+                <div class="border"></div>
+                <img :src="item" @click="selectProduct.mainImgIndex = index" alt="">
+              </swiper-slide>
+            </swiper>
+            <div class="controler">
+              <div class="prev" @click="useSwiper.slidePrev()"> <i class="fa-solid fa-caret-left"></i> </div>
+              <div class="next" @click="useSwiper.slideNext()"> <i class="fa-solid fa-caret-right"></i> </div>
+            </div>
           </div>
         </div>
         <div class="content">
@@ -74,6 +73,10 @@
   // component ==================================================
   import ProductBuyQtyBox from '@/components/ProductBuyQtyBox.vue'
 
+  // swiper ==================================================
+  import { Swiper, SwiperSlide } from 'swiper/vue'
+  import 'swiper/swiper.scss';
+
   // store ==================================================
   import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
@@ -83,25 +86,6 @@
   let { numberThousands, unescapeHTML, unescapeEnter } = useCommon()
   let { selectProduct, favorite } = storeToRefs(useProducts())
   let { getMainTotalQty, toggleFavorite } = useProducts()
-
-  // state ==================================================
-  const state = reactive({
-    liWidth: 0,
-    picHeight: 0,
-    picWidth: 0,
-    picUlleft: 0,
-  })
-
-  // onMounted ==================================================
-  onMounted(() => {
-    window.addEventListener('resize', computedPic)
-  })
-  onUnmounted(() => {
-    window.removeEventListener('resize', computedPic)
-  })
-
-  // ref ==================================================
-  const mainPicWidth = ref(null)
 
   // computed ==================================================
   const isShowGoToCart = computed(() => {
@@ -115,12 +99,10 @@
   })
   
   // methods ==================================================
-  function computedPic(){
-    state.liWidth = (mainPicWidth.value.offsetWidth) / 3;
-    state.picHeight = state.liWidth;
-    state.picWidth = state.liWidth - 10;
+  let useSwiper
+  function onSwiper(swiper) {
+    useSwiper = swiper
   }
-
   function click_share_link() {
     copy( `${location.origin}/cart/?id=${selectProduct.ID}`, '.copy_input');
     showMessage('複製分享連結', true);

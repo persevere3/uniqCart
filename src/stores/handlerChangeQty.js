@@ -12,7 +12,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   let { products } = storeToRefs(useProducts())
   let { getMainTotalQty } = useProducts()
   let { cart } = storeToRefs(useCart())
-  let { setCart, getTotal, othersAddPriceBuyQty } = useCart()
+  let { setCart, getTotal, getOthersAddPriceBuyQty } = useCart()
   let { getProductsHandler } = useHandlerInit()
 
   // state ==================================================
@@ -110,13 +110,13 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
           if(addPriceItem.specArr) {
             addPriceItem.specArr.forEach((addPriceSpec, addPriceSpecIndex) => {
               if(addPriceSpec.buyQty > mainTotalQty) {
-                methods.updateAddpriceBuyQty(product, addPriceIndex, addPriceSpecIndex, mainTotalQty)
+                methods.changeAddpriceBuyQty(product, addPriceIndex, addPriceSpecIndex, mainTotalQty)
               }
             })
           }
           else {
             if(addPriceItem.buyQty > mainTotalQty) {
-              methods.updateAddpriceBuyQty(product, addPriceIndex, null, mainTotalQty);
+              methods.changeAddpriceBuyQty(product, addPriceIndex, null, mainTotalQty);
             }
           }
         });
@@ -155,10 +155,10 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       // 其他主商品下 此加價購商品的購買數量 總和
       let othersAddPriceBuyQty = 0
       if(addPriceItemSpec) {
-        othersAddPriceBuyQty = othersAddPriceBuyQty(main.ID, addPriceItem, target);
+        othersAddPriceBuyQty = getOthersAddPriceBuyQty(main.ID, addPriceItem, target);
       } 
       else {
-        othersAddPriceBuyQty = othersAddPriceBuyQty(main.ID, target);
+        othersAddPriceBuyQty = getOthersAddPriceBuyQty(main.ID, target);
       }
       // 庫存校驗
       if(target.Enable == 1) {

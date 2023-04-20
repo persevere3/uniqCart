@@ -73,7 +73,7 @@
   import { send_verify_codeApi, registerApi } from '@/api/index'
 
   // store ==================================================
-  import { useCommon } from '@/stores/common'
+  import { useCommon } from '@/stores/common/common'
   import { useCart } from '@/stores/cart'
   import { useInfo } from '@/stores/info'
 

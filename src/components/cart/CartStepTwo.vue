@@ -175,6 +175,8 @@
   // component ==================================================
   import CartStepTotal from '@/components/cart/CartStepTotal.vue'
 
+  import city_district_json from '@/json/city_district.json'
+
   // store ==================================================
   import { useCommon }  from '@/stores/common/common'
   import { useCart }  from '@/stores/cart'
@@ -201,7 +203,7 @@
   // state ==================================================
   const state = reactive({
     isSame: false,
-    city_district: require('@/json/city_district.json')
+    city_district: city_district_json
   })
   let { isSame, city_district } = toRefs(state)
 

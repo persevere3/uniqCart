@@ -11,7 +11,7 @@ export const useHandlerInit = defineStore('handlerInit', () => {
   let { category, products } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
   let { cart, cartOLength, cartLength, bonus_array } = storeToRefs(useCart())
-  let { getCart, setCart, computedCartLength, filter_use_bonus, othersAddPriceBuyQty } = useCart()
+  let { getCart, setCart, computedCartLength, filter_use_bonus, getOthersAddPriceBuyQty } = useCart()
   let { getUserInfo } = useInfo()
 
   // methods ==================================================
@@ -78,40 +78,41 @@ export const useHandlerInit = defineStore('handlerInit', () => {
       console.log('asyncCart')
       cart.value.forEach((cartItem, cartIndex) => {
         let product = products.value.find(product => product.ID == cartItem.ID)
-        
-        // 都有規格
-        if(cartItem.specArr && product.specArr) {
-          cartItem.specArr.forEach(cartItemSpec => {
-            let productSpec = product.specArr.find(productSpec => productSpec.ID == cartItemSpec.ID)
-            if(productSpec) {
-              productSpec.buyQty = cartItemSpec.buyQty
-              if(productSpec.Enable == 1 && productSpec.buyQty > productSpec.Amount){
-                productSpec.buyQty = productSpec.Amount;
+        if(product) {
+          // 都有規格
+          if(cartItem.specArr && product.specArr) {
+            cartItem.specArr.forEach(cartItemSpec => {
+              let productSpec = product.specArr.find(productSpec => productSpec.ID == cartItemSpec.ID)
+              if(productSpec) {
+                productSpec.buyQty = cartItemSpec.buyQty
+                if(productSpec.Enable == 1 && productSpec.buyQty > productSpec.Amount){
+                  productSpec.buyQty = productSpec.Amount;
+                }
               }
-            }
-          })
-        }
-        // 都沒規格
-        else if(!cartItem.specArr && !product.specArr) {
-          product.buyQty = cartItem.buyQty;
-          if(product.Enable == 1 && product.buyQty > product.Amount){
-            product.buyQty = product.Amount;
+            })
           }
-        }
+          // 都沒規格
+          else if(!cartItem.specArr && !product.specArr) {
+            product.buyQty = cartItem.buyQty;
+            if(product.Enable == 1 && product.buyQty > product.Amount){
+              product.buyQty = product.Amount;
+            }
+          }
 
-        // product的購買數量如果為0設為null
-        let mainTotalQty = getMainTotalQty(product)
-        if(mainTotalQty < 1) {
-          cartItem = null
-        }
+          // product的購買數量如果為0設為null
+          let mainTotalQty = getMainTotalQty(product)
+          if(mainTotalQty < 1) {
+            cartItem = null
+          }
 
-        if(cartItem) {
-          // 加價購
-          methods.asyncAddPrice(cartItem, product)
+          if(cartItem) {
+            // 加價購
+            methods.asyncAddPrice(cartItem, product)
 
-          // copy列表item => 購物車item
-          cart.value[cartIndex] = JSON.parse(JSON.stringify(product))
-        }
+            // copy列表item => 購物車item
+            cart.value[cartIndex] = JSON.parse(JSON.stringify(product))
+          }
+        } 
       })
       cart.value = cart.value.filter(item => item)
 
@@ -152,7 +153,7 @@ export const useHandlerInit = defineStore('handlerInit', () => {
             else if(!cartAddPriceItem.specArr && !productAddPriceItem.specArr) {
               productAddPriceItem.buyQty = cartAddPriceItem.buyQty;
               if(productAddPriceItem.Enable == 1) {
-                let othersQty = othersAddPriceBuyQty(product.ID, productAddPriceItem);
+                let othersQty = getOthersAddPriceBuyQty(product.ID, productAddPriceItem);
                 if( productAddPriceItem.buyQty + othersQty > productAddPriceItem.Amount ){
                   if(othersQty == 0) productAddPriceItem.buyQty = productAddPriceItem.Amount;
                   else {

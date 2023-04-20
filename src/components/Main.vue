@@ -1,5 +1,5 @@
 <template>
-  <div class="main" v-if="showPage === 'main'">
+  <div class="main">
     <div class="logo_name">
       <img :src="store.Logo" class="logo" v-if="store.Logo" @click="urlPush('/')">
     </div>
@@ -95,10 +95,10 @@
   import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
 
-  let { store, categories, category, arrangement, showPage } = storeToRefs(useCommon())
+  let { store, arrangement, showPage } = storeToRefs(useCommon())
   let { urlPush } = useCommon()
   let { numberThousands } = useCommon()
-  let { products, productsRerndered, favorite } = storeToRefs(useProducts())
+  let { categories, category, products, productsRerndered, favorite } = storeToRefs(useProducts())
   let { showSelect, toggleFavorite } = useProducts()
 
   // state ==================================================

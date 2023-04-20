@@ -1,7 +1,7 @@
 <template>
   <div class="tr p-1">
     <div class="td picName jcs">
-      <div class="pic" :style="{backgroundImage :`url(${addPrice ? product.Img : product.Img1})`}">
+      <div class="pic" :style="{backgroundImage :`url(${addPrice ? product.Img : product.imgArr[0]})`}">
         <div class="tag" v-if="addPrice">加價購</div>
       </div>
       <div class="name">{{product.Name}}</div>

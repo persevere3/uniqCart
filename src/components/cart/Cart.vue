@@ -56,8 +56,9 @@
 
   // watch ==================================================
   watch(stepPage, (newV, oldV) => {
+    console.log('watch: stepPage', newV, oldV)
     cartModal.value.scrollTop = 0;
-    if(showPage.value == 'cart') getTotal(newV - 1)
+    getTotal(newV - 1)
     if(newV == 2) getUserInfo()
   })
 

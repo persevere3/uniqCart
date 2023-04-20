@@ -13,7 +13,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   } = storeToRefs(useCommon())
   let { login, getCategories, getUserInfo , showMessage, urlPush } = useCommon()
   let { successUsedDiscountCode, total, transport, pay_method, 
-    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng 
+    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng ,
   } = storeToRefs(useCart())
   let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
   let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
@@ -228,7 +228,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       }
       // company account
       else if(pay_method.value == 'ATM' && store.value.ATM == 1){
-        bank = require('@/json/bank.json');
         isConfirmATM.value = true;
       }
       else if(pay_method.value == 'PayOnDelivery') {

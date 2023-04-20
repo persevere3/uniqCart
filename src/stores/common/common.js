@@ -1,4 +1,4 @@
-import { getSiteApi, getStoreApi } from '@/api/index';
+import { loginApi, getSiteApi, getStoreApi } from '@/api/index';
 
 import { useFilters }  from './filters'
 
@@ -10,7 +10,7 @@ export const useCommon = defineStore('common', () => {
     store: {},
     arrangement: 0,
 
-    isShowFavorite,
+    isShowFavorite: false,
 
     showPage: 'main',
 

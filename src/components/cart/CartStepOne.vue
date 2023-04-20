@@ -11,16 +11,17 @@
       </div>
       <div class="tbody">
         <template>
+          {{ cart }}
           <div v-for="item in cart">
             <!-- 有規格 -->
             <template v-if="item.specArr">
               <template v-for="spec in item.specArr " :key="spec.ID">
-                <CartStepOneTr v-if="spec.buyQty > 0" :main="item" :spec="spec" />
+                <CartStepOneTr :main="item" :spec="spec" />
               </template>
             </template>
             <!-- 沒有規格 -->
             <template v-else>
-              <CartStepOneTr v-if="item.buyQty > 0" :main="item" />
+              <CartStepOneTr :main="item" />
             </template>
 
             <!-- 加價購 -->

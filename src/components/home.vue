@@ -1,12 +1,12 @@
 <template>
   <div class="productContainer" @click.stop="isShowFavorite = false">
-    <Main />
+    <Main v-if="showPage === 'main'" />
     <SelectProduct v-if="selectProduct.ID" :style="`height:${innerHeight}px`" />
     <Cart v-if="showPage === 'cart'" :style="`height:${innerHeight}px`" />
     <!-- 訂購須知 配送須知 隱私權聲明 -->
     <Notice v-if="showPage === 'Content' || showPage === 'Description' || showPage === 'PrivacyPolicy'" :style="`height:${innerHeight}px`"/>
     
-    <CartIcon />
+    <CartIcon v-if="showPage === 'main' && !selectProduct.ID" />
     <FavoriteIcon />
 
     <Confirm />
@@ -30,10 +30,12 @@
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useHandlerInit }  from '@/stores/handlerInit'
+import { getTransitionRawChildren } from 'vue'
 
   let { user_account, isShowFavorite, showPage } = storeToRefs(useCommon())
   let { selectProduct } = storeToRefs(useProducts())
   let { stepPage, total_bonus } = storeToRefs(useCart())
+  let { getTotal } = useCart()
   let { info, userInfo } = storeToRefs(useInfo())
   let { getSiteHandler } = useHandlerInit()
 
@@ -55,8 +57,11 @@
 
   // watched ==================================================
   watch(showPage, (newV, oldV) => {
-    if(newV != 'selectProduct') selectProduct.value = {}
-    if(newV == 'cart' && newV != oldV) stepPage.value = 1
+    console.log('watch: showPage', newV, oldV)
+    if(newV == 'cart') {
+      stepPage.value = 1
+      getTotal(1)
+    }
   })
 
   watch(user_account, (newV, oldV) => {

@@ -1,5 +1,7 @@
 import { getTotalApi, discountApi } from '@/api/index'
 
+import bank_json from '@/json/bank'
+
 import { useCommon }  from '@/stores/common/common'
 
 export const useCart = defineStore('cart', () => {
@@ -36,7 +38,7 @@ export const useCart = defineStore('cart', () => {
     isOrderIng: false,
 
     payResult: {},
-    bank: '',
+    bank: bank_json,
     ECPay_form: '',
   })
 
@@ -97,10 +99,10 @@ export const useCart = defineStore('cart', () => {
     async getTotal(isStepTwo) {
       console.log('getTotal')
 
-      let { id, qry, additionalid, additionalqry, specificationid, specificationqty } = createCartStrObj();
+      let { id, qry, additionalid, additionalqry, specificationid, specificationqty } = methods.createCartStrObj();
       if(!id && !specificationid) return
 
-      paramsObj = {
+      let paramsObj = {
         id,
         qry,
         additionalid,
@@ -147,7 +149,7 @@ export const useCart = defineStore('cart', () => {
 
         'ItemName': '',
       };
-      cart.value.forEach(function(cartItem) {
+      state.cart.forEach(function(cartItem) {
         let nowPriceStr = numberThousands(cartItem.NowPrice);
 
         // 有規格
@@ -253,7 +255,7 @@ export const useCart = defineStore('cart', () => {
     },
 
     // 其他主商品下 此加價購商品的購買數量 總和
-    othersAddPriceBuyQty(id, item, spec) {
+    getOthersAddPriceBuyQty(id, item, spec) {
       let filterCart = state.cart.filter(cartItem => cartItem.ID != id && cartItem.addPrice && cartItem.addPrice.length > 0)
       return filterCart.reduce((accumulator, cartItem) => {
         let addPriceItem = cartItem.addPrice.find(addPriceItem => addPriceItem.ID == item.ID)

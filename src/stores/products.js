@@ -25,7 +25,7 @@ export const useProducts = defineStore('products', () => {
   // methods ==================================================
   const methods = {
     async getCategories() {
-      let params = `Preview=${site.Preview}`;
+      let params = `Preview=${site.value.Preview}`;
       try {
         let res = await getCategoriesApi(params)
         if(res.data.errormessage) {
@@ -119,6 +119,7 @@ export const useProducts = defineStore('products', () => {
             addPriceItem.isShowOption = false;
           }
           else addPriceItem.buyQty = 0
+          addPriceItem.Img = 'https://demo.uniqcarttest.tk' + addPriceItem.Img
         })
 
         item.addPrice = addPrice
