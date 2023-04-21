@@ -93,7 +93,6 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
           setCart()
           
           getTotal(0);
-          return
         }
       }
       // 購物車原本沒有
@@ -186,7 +185,8 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       else productAddPriceItem.buyQty = qty
 
       // 更新 購物車
-      cart.value.find(cartItem => cartItem.ID == main.ID).addPrice = JSON.parse(JSON.stringify(product.addPrice))
+      let cartItem = cart.value.find(cartItem => cartItem.ID == main.ID)
+      if(cartItem) cartItem.addPrice = JSON.parse(JSON.stringify(product.addPrice))
       setCart()
 
       // 取得 金額總計

@@ -1,5 +1,6 @@
 import { useCommon }  from '@/stores/common/common'
 import { useCart } from './cart'
+import { useProducts } from './products'
 import { useInfo } from './info'
 import { useVerify } from './verify'
 import { useHandlerInit }  from '@/stores/handlerInit'
@@ -11,11 +12,12 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   let { site, store, user_account, showPage, 
     isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM 
   } = storeToRefs(useCommon())
-  let { login, getCategories, getUserInfo , showMessage, urlPush } = useCommon()
-  let { successUsedDiscountCode, total, transport, pay_method, 
-    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng ,
+  let { login, getUserInfo , showMessage, urlPush } = useCommon()
+  let { cart, successUsedDiscountCode, total, transport, pay_method, 
+    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng , payResult
   } = storeToRefs(useCart())
-  let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
+  let { setCart, unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
+  let { getCategories } = useProducts()
   let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
   } = storeToRefs(useInfo())
@@ -48,9 +50,9 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       
       is_click_finish_order.value = true;
 
-      let verify_arr = [info.purchaser_email, info.purchaser_name, info.purchaser_number, 
-                        info.receiver_name, info.receiver_number]
-      if(transport.value == 1) verify_arr.push(info.address)
+      let verify_arr = [info.value.purchaser_email, info.value.purchaser_name, info.value.purchaser_number, 
+                        info.value.receiver_name, info.value.receiver_number]
+      if(transport.value == 1) verify_arr.push(info.value.address)
 
       let v = verify(...verify_arr)
       if(v) {
@@ -87,7 +89,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       let formDataObj = {
         // 商店
         'Site': site.value.Site,
-        'Name': site.value.Name,
+        'StoreName': site.value.Name,
         'productName': store.value.Name,
         'LogoUrl': location.origin + store.value.PayLogo,
         'Preview': site.value.Preview,
@@ -110,6 +112,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         'Email': info.value.purchaser_email.value,
         'Name': info.value.purchaser_name.value,
         'Phone': info.value.purchaser_number.value,
+        'Phone2': info.value.purchaser_number.value,
         'Receiver': info.value.receiver_name.value,
         'ReceiverPhone': info.value.receiver_number.value,
         'Address': receiver_address.value,

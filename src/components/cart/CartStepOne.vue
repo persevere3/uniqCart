@@ -10,37 +10,34 @@
         <div class="th delete"></div>
       </div>
       <div class="tbody">
-        <template>
-          {{ cart }}
-          <div v-for="item in cart">
-            <!-- 有規格 -->
-            <template v-if="item.specArr">
-              <template v-for="spec in item.specArr " :key="spec.ID">
-                <CartStepOneTr :main="item" :spec="spec" />
-              </template>
+        <div v-for="item in cart">
+          <!-- 有規格 -->
+          <template v-if="item.specArr">
+            <template v-for="spec in item.specArr " :key="spec.ID">
+              <CartStepOneTr v-if="spec.buyQty > 0" :main="item" :spec="spec"/>
             </template>
-            <!-- 沒有規格 -->
-            <template v-else>
-              <CartStepOneTr :main="item" />
-            </template>
+          </template>
+          <!-- 沒有規格 -->
+          <template v-else>
+            <CartStepOneTr v-if="item.buyQty > 0" :main="item" />
+          </template>
 
-            <!-- 加價購 -->
-            <template>
-              <div v-for="item2 in item.addPrice">
-                <!-- 有規格 -->
-                <template v-if="item2.specArr">
-                  <template v-for="spec2 in item2.specArr" :key="spec2.ID">
-                    <CartStepOneTr v-if="spec2.buyQty > 0" :main="item" :addPrice="item2" :spec="spec2" :cartSpecCheckedId="cartSpecCheckedId" />
-                  </template>
+          <!-- 加價購 -->
+          <template v-if="item.addPrice">
+            <div v-for="item2 in item.addPrice">
+              <!-- 有規格 -->
+              <template v-if="item2.specArr">
+                <template v-for="spec2 in item2.specArr" :key="spec2.ID">
+                  <CartStepOneTr v-if="spec2.buyQty > 0" :main="item" :addPrice="item2" :spec="spec2" :cartSpecCheckedId="cartSpecCheckedId" />
                 </template>
-                <!-- 沒有規格 -->
-                <template v-else>
-                  <CartStepOneTr v-if="item2.buyQty > 0" :main="item" :addPrice="item2" :cartSpecCheckedId="cartSpecCheckedId" />
-                </template>
-              </div>
-            </template>
-          </div>
-        </template>
+              </template>
+              <!-- 沒有規格 -->
+              <template v-else>
+                <CartStepOneTr v-if="item2.buyQty > 0" :main="item" :addPrice="item2" :cartSpecCheckedId="cartSpecCheckedId" />
+              </template>
+            </div>
+          </template>
+        </div>
       </div>
     </div>
 

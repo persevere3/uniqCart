@@ -221,15 +221,13 @@
     is_userModal: false,
   })
   let { r_name, r_account, r_verify_code, r_mail, r_verify_code2, second, r_birthday, sex, r_password, r_confirm_password, r_is_agree, is_userModal } = toRefs(state)
-  r_confirm_password.rules.confirm.password = r_password
+  r_confirm_password.value.rules.confirm.password = r_password.value
 
-  // watch ==================================================
-  watch(isConfirmRegister, (v) => {
-    if(v) {
-      state.r_account = info.value.purchaser_number.value;
-      state.r_name = info.value.purchaser_name.value;
-      state.r_mail = info.value.purchaser_email.value;
-    }
+  // onMounted ==================================================
+  onMounted(() => {
+    state.r_account = info.value.purchaser_number.value;
+    state.r_name = info.value.purchaser_name.value;
+    state.r_mail = info.value.purchaser_email.value;
   })
   
   // methods ==================================================

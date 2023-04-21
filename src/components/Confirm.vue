@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <!-- 該mail已使用過折扣碼 -->
+  <!-- 已使用過折扣碼 -->
   <div class="confirm" v-if="isConfirmDiscountCodeUsed">
     <div class="frame">
       <div class="border"></div>

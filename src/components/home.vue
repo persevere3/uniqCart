@@ -30,7 +30,6 @@
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useHandlerInit }  from '@/stores/handlerInit'
-import { getTransitionRawChildren } from 'vue'
 
   let { user_account, isShowFavorite, showPage } = storeToRefs(useCommon())
   let { selectProduct } = storeToRefs(useProducts())
