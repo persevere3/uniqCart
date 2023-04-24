@@ -29,14 +29,14 @@
   import { useProducts }  from '@/stores/products'
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
-  import { useHandlerInit }  from '@/stores/handlerInit'
+  import { useHandlerCommon }  from '@/stores/handlerCommon'
 
   let { user_account, isShowFavorite, showPage } = storeToRefs(useCommon())
   let { selectProduct } = storeToRefs(useProducts())
   let { stepPage, total_bonus } = storeToRefs(useCart())
   let { getTotal } = useCart()
   let { info, userInfo } = storeToRefs(useInfo())
-  let { getSiteHandler } = useHandlerInit()
+  let { getSiteHandler } = useHandlerCommon()
 
   // state ==================================================
   const state = reactive({

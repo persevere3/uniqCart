@@ -3,18 +3,17 @@ import { useCart } from './cart'
 import { useProducts } from './products'
 import { useInfo } from './info'
 import { useVerify } from './verify'
-import { useHandlerInit }  from '@/stores/handlerInit'
+import { useHandlerCommon }  from '@/stores/handlerCommon'
 
 import { createOrderApi, registerApi } from '@/api/index'
+import { reactive } from 'vue'
 
 export const useHandlerCart = defineStore('handlerCart', () => {
   // store ==================================================
-  let { site, store, user_account, showPage, 
-    isConfirmDiscountCodeUsed, isConfirmToPay, isConfirmIsRegister, isConfirmATM 
-  } = storeToRefs(useCommon())
+  let { site, store, user_account, showPage } = storeToRefs(useCommon())
   let { login, getUserInfo , showMessage, urlPush } = useCommon()
   let { cart, successUsedDiscountCode, total, transport, pay_method, 
-    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng , payResult
+    is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng , payResult, ECPay_form_value
   } = storeToRefs(useCart())
   let { setCart, unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
   let { getCategories } = useProducts()
@@ -22,7 +21,16 @@ export const useHandlerCart = defineStore('handlerCart', () => {
     has_address, is_save_address, userInfo,
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
-  let { getProductsHandler } = useHandlerInit()
+  let { getProductsHandler } = useHandlerCommon()
+
+  // state 
+  const state = reactive({
+    isConfirmToPay: false,
+    isConfirmDiscountCodeUsed: false,
+    isConfirmATM: false,
+    isConfirmIsRegister: false,
+    isConfirmRegister: false,
+  })
 
   // computed ==================================================  
   const receiver_address = computed(() => {
@@ -73,7 +81,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
     async cancelDiscountCodeCreateOrder() {
       unDiscount()
       await getTotal(1)
-      isConfirmDiscountCodeUsed.value = false;
+      state.isConfirmDiscountCodeUsed = false;
       methods.createOrder();
     },
     async createOrder() {
@@ -151,17 +159,17 @@ export const useHandlerCart = defineStore('handlerCart', () => {
           payResult.value = res.data;
   
           // 沒有開啟會員功能
-          if(!parseInt(site.value.MemberFuction)) isConfirmToPay = true;
+          if(!parseInt(site.value.MemberFuction)) state.isConfirmToPay = true;
           else {
             // 沒有登入
             if(!user_account.value) {
               let hasAcount = await methods.checkAccount();
-              if(hasAcount) isConfirmToPay.value = true; 
-              else isConfirmIsRegister.value = true;
+              if(hasAcount) state.isConfirmToPay = true; 
+              else state.isConfirmIsRegister = true;
             }
             // 登入
             else {
-              isConfirmToPay.value = true;
+              state.isConfirmToPay = true;
               getUserInfo()
             }
           }
@@ -173,7 +181,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         else {
           if(res.data.message.indexOf('已使用過折扣碼') > -1) {
             isOrderIng.value = false;
-            isConfirmDiscountCodeUsed.value = true;
+            state.isConfirmDiscountCodeUsed = true;
             return;
           }
           
@@ -223,7 +231,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       }
     },
     toPay() {
-      isConfirmToPay.value = false;
+      state.isConfirmToPay = false;
 
       // LinePay
       if(pay_method.value == 'LinePay'){
@@ -231,7 +239,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       }
       // company account
       else if(pay_method.value == 'ATM' && store.value.ATM == 1){
-        isConfirmATM.value = true;
+        state.isConfirmATM = true;
       }
       else if(pay_method.value == 'PayOnDelivery') {
 
@@ -239,22 +247,23 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       // ecpay
       else {
         if(location.origin.indexOf('demo.uniqcarttest') > -1){
-          ECPay_form.value = `<form id="ECPay_form" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
+          ECPay_form_value.value = `<form id="ECPay_form" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
         } else {
-          ECPay_form.value = `<form id="ECPay_form" action="https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
+          ECPay_form_value.value = `<form id="ECPay_form" action="https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
         }
 
         for(let item in payResult) {
           if(item === 'success' || item === 'message' || item === 'membered') continue
           // EncryptType, TotalAmount, ExpireDate: number，other: string
-          ECPay_form.value += `<input type="${item == 'EncryptType' || item == 'TotalAmount' || item == 'ExpireDate' ? 'number' : 'text'}" name="${item}" value="${payResult.value[item]}">`;
+          ECPay_form_value.value += `<input type="${item == 'EncryptType' || item == 'TotalAmount' || item == 'ExpireDate' ? 'number' : 'text'}" name="${item}" value="${payResult.value[item]}">`;
         }
 
-        ECPay_form.value += `</form>`;
+        ECPay_form_value.value += `</form>`;
 
         setTimeout(()=> {
-          let ECPay_form = document.querySelector('#ECPay_form');
-          ECPay_form.submit();
+          let ECPay_form_dom = document.querySelector('#ECPay_form');
+          console.log(ECPay_form_dom)
+          if(ECPay_form_dom) ECPay_form_dom.submit();
         }, 1000)
       }
     },

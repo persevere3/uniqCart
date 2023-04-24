@@ -2,10 +2,11 @@
   <div class="input_container" :class="{ error: input.is_error }">
     <!-- 日期 -->
     <template v-if="input.type === 'date'" >
-      <date-picker :placeholder="input.placeholder" format="YYYY/MM/DD" 
-        v-model="input.value" @close="verify(input)" @clear="verify(input)"
+      <VueDatePicker :placeholder="input.placeholder" format="yyyy/MM/dd"
+        :enable-time-picker="false"
+        v-model="input.value" @closed="verify(input)" @cleared="verify(input)"
       >
-      </date-picker>
+      </VueDatePicker>
     </template>
     <!-- 一般 -->
     <template v-else>
@@ -29,6 +30,9 @@
 </template>
 
 <script setup>
+  import VueDatePicker from '@vuepic/vue-datepicker';
+  import '@vuepic/vue-datepicker/dist/main.css'
+
   // store ==================================================
   import { useVerify } from '@/stores/verify'
 

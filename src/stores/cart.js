@@ -39,7 +39,7 @@ export const useCart = defineStore('cart', () => {
 
     payResult: {},
     bank: bank_json,
-    ECPay_form: '',
+    ECPay_form_value: '',
   })
 
   // computed ==================================================

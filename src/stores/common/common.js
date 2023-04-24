@@ -16,13 +16,6 @@ export const useCommon = defineStore('common', () => {
 
     //
     messageArr: [],
-
-    // ??? 
-    isConfirmToPay: false,
-    isConfirmDiscountCodeUsed: false,
-    isConfirmATM: false,
-    isConfirmIsRegister: false,
-    isConfirmRegister: false,
   })
 
   // methods ==================================================

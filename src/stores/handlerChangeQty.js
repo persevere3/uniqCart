@@ -1,7 +1,7 @@
 import { useCommon } from './common/common'
 import { useProducts } from './products'
 import { useCart } from './cart'
-import { useHandlerInit }  from '@/stores/handlerInit'
+import { useHandlerCommon }  from '@/stores/handlerCommon'
 
 import { getAmountApi } from '@/api/index';
 
@@ -13,7 +13,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   let { getMainTotalQty } = useProducts()
   let { cart } = storeToRefs(useCart())
   let { setCart, getTotal, getOthersAddPriceBuyQty } = useCart()
-  let { getProductsHandler } = useHandlerInit()
+  let { getProductsHandler } = useHandlerCommon()
 
   // state ==================================================
   const state = reactive({

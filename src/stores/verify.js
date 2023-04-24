@@ -78,10 +78,8 @@ export const useVerify = defineStore('verify', () => {
       }
     },
     verify(...arr) {
-      console.log(arr)
       let is_valid = true;
       for (let item of arr) {
-        console.log(item.rules)
         for (let rule in item.rules) {
           if (!methods[`${rule}_verify`](item)) {
             is_valid = false;

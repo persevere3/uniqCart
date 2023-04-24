@@ -28,7 +28,7 @@
       <div class="message" v-if="!user_account"> 該手機已使用過此折扣碼，按確定取消折扣碼優惠直接完成訂單，按取消重新輸入手機或折扣碼 </div>
       <div class="message" v-else> 該會員已使用過此折扣碼，按確定取消折扣碼優惠直接完成訂單，按取消重新輸入折扣碼 </div>
       <div class="buttonGroup">
-        <div class="button cancel" @click=" isConfirmDiscountCodeUsed = false;"> 取消 </div>
+        <div class="button cancel" @click="isConfirmDiscountCodeUsed = false;"> 取消 </div>
         <div class="button determine" @click="cancelDiscountCodeCreateOrder()"> 確定  </div>
       </div>
     </div>
@@ -90,6 +90,8 @@
 
   <!-- 註冊會員 -->
   <Register v-if="isConfirmRegister" />
+
+  <div class="ECPay_form_container" v-html="ECPay_form_value"></div>
 </template>
 
 <script setup>
@@ -102,9 +104,10 @@
   import { useInfo }  from '@/stores/info'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
-  let { user_account, store, isConfirmToPay, isConfirmDiscountCodeUsed, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useCommon())
+  let { user_account, store } = storeToRefs(useCommon())
   let { copy, urlPush } = useCommon()
-  let { bank } = storeToRefs(useCart())
+  let { bank, ECPay_form_value } = storeToRefs(useCart())
   let { info, pay_method } = storeToRefs(useInfo())
+  let { isConfirmToPay, isConfirmDiscountCodeUsed, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useHandlerCart())
   let { cancelDiscountCodeCreateOrder, toPay } = useHandlerCart()
 </script>

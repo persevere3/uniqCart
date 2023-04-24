@@ -2,9 +2,8 @@ import { useCommon }  from '@/stores/common/common'
 import { useProducts } from './products'
 import { useCart } from './cart'
 import { useInfo } from './info'
-import { useHandlerCart } from '@/stores/handlerCart'
 
-export const useHandlerInit = defineStore('handlerInit', () => {
+export const useHandlerCommon = defineStore('handlerCommon', () => {
   // store ==================================================
   let { site, user_account, showPage } = storeToRefs(useCommon())
   let { getSite, getStore, showMessage } = useCommon()

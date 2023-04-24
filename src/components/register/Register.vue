@@ -74,14 +74,17 @@
 
   // store ==================================================
   import { useCommon } from '@/stores/common/common'
-  import { useCart } from '@/stores/cart'
+  import { useHandlerCart } from '@/stores/handlerCart'
   import { useInfo } from '@/stores/info'
+  import { useVerify } from '@/stores/verify'
 
-  let { site, store, isConfirmRegister } = storeToRefs(useCommon())
+  let { site, store } = storeToRefs(useCommon())
   let { login, showMessage } = useCommon()
   let { unescapeHTML } = useCommon()
-  let { toPay } = useCart()
+  let { isConfirmRegister } = storeToRefs(useHandlerCart())
+  let { toPay } = useHandlerCart()
   let { info, pay_method } = storeToRefs(useInfo())
+  let { verify } = useVerify()
 
   // state ==================================================
   const state = reactive({
@@ -225,9 +228,9 @@
 
   // onMounted ==================================================
   onMounted(() => {
-    state.r_account = info.value.purchaser_number.value;
-    state.r_name = info.value.purchaser_name.value;
-    state.r_mail = info.value.purchaser_email.value;
+    state.r_account.value = info.value.purchaser_number.value;
+    state.r_name.value = info.value.purchaser_name.value;
+    state.r_mail.value = info.value.purchaser_email.value;
   })
   
   // methods ==================================================

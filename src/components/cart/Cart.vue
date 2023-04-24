@@ -30,8 +30,6 @@
         <div class="top"></div>
         <div class="bottom">POWERED AND SECURED BY UNIQ Micronet</div>
       </div>
-
-      <div class="ECPay_form_container" v-html="ECPay_form"></div>
     </div>
   </div>
 </template>
@@ -46,9 +44,9 @@
   import { useInfo }  from '@/stores/info'
   import { useCart }  from '@/stores/cart'
 
-  let { showPage } = storeToRefs(useCommon())
+  let { user_account, showPage } = storeToRefs(useCommon())
   let { getUserInfo } = useInfo()
-  let { cartLength, successUsedDiscountCode, stepPage, ECPay_form } = storeToRefs(useCart())
+  let { cartLength, successUsedDiscountCode, stepPage } = storeToRefs(useCart())
   let { getTotal } = useCart()
 
   // ref 
@@ -59,7 +57,7 @@
     console.log('watch: stepPage', newV, oldV)
     cartModal.value.scrollTop = 0;
     getTotal(newV - 1)
-    if(newV == 2) getUserInfo()
+    if(newV == 2 && user_account.value) getUserInfo()
   })
 
   watch(successUsedDiscountCode, () => {
