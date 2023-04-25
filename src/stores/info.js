@@ -87,6 +87,11 @@ export const useInfo = defineStore('info', () => {
     has_address: false,
     is_save_address: false,
 
+    // 
+    storeid: '',
+    storename: '',
+    storeaddress: '',
+
     //
     info_message:'',
 
@@ -115,11 +120,11 @@ export const useInfo = defineStore('info', () => {
 
         if(res.data.status) {
           state.userInfo = res.data.datas[0][0]
-          state.userInfo.address_obj = methods.createAddressObj(state.userInfo.address)
+          state.userInfo.address_obj = methods.createAddressObj(state.userInfo.Adress)
 
-          info.value.purchaser_email.value = userInfo.value.Email;
-          info.value.purchaser_name.value = userInfo.value.Name;
-          info.value.purchaser_number.value = userInfo.value.Phone;
+          state.info.purchaser_email.value = state.userInfo.Email;
+          state.info.purchaser_name.value = state.userInfo.Name;
+          state.info.purchaser_number.value = state.userInfo.Phone;
         }
         else {
           user_account.value = '';

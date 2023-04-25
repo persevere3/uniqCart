@@ -55,7 +55,7 @@
       </div>
       <div class="tip">
         <i class="fas fa-exclamation-circle"></i>
-        請在匯款成功後前往 <div class="a" @click="urlPush(`/order.html?phone=${info.purchaser_number.value}&mail=${info.purchaser_email.value}`, true)"> 訂單列表 </div>
+        請在匯款成功後前往 <div class="a" @click="urlPush(`${getPathname('order')}?phone=${info.purchaser_number.value}&mail=${info.purchaser_email.value}`, true)"> 訂單列表 </div>
         輸入匯款帳戶末6碼工作人員確認後將儘快為您安排出貨。
       </div>
 
@@ -105,7 +105,7 @@
   import { useHandlerCart }  from '@/stores/handlerCart'
 
   let { user_account, store } = storeToRefs(useCommon())
-  let { copy, urlPush } = useCommon()
+  let { copy, urlPush, getPathname } = useCommon()
   let { bank, ECPay_form_value } = storeToRefs(useCart())
   let { info, pay_method } = storeToRefs(useInfo())
   let { isConfirmToPay, isConfirmDiscountCodeUsed, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useHandlerCart())

@@ -6,12 +6,12 @@ import { useVerify } from './verify'
 import { useHandlerCommon }  from '@/stores/handlerCommon'
 
 import { createOrderApi, registerApi } from '@/api/index'
-import { reactive } from 'vue'
+import { reactive, toRefs } from 'vue'
 
 export const useHandlerCart = defineStore('handlerCart', () => {
   // store ==================================================
   let { site, store, user_account, showPage } = storeToRefs(useCommon())
-  let { login, getUserInfo , showMessage, urlPush } = useCommon()
+  let { login, showMessage, urlPush } = useCommon()
   let { cart, successUsedDiscountCode, total, transport, pay_method, 
     is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng , payResult, ECPay_form_value
   } = storeToRefs(useCart())
@@ -20,6 +20,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
   } = storeToRefs(useInfo())
+  let { getUserInfo } = useInfo()
   let { verify } = useVerify()
   let { getProductsHandler } = useHandlerCommon()
 
@@ -61,7 +62,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       let verify_arr = [info.value.purchaser_email, info.value.purchaser_name, info.value.purchaser_number, 
                         info.value.receiver_name, info.value.receiver_number]
       if(transport.value == 1) verify_arr.push(info.value.address)
-
       let v = verify(...verify_arr)
       if(v) {
         if (transport.value !== '0' && 
@@ -93,7 +93,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       let saveAddressStr = '';
       if(userInfo.value.address_obj && Object.keys(userInfo.value.address_obj).length < 3 && !has_address.value && is_save_address.value) {
         saveAddressStr = `${id}_ _${receiver_address.value.replace(/ /g, '_ _')}`
-      } 
+      }
       let formDataObj = {
         // 商店
         'Site': site.value.Site,
@@ -145,6 +145,12 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         'MemberWallet': use_bonus.value,
         'MemberBonus': member_bonus.value,
       }
+      // 7-11
+      if(transport == 3) {
+        formDataObj['storeid'] = storeid
+        formDataObj['storename'] = storename
+        formDataObj['storeaddress'] = storeaddress
+      }
       let formData = new FormData();
       for(let key in formDataObj) formData.append(key, formDataObj[key])
 
@@ -157,7 +163,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         }
         if(res.data.success) {
           payResult.value = res.data;
-  
           // 沒有開啟會員功能
           if(!parseInt(site.value.MemberFuction)) state.isConfirmToPay = true;
           else {
@@ -262,7 +267,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
 
         setTimeout(()=> {
           let ECPay_form_dom = document.querySelector('#ECPay_form');
-          console.log(ECPay_form_dom)
           if(ECPay_form_dom) ECPay_form_dom.submit();
         }, 1000)
       }
@@ -284,6 +288,8 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   }
 
   return {
+    ...toRefs(state),
+    receiver_address,
     ...methods
   }
 })

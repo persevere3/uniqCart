@@ -9,8 +9,11 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
   let { getSite, getStore, showMessage } = useCommon()
   let { category, products } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
-  let { cart, cartOLength, cartLength, bonus_array } = storeToRefs(useCart())
-  let { getCart, setCart, computedCartLength, filter_use_bonus, getOthersAddPriceBuyQty } = useCart()
+  let { cart, cartOLength, cartLength, stepIndex, discountCode, useCodeSuccess, transport, pay_method, 
+    bonus_array, invoice_type, invoice_title, invoice_uniNumber, is_use_bonus, use_bonus
+  } = storeToRefs(useCart())
+  let { getCart, setCart, computedCartLength, filter_use_bonus, getTotal, getOthersAddPriceBuyQty } = useCart()
+  let { info } = torefs(useInfo())
   let { getUserInfo } = useInfo()
 
   // methods ==================================================
@@ -34,15 +37,14 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
 
       getFavorite();
 
-      console.log('getProducts => getCart ====================')
       await methods.getCartHandler();
 
       methods.handleQuery()
     },
 
-    getCartHandler() {
+    getCartHandler(selectProductID) {
       return new Promise(resolve => {
-        getCart()
+        getCart(selectProductID)
 
         // 購物車有商品，列表沒有 => 商品從購物車中移除
         // 購物車商品有加價購，列表商品沒有加價購 => getAddPrice()
@@ -67,6 +69,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
           computedCartLength();
           if(cartOLength.value != cartLength.value) showMessage('部分商品下架，請重新確認', false);
           await filter_use_bonus()
+          await getTotal()
           resolve()
         });
 
@@ -192,6 +195,28 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         showMessage('付款成功', true)
       }
 
+      // 7-11
+      let storeid = searchObj['storeid']
+      let storename = searchObj['storename']
+      let storeaddress = searchObj['storeaddress']
+
+      let spid = searchObj['spid'];
+      if(spid) {
+        for(let i = 0; i < products.value.length; i++) {
+          if(products.value[i].ID == spid) {
+            selectProduct.value = products.value[i]; 
+            showPage.value = 'singleProduct';
+
+            // 7-11 取貨付款
+            methods.getConvenienceStore(storeid, storename, storeaddress, spid)
+            
+            methods.getCartHandler(selectProduct.value.ID);
+
+            return
+          }
+        }
+      }
+      
       // id 查看某商品
       let id = searchObj['id'];
       if(id) {
@@ -205,7 +230,75 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         window.history.replaceState({}, document.title, replaceUrl);
         showPage.value = 'cart'
       }
-    }
+
+      methods.getConvenienceStore(storeid, storename, storeaddress)
+    },
+
+    // 7-11
+    getConvenienceStore(storeid, storename, storeaddress, spid) {
+      let vm = this
+      if(!storeid || !storename || !storeaddress) return
+
+      vm.storeid = storeid
+      vm.storename = decodeURI(storename)
+      vm.storeaddress = decodeURI(storeaddress)
+
+      if(spid) {
+        window.history.replaceState({}, document.title, `/cart/?spid=${spid}`);
+      }
+      else {
+        window.history.replaceState({}, document.title, "/cart/");
+        showPage.value = 'cart'
+        stepIndex.value = 2
+      }
+
+      methods.returnInfo()
+    },
+    pickStore() {
+      let order_info = {
+        discountCode: discountCode.value,
+        useCodeSuccess: useCodeSuccess.value,
+
+        info: {
+          purchaser_email: info.value.purchaser_email,
+          purchaser_name: info.value.purchaser_name,
+          purchaser_number: info.value.purchaser_number,
+          receiver_name: info.value.receiver_name,
+          receiver_number: info.value.receiver_number,
+          info_message: info.value.info_message, 
+        },
+
+        transport: transport.value,
+        pay_method: pay_method.value,
+  
+        invoice_type: invoice_type.value,
+        invoice_title: invoice_title.value,
+        invoice_uniNumber: invoice_uniNumber.value,
+
+        is_use_bonus: is_use_bonus.value,
+        use_bonus: use_bonus.value,
+      }
+      localStorage.setItem('order_info', JSON.stringify(order_info));
+      methods.urlPush(`https://emap.presco.com.tw/c2cemap.ashx?url=${location.origin}/interface/store/SpmarketAddress${this.showPage == 'singleProduct' ? '?spid=' + this.selectProduct.ID : ''}`);
+    },
+    returnInfo() {
+      let order_info = JSON.parse(localStorage.getItem('order_info')) || {};
+
+      discountCode.value = order_info.discountCode
+      useCodeSuccess.value = order_info.useCodeSuccess
+
+      info.value =  order_info.info
+
+      transport.value = order_info.transport
+      pay_method.value = order_info.pay_method
+      
+      invoice_type.value = order_info.invoice_type
+      invoice_title.value = order_info.invoice_title
+      invoice_uniNumber.value = order_info.invoice_uniNumber
+
+      is_use_bonus.value = order_info.is_use_bonus
+      use_bonus.value = order_info.use_bonus
+    },
   }
 
   return {

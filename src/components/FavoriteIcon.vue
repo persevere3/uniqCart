@@ -1,6 +1,6 @@
 <template>
   <!-- icon  -->
-  <div class="favoriteIcon" v-show="showPage === 'main' && Object.keys(favorite).length" @click.stop="isShowFavorite = !isShowFavorite">
+  <div class="favoriteIcon" @click.stop="isShowFavorite = !isShowFavorite">
     <i class="fas fa-heart fa-2x"></i>
     <div class="num">
       {{Object.keys(favorite).length}}
@@ -11,7 +11,7 @@
   <div class="favorite_container" v-show="showPage === 'main' && Object.keys(favorite).length" :class="{hover : isShowFavorite}">
     <ul class="favorite_items">
       <template v-for="item in favorite">
-        <li @click.stop="showSelect(item.ID)">
+        <li @click.stop="showSelect(item)">
           <div class="img_and_name">
             <div class="img" :style="{backgroundImage: `url(${item.imgArr[0]})`}"></div>
             <div class="name"> {{ item.Name }} </div>

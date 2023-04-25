@@ -60,9 +60,14 @@ export const useCart = defineStore('cart', () => {
 
   // methods ==================================================
   const methods = {
-    getCart() {
-      if(user_account.value) state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@${user_account.value}@cart`)) || [];
-      else state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@cart`)) || [];
+    getCart(selectProductID) {
+      if(selectProductID) {
+        state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@${selectProductID}@cart`)) || [];
+      }
+      else {
+        if(user_account.value) state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@${user_account.value}@cart`)) || [];
+        else state.cart = JSON.parse(localStorage.getItem(`${site.value.Name}@cart`)) || [];
+      }
 
       methods.computedCartLength();
       state.cartOLength = state.cartLength;
@@ -102,6 +107,8 @@ export const useCart = defineStore('cart', () => {
       let { id, qry, additionalid, additionalqry, specificationid, specificationqty } = methods.createCartStrObj();
       if(!id && !specificationid) return
 
+      isStepTwo = isStepTwo ? 1 : 0
+
       let paramsObj = {
         id,
         qry,
@@ -109,7 +116,7 @@ export const useCart = defineStore('cart', () => {
         additionalqry,
         specificationid,
         specificationqty,
-        type: isStepTwo ? 1 : 0,
+        type: isStepTwo,
         code: state.successUsedDiscountCode,
         shipping: state.transport == 0 ? 0 : state.transport * 1 + 1,
         memberWallet: state.is_use_bonus ? state.use_bonus : 0, 
@@ -246,12 +253,12 @@ export const useCart = defineStore('cart', () => {
 
       state.use_bonus = number(state.use_bonus)
       
-      if(use_bonus.value > 0) {
+      if(state.use_bonus > 0) {
         let use_bonus_max = Math.min(state.total_bonus * 1, state.total.Total * 1 - state.total.Discount * 1 - state.total.DiscountCode * 1)
-        if(use_bonus.value > use_bonus_max) state.use_bonus = use_bonus_max
+        if(state.use_bonus > use_bonus_max) state.use_bonus = use_bonus_max
       }
 
-      await methods.getTotal(isStepTwo)
+      await methods.getTotal(2)
     },
 
     // 其他主商品下 此加價購商品的購買數量 總和

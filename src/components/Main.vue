@@ -1,7 +1,23 @@
 <template>
   <div class="main">
     <div class="logo_name">
-      <img :src="store.Logo" class="logo" v-if="store.Logo" @click="urlPush('/')">
+      <img :src="store.Logo" class="logo" v-if="store.Logo" @click="urlPush(getPathname('index'))">
+    </div>
+    <div class="menu">
+      <ul>
+        <li @click="urlPush(getPathname('index'))">
+          <i class="fa-solid fa-house"></i> 
+          <span> 首頁 </span>
+        </li>
+        <li @click="urlPush(getPathname('order'))">
+          <i class="fas fa-clipboard-list"></i>
+          <span class="none650"> 訂單 </span>
+        </li>
+        <li v-if="site.MemberFuction * 1" @click="user_account ? urlPush(getPathname('info')) : urlPush(getPathname('user'))">
+          <i class="fa-solid fa-user"></i> 
+          <span class="none650"> 會員中心 </span>
+        </li>
+      </ul>
     </div>
     <div class="categories">
       <ul>
@@ -95,8 +111,8 @@
   import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
 
-  let { store, arrangement, showPage } = storeToRefs(useCommon())
-  let { urlPush } = useCommon()
+  let { site, store, arrangement, showPage } = storeToRefs(useCommon())
+  let { urlPush, getPathname } = useCommon()
   let { numberThousands } = useCommon()
   let { categories, category, products, productsRerndered, favorite } = storeToRefs(useProducts())
   let { showSelect, toggleFavorite } = useProducts()

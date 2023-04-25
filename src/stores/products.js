@@ -129,7 +129,6 @@ export const useProducts = defineStore('products', () => {
     },
 
     async showSelect(item) {
-      console.log('showSelect => getAddPrice', item.ID)
       await methods.getAddPrice(item);
       
       state.selectProduct = item;

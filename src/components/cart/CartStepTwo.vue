@@ -47,6 +47,8 @@
           <option value="0" disabled >=== 請選擇配送方式 ===</option>
           <option value="1" v-if="store.Shipping === '1' || store.Shipping === '2'" selected>一般宅配</option>
           <option value="2" v-if="store.Shipping === '1' || store.Shipping === '3'" selected>到店自取</option>
+          <!-- 7-11 -->
+          <option value="3" v-if="store.PayOnDelivery != 0" selected> 7-11 取貨付款 </option>
         </select>
         <div class="prompt" v-if="is_click_finish_order && transport === '0'"> 請選擇配送方式 </div>
 
@@ -59,10 +61,12 @@
           <option value="PayBarCode" v-if="(store.PayBarCode != 0 && transport != 3)" selected>超商條碼</option>
           <option value="PayOnDelivery" v-if="(store.PayOnDelivery != 0 && transport != 3)" selected>取貨付款</option>
           <option value="LinePay" v-if="store.LinePay == 1 && transport != 3" selected>LINE Pay</option>
+          
+          <option value="PayOnDelivery" v-if="(store.PayOnDelivery != 0 && transport == 3)" selected> 7-11 取貨付款 </option>
         </select>
         <div class="prompt" v-if="is_click_finish_order && pay_method === '0'"> 請選擇支付方式 </div>
 
-        <template v-if="transport == '1'">
+        <template v-if="transport == 1">
           <label>
             收件地址
             <template v-if="userInfo.address_obj && Object.keys(userInfo.address_obj).length < 3 && !has_address">
@@ -95,6 +99,17 @@
               </li>
             </ul>
           </div>
+        </template>
+
+        <template v-if="transport == 3">
+          <label> 選擇門市 </label>
+          <div class="store_info">
+            <div v-if="storeid"> 門市店號: {{ storeid }} </div>
+            <div v-if="storename"> 門市名稱: {{ storename }} </div>
+            <div v-if="storeaddress"> 門市地址: {{ storeaddress }} </div>
+          </div>
+          <div class="button" @click="pickStore"> 搜尋門市 </div>
+          <div class="prompt" v-if="is_click_finish_order && storeaddress == ''"> 請選擇門市 </div>
         </template>
 
         <label for="feedback">留言給我們</label>
@@ -155,7 +170,7 @@
         <div class="right"></div>
       </div>
       <div class="info login" v-else>
-        請先 <span class="a" @click="urlPush('/user.html')"> 登入會員 </span>
+        請先 <span class="a" @click="urlPush(getPathname('user'))"> 登入會員 </span>
       </div>
     </template>
 
@@ -185,7 +200,7 @@
   import { useHandlerCart }  from '@/stores/handlerCart'
 
   let { store, user_account } = storeToRefs(useCommon())
-  let { urlPush } = useCommon()
+  let { urlPush, getPathname } = useCommon()
   let { numberThousands } = useCommon()
   let { stepPage, is_click_finish_order, isOrderIng, transport, pay_method,
     total_bonus, is_use_bonus, use_bonus, bonus_array 
@@ -195,6 +210,7 @@
     invoice_uniNumber, info_message, userInfo
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
+  let { receiver_address } = storeToRefs(useHandlerCart())
   let { checkOrder } = useHandlerCart()
 
   // props ==================================================
@@ -216,9 +232,16 @@
     verify(info.value.receiver_name, info.value.receiver_number)
   })
 
-  watch(transport, (v) => {
+  watch(transport, () => {
     getTotal(1);
   })
+
+  watch(() => info.value.address.city_active, (newV, oldV) => {
+    for(let district of state.city_district[newV]) {
+      if(district == info.value.address.district_active) return
+    }
+    info.value.address.district_active = null
+  }, {deep: true})
   
   // methods ==================================================
   // 同步 購買人 收件人 資訊 

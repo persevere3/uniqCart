@@ -7,7 +7,7 @@
     <Notice v-if="showPage === 'Content' || showPage === 'Description' || showPage === 'PrivacyPolicy'" :style="`height:${innerHeight}px`"/>
     
     <CartIcon v-if="showPage === 'main' && !selectProduct.ID" />
-    <FavoriteIcon />
+    <FavoriteIcon v-if="showPage === 'main' && !selectProduct.ID && Object.keys(favorite).length"/>
 
     <Confirm />
     <Message />
@@ -32,9 +32,8 @@
   import { useHandlerCommon }  from '@/stores/handlerCommon'
 
   let { user_account, isShowFavorite, showPage } = storeToRefs(useCommon())
-  let { selectProduct } = storeToRefs(useProducts())
+  let { selectProduct, favorite } = storeToRefs(useProducts())
   let { stepPage, total_bonus } = storeToRefs(useCart())
-  let { getTotal } = useCart()
   let { info, userInfo } = storeToRefs(useInfo())
   let { getSiteHandler } = useHandlerCommon()
 
@@ -56,11 +55,7 @@
 
   // watched ==================================================
   watch(showPage, (newV, oldV) => {
-    console.log('watch: showPage', newV, oldV)
-    if(newV == 'cart') {
-      stepPage.value = 1
-      getTotal(1)
-    }
+    if(newV == 'cart') stepPage.value = 1
   })
 
   watch(user_account, (newV, oldV) => {
@@ -79,7 +74,6 @@
   })
 
   watch(userInfo, (newV, oldV) => {
-    console.log('watch: userInfo', newV, oldV)
     if(!newV.Phone && !newV.Email) {
       user_account.value = '';
     }

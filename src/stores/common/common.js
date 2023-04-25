@@ -116,6 +116,32 @@ export const useCommon = defineStore('common', () => {
       if(is_open) window.open(url);
       else window.location.href = url;
     },
+    getPathname(page) {
+      let uniqHost = 'uniqm.com'
+
+      let pageIndex = location.host.indexOf(uniqHost) > -1 ? 1 : 0;
+
+      let pageObj = {
+        index: {
+          0: '/',
+          1: '/'
+        },
+        order: {
+          0: '/order.html',
+          1: '/shoppingOrder.html'
+        },
+        user: {
+          0: '/user.html',
+          1: '/shoppingUser.html'
+        },
+        info: {
+          0: '/user_info.html',
+          1: '/shoppingInfo.html'
+        },
+      }
+
+      return pageObj[page][pageIndex];
+    },
   }
 
   return {
