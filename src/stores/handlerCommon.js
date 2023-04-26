@@ -13,7 +13,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
     bonus_array, invoice_type, invoice_title, invoice_uniNumber, is_use_bonus, use_bonus
   } = storeToRefs(useCart())
   let { getCart, setCart, computedCartLength, filter_use_bonus, getTotal, getOthersAddPriceBuyQty } = useCart()
-  let { info } = torefs(useInfo())
+  let { info } = storeToRefs(useInfo())
   let { getUserInfo } = useInfo()
 
   // methods ==================================================

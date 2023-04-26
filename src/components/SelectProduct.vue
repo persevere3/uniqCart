@@ -104,7 +104,7 @@
     useSwiper = swiper
   }
   function click_share_link() {
-    copy( `${location.origin}/cart/?id=${selectProduct.ID}`, '.copy_input');
+    copy( `${location.origin}/cart/?id=${selectProduct.value.ID}`, '.copy_input');
     showMessage('複製分享連結', true);
   }
 </script>

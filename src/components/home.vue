@@ -56,6 +56,28 @@
   // watched ==================================================
   watch(showPage, (newV, oldV) => {
     if(newV == 'cart') stepPage.value = 1
+
+    if(oldV === 'selectProduct') {
+      window.history.replaceState({}, document.title, "/cart/");
+    }
+
+    if(newV === 'selectProduct' || newV === 'singleProduct') {
+      setTimeout(() => {
+        const resizeObserver = new ResizeObserver(() => {
+          vm.swiper = null;
+          vm.initSwiper();
+        });
+        resizeObserver.observe(document.querySelector(".mainPic"));
+        
+        vm.initSwiper();
+        computedVideoWidth(newV);
+      }, 0)
+    }
+    if(newV === 'Content' || newV === 'Description' || newV === 'PrivacyPolicy') {
+      setTimeout(() => {
+        computedVideoWidth(newV);
+      }, 0)
+    }
   })
 
   watch(user_account, (newV, oldV) => {
@@ -79,6 +101,30 @@
     }
     total_bonus.value = newV.Wallet * 1
   }, {deep: true})
+
+  function computedVideoWidth(v) {
+    let contentWidth;
+    let items;
+    if( v === 'Content' || v === 'Description' || v === 'PrivacyPolicy' ){
+      contentWidth = this.$refs.notice_page_content.offsetWidth;
+      items = document.querySelectorAll('.notice_page .content iframe');
+    }
+    else {
+      contentWidth = this.$refs.selectProduct_detail_content.offsetWidth - 20;
+      items = document.querySelectorAll('.selectProduct .detail .content iframe');
+    }
+
+    for(let i = 0; i < items.length ; i++){
+      let itemWidth = items[i].width;
+
+      if(itemWidth > contentWidth){
+        let itemHeight = items[i].height;
+        let newHeight = parseInt(itemHeight / ( itemWidth/contentWidth ));
+        items[i].width = contentWidth;
+        items[i].height = newHeight;
+      }
+    }
+  }
 </script>
 
 <style lang="scss">
