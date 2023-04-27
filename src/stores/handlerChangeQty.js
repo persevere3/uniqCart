@@ -12,8 +12,8 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
   let { products } = storeToRefs(useProducts())
   let { getMainTotalQty } = useProducts()
   let { cart } = storeToRefs(useCart())
-  let { setCart, getTotal, getOthersAddPriceBuyQty } = useCart()
-  let { getProductsHandler } = useHandlerCommon()
+  let { getTotal, getOthersAddPriceBuyQty } = useCart()
+  let { getProductsHandler, setCartHandler } = useHandlerCommon()
 
   // state ==================================================
   const state = reactive({
@@ -90,7 +90,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         else {
           cart.value.splice(cartItemIndex, 1);
 
-          setCart()
+          setCartHandler()
           
           getTotal(0);
         }
@@ -101,7 +101,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
         if(mainTotalQty) cart.value.push(JSON.parse(JSON.stringify(product)))
       }
 
-     setCart()
+      setCartHandler()
 
       // 更新加價購
       if(product.addPrice) {
@@ -187,7 +187,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       // 更新 購物車
       let cartItem = cart.value.find(cartItem => cartItem.ID == main.ID)
       if(cartItem) cartItem.addPrice = JSON.parse(JSON.stringify(product.addPrice))
-      setCart()
+      setCartHandlerCart()
 
       // 取得 金額總計
       getTotal(0);

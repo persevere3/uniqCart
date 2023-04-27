@@ -48,8 +48,8 @@
       <p>如果要使用折扣碼，請在此填入</p>
       <div class="discountBox">
         <input type="text" v-model.trim="discountCode" @keyup.enter="discount">
-        <div class="button" @click="discount">使用折扣碼</div>
-        <div class="button" @click="unDiscount">取消折扣碼</div>
+        <div class="button" @click="discount">套用</div>
+        <div class="button" @click="unDiscount">取消</div>
       </div>
       <div class="discountError" v-if="discountErrorMessage">{{ discountErrorMessage }}</div>
     </div>

@@ -12,17 +12,17 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   // store ==================================================
   let { site, store, user_account, showPage } = storeToRefs(useCommon())
   let { login, showMessage, urlPush } = useCommon()
-  let { cart, successUsedDiscountCode, total, transport, pay_method, 
+  let { cart, stepPage, successUsedDiscountCode, total, transport, pay_method, 
     is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng , payResult, ECPay_form_value
   } = storeToRefs(useCart())
-  let { setCart, unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
+  let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
   let { getCategories } = useProducts()
   let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo,
   } = storeToRefs(useInfo())
   let { getUserInfo } = useInfo()
   let { verify } = useVerify()
-  let { getProductsHandler } = useHandlerCommon()
+  let { getProductsHandler, setCartHandler } = useHandlerCommon()
 
   // state 
   const state = reactive({
@@ -273,16 +273,19 @@ export const useHandlerCart = defineStore('handlerCart', () => {
     },
     clearCart() {
       cart.value = [];
-      setCart();
+      setCartHandler();
   
       unDiscount()
 
       is_use_bonus.value = false;
       use_bonus.value = 0;
 
-      showPage.value = 'main'
-      
-      getCategories();
+      if(!isSingleProduct) {
+        showPage.value = 'main'
+        getCategories();
+      } 
+      else stepPage.value = 1;
+
       getProductsHandler();
     }
   }

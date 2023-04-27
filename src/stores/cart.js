@@ -72,10 +72,15 @@ export const useCart = defineStore('cart', () => {
       methods.computedCartLength();
       state.cartOLength = state.cartLength;
     },
-    setCart() {
-      let key = user_account.value ? `${site.value.Name}@${user_account.value}@cart` : `${site.value.Name}@cart`
-      localStorage.setItem(key, JSON.stringify(state.cart));
-      methods.computedCartLength();
+    setCart(selectProductID) {
+      if(selectProductID) {
+        localStorage.setItem(`${site.value.Name}@${selectProductID}@cart`, JSON.stringify(state.cart));
+      }
+      else {
+        let key = user_account.value ? `${site.value.Name}@${user_account.value}@cart` : `${site.value.Name}@cart`
+        localStorage.setItem(key, JSON.stringify(state.cart));
+        methods.computedCartLength();
+      }
     },
     computedCartLength() {
       let cartLength = 0;

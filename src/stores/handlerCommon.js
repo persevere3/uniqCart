@@ -7,7 +7,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
   // store ==================================================
   let { site, user_account, showPage } = storeToRefs(useCommon())
   let { getSite, getStore, showMessage } = useCommon()
-  let { category, products } = storeToRefs(useProducts())
+  let { isSingleProduct, category, products } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
   let { cart, cartOLength, cartLength, stepIndex, discountCode, useCodeSuccess, transport, pay_method, 
     bonus_array, invoice_type, invoice_title, invoice_uniNumber, is_use_bonus, use_bonus
@@ -40,11 +40,13 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       await methods.getCartHandler();
 
       methods.handleQuery()
+
+      if(showPage.value == '') showPage.value = 'main'
     },
 
-    getCartHandler(selectProductID) {
+    getCartHandler() {
       return new Promise(resolve => {
-        getCart(selectProductID)
+        !isSingleProduct.value ? getCart() : getCart(selectProduct.value.ID)
 
         // 購物車有商品，列表沒有 => 商品從購物車中移除
         // 購物車商品有加價購，列表商品沒有加價購 => getAddPrice()
@@ -118,7 +120,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       })
       cart.value = cart.value.filter(item => item)
 
-      setCart();
+      methods.setCartHandler();
     },
     asyncAddPrice(cartItem, product) {
       let mainTotalQty = getMainTotalQty(product)
@@ -173,6 +175,9 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         })
       }
     },
+    setCartHandler() {
+      !isSingleProduct.value ? setCart() : setCart(selectProduct.value.ID)
+    },
 
     handleQuery() {
       let searchArr = location.search.substring(1).split('&')
@@ -204,10 +209,11 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       if(spid) {
         for(let i = 0; i < products.value.length; i++) {
           if(products.value[i].ID == spid) {
-            selectProduct.value = products.value[i]; 
-            showPage.value = 'singleProduct';
+            isSingleProduct.value = true
 
-            // 7-11 取貨付款
+            selectProduct.value = products.value[i];
+
+            // 7-11
             methods.getConvenienceStore(storeid, storename, storeaddress, spid)
             
             methods.getCartHandler(selectProduct.value.ID);
@@ -279,7 +285,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         use_bonus: use_bonus.value,
       }
       localStorage.setItem('order_info', JSON.stringify(order_info));
-      methods.urlPush(`https://emap.presco.com.tw/c2cemap.ashx?url=${location.origin}/interface/store/SpmarketAddress${this.showPage == 'singleProduct' ? '?spid=' + this.selectProduct.ID : ''}`);
+      methods.urlPush(`https://emap.presco.com.tw/c2cemap.ashx?url=${location.origin}/interface/store/SpmarketAddress${isSingleProduct ? '?spid=' + selectProduct.value.ID : ''}`);
     },
     returnInfo() {
       let order_info = JSON.parse(localStorage.getItem('order_info')) || {};

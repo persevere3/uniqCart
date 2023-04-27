@@ -1,7 +1,7 @@
 <template>
   <div class="selectProduct">
     <div class="background">
-      <div class="close" @click="selectProduct = {}"> <i class="fa fa-times" aria-hidden="true"></i> </div>
+      <div class="close" click="!isSingleProduct" @click="selectProduct = {}"> <i class="fa fa-times" aria-hidden="true"></i> </div>
       <div class="picContent">
         <div class="pic">
           <div class="mainPic" :style="{backgroundImage :`url(${selectProduct.imgArr[selectProduct.mainImgIndex]})`}"></div>
@@ -29,11 +29,11 @@
 
             <ProductBuyQtyBox :main="selectProduct" />
 
-            <div class="goToCart" v-if="isShowGoToCart" @click="showPage = 'cart'">
+            <div class="goToCart" v-if="!isSingleProduct && isShowGoToCart" @click="showPage = 'cart'">
               加入購物車 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
             </div>
 
-            <div class="addTo_favorite_btn" @click.stop="toggleFavorite(selectProduct.ID)">
+            <div class="addTo_favorite_btn" v-if="!isSingleProduct" @click.stop="toggleFavorite(selectProduct.ID)">
               加入我的最愛 <i class="fas fa-heart" :class="{is_favorite : favorite[selectProduct.ID]}"></i>
             </div>
 
@@ -45,8 +45,12 @@
       </div>
 
       <div class="addPrice" v-if="selectProduct.addPrice && selectProduct.addPrice.length">
-        <div class="title">加價購</div>
-        <ul>
+        <div class="title">
+          加價購
+          <i v-if="isAddPrice" class="fa-solid fa-caret-up" @click="isAddPrice = false"></i>
+          <i v-else class="fa-solid fa-caret-down" @click="isAddPrice = true"></i>
+        </div>
+        <ul v-show="isAddPrice">
           <div class="ulMask" v-if="!getMainTotalQty(selectProduct)"></div>
           <li v-for="item in selectProduct.addPrice" :key="item.ID">
             <div class="pic_div">
@@ -62,8 +66,18 @@
       </div>
 
       <div class="detail">
-        <div class="title">商品詳情</div>
-        <div class="content ql-editor" v-html="unescapeHTML(selectProduct.Detail)"></div>
+        <div class="title">
+          商品詳情
+          <i v-if="isDetail" class="fa-solid fa-caret-up" @click="isDetail = false"></i>
+          <i v-else class="fa-solid fa-caret-down" @click="isDetail = true"></i>
+        </div>
+        <div v-show="isDetail" class="content ql-editor" v-html="unescapeHTML(selectProduct.Detail)"></div>
+      </div>
+
+      <div class="others" v-if="isSingleProduct">
+        <div class="title"> 立即購買 </div>
+        
+        <CartContent />
       </div>
     </div>
   </div>
@@ -72,6 +86,7 @@
 <script setup>
   // component ==================================================
   import ProductBuyQtyBox from '@/components/ProductBuyQtyBox.vue'
+  import CartContent from '@/components/cart/CartContent.vue'
 
   // swiper ==================================================
   import { Swiper, SwiperSlide } from 'swiper/vue'
@@ -84,7 +99,7 @@
   let { showPage } = storeToRefs(useCommon())
   let { copy, showMessage } = useCommon()
   let { numberThousands, unescapeHTML, unescapeEnter } = useCommon()
-  let { selectProduct, favorite } = storeToRefs(useProducts())
+  let { isSingleProduct, selectProduct, isAddPrice, isDetail, favorite } = storeToRefs(useProducts())
   let { getMainTotalQty, toggleFavorite } = useProducts()
 
   // computed ==================================================
@@ -104,7 +119,12 @@
     useSwiper = swiper
   }
   function click_share_link() {
-    copy( `${location.origin}/cart/?id=${selectProduct.value.ID}`, '.copy_input');
+    if(!isSingleProduct) {
+      copy( `${location.origin}/cart?id=${selectProduct.value.ID}`, '.copy_input');
+    }
+    else {
+      copy( `${location.origin}/cart?spid=${selectProduct.value.ID}`, '.copy_input');
+    }
     showMessage('複製分享連結', true);
   }
 </script>

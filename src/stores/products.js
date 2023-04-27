@@ -16,7 +16,10 @@ export const useProducts = defineStore('products', () => {
     productsRerndered: false,
     
     //
+    isSingleProduct: false,
     selectProduct: {},
+    isAddPrice: true,
+    isDetail: true,
 
     //
     favorite: {},
@@ -129,14 +132,9 @@ export const useProducts = defineStore('products', () => {
     },
 
     async showSelect(item) {
-      await methods.getAddPrice(item);
+      methods.getAddPrice(item);
       
       state.selectProduct = item;
-
-      setTimeout(() => {
-        let event = new Event('resize');
-        window.dispatchEvent(event);
-      }, 100)
     },
 
     // favorite

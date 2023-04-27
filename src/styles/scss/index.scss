@@ -388,11 +388,24 @@ input:focus, textarea:focus, select:focus{
       }
     }
     .addPrice{
-      margin-bottom: 20px;
       >.title{
-        padding-bottom: 10px;
+        height: 30px;
+        line-height: 30px;
         border-bottom: 1px solid #ccc;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
+        position: relative;
+
+        i {
+          width: 30px;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+        }
       }
       ul{
         width: 100%;
@@ -618,8 +631,23 @@ input:focus, textarea:focus, select:focus{
     }
     .detail{
       .title{
-        padding-bottom: 10px;
+        height: 30px;
+        line-height: 30px;
         border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+        position: relative;
+
+        i {
+          width: 30px;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+        }
       }
       .content{
         padding: 10px;
@@ -633,9 +661,23 @@ input:focus, textarea:focus, select:focus{
 
     .others {
       .title{
-        padding-bottom: 10px;
-        margin-bottom: 10px;
+        height: 30px;
+        line-height: 30px;
         border-bottom: 1px solid #ccc;
+        margin-bottom: 20px;
+        position: relative;
+
+        i {
+          width: 30px;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+        }
       }
 
       .products{
@@ -730,515 +772,516 @@ input:focus, textarea:focus, select:focus{
     .close:hover{
       transform: rotate(180deg);
     }
-    .step{
-      width:80%;
-      height: 35px;
-      margin: 0 auto;
+  }
+}
+.step{
+  width:80%;
+  height: 35px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+  .stepItem{
+    display: flex;
+    justify-content: center;
+    .icon{
+      width: 20px;
+      height: 20px;
+      background-color: #aaa;
+      color: white;
+      border-radius: 50%;
       display: flex;
-      justify-content: space-around;
+      justify-content: center;
       align-items: center;
-      margin-bottom: 20px;
-      .stepItem{
-        display: flex;
-        justify-content: center;
-        .icon{
-          width: 20px;
-          height: 20px;
-          background-color: #aaa;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-right: 10px;
-        }
-        p{
-          color: #ccc;
-          transition: .3s;
-        }
-      }
-      .arrow{
-        color: #ccc;
-      }
-      .stepItemActive{
-        .icon{
-          background-color: #555;
-        }
-        p{
-          color: #555;
-        }
-      }
-      .arrowActive{
-        color: #555;
-      }
+      margin-right: 10px;
     }
+    p{
+      color: #ccc;
+      transition: .3s;
+    }
+  }
+  .arrow{
+    color: #ccc;
+  }
+  .stepItemActive{
+    .icon{
+      background-color: #555;
+    }
+    p{
+      color: #555;
+    }
+  }
+  .arrowActive{
+    color: #555;
+  }
+}
 
-    .stepOne{
-      border: 1px solid #aaa;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 10px;
-      .table{
-        width: 100%;
-        margin-bottom: 20px;
-        .thead{
-          display: flex;
-          background-color: #aaa;
-          color: white;
-          .th{
-            padding: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-        }
-        .tr{
-          display: flex;
-          border-bottom: 1px solid #aaa; 
-          .td{
-            padding: 5px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          .td.jcs{
-            justify-content: flex-start;
-          }
-        }
-        .picName{
-          width: 27.5%;
-          flex-grow: 0;
-          flex-shrink: 0;
-          .pic{
-            width: 60px;
-            height: 60px;
-
-            background-position: center;
-            background-size: cover;
-
-            border-radius: 3px;
-            margin-right: 10px;
-            position: relative;
-            flex-shrink: 0;
-            .tag{
-              padding: 2px 10px;
-
-              position: absolute;
-              top: 0px;
-              left: -10px;
-
-              background-color: gray;
-              color: #fff;
-              font-size: 10px;
-              font-weight: 200;
-              white-space: nowrap;
-              border-radius: 3px;
-              
-              z-index: 1;
-            }
-          }
-          .name{
-            word-break : break-all;
-          }
-        }
-        .spec{
-          width: 15%;
-          flex-grow: 0;
-          flex-shrink: 0;
-          .specButton{
-            display: none;
-            margin-bottom: 5px;
-            i{
-              transition:.3s;
-            }
-            .iActive{
-              transform: rotate(180deg);
-            }
-          }
-          .specText{
-            word-break : break-all;
-          }
-        }
-        .price{
-          width: 14%;
-          flex-grow: 0;
-          flex-shrink: 0;
-          white-space: nowrap;
-        }
-        .qty{
-          width: 17.5%;
-          flex-grow: 0;
-          flex-shrink: 0;
-          .qtyBox{
-            display: flex;
-            justify-content: center;
-            .reduce,.add{
-              padding:3px 5px;
-              border: 1px solid #555;
-              cursor: pointer; 
-              transition: 0.3s;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              i{
-                color: #555;
-                transition: 0.3s;
-              }
-            }
-            .reduce{
-              border-radius: 5px 0px 0px 5px;
-              border-right: 1px solid transparent;
-            }
-            .add{
-              border-radius: 0px 5px 5px 0px;
-              border-left: 1px solid transparent;
-            }
-            .add:hover,.reduce:hover{
-              background-color: #555;
-              i{
-                color: white;
-              }
-            }
-            .number{
-              border:none;
-              text-align: center;
-              cursor: pointer; 
-              border: 1px solid #555;
-              padding: 5px;
-              width: 50px;
-            }
-            .qtyDisabled{
-              opacity:0.3;
-            }
-          }
-          .discontinued{
-            color: red;
-            height: 33.33px;
-            line-height: 33.33px;
-          }
-        }
-        .subtotal{
-          width: 16%;
-          
-          .priceTitle{
-            display: none;
-          }
-          .priceText{
-            white-space: nowrap;
-            flex-grow: 0;
-            flex-shrink: 0;
-          }
-        }
-        .delete{
-          width: 10%;
-          flex-grow: 0;
-          flex-shrink: 0;
-          .deleteButton{
-            width: 70px;
-            padding: 5px;
-
-            border-radius: 5px;
-            background-color: #f20000;
-            color: #fff;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            cursor: pointer; 
-            transition: .3s;
-          }
-          .deleteButton:hover{
-            background-color: #d20000;
-          }
-        }
-      }
-  
-      .discount{
-        margin-bottom: 20px;
-
-        .notice {
-          color: red; 
-          white-space: nowrap;
-        }
-        p{
-          margin-bottom: 5px;
-        }
-        .discountBox{
-          display: flex;
-          height: 30px;
-          input{
-            flex: 1 1; 
-            border-radius:5px 0px 0px 5px;
-            border: 1px solid #555;
-            border-right: 0px solid #555;
-            transition: 0.5s;
-          }
-          input:focus{
-            outline: none;
-            box-shadow: 0px 0px 3px 1px rgba(63, 135, 166, 1);
-          }
-          .button{
-            width: 120px;
-            cursor: pointer;
-            color: white;
-            background-color:  rgba(63, 135, 166, 0.7);
-  
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            &:last-child {
-              border-radius:0px 5px 5px 0px;
-            }
-          }
-          .button:hover{
-            background-color:  rgba(63, 135, 166, 1);
-          }
-        }
-        .discountError{
-          color: red;
-        }
-      }
-      .next{
-        width: 15%;
-        height: 30px;
-        margin-left: auto;
-        cursor: pointer;
-        border-radius: 5px;
-        color: white;
-        background-color:  #555;
-  
+.stepOne{
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  .table{
+    width: 100%;
+    margin-bottom: 20px;
+    .thead{
+      display: flex;
+      background-color: #aaa;
+      color: white;
+      .th{
+        padding: 5px;
         display: flex;
         justify-content: center;
         align-items: center;
       }
-      .next:hover{
-        background-color:  #222;
+    }
+    .tr{
+      display: flex;
+      border-bottom: 1px solid #aaa; 
+      .td{
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .td.jcs{
+        justify-content: flex-start;
       }
     }
+    .picName{
+      width: 27.5%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      .pic{
+        width: 60px;
+        height: 60px;
 
-    .noItem{
-      border: 1px solid #aaa;
-      border-radius: 5px;
-      padding: 50px;
-      margin-bottom: 10px;
+        background-position: center;
+        background-size: cover;
 
+        border-radius: 3px;
+        margin-right: 10px;
+        position: relative;
+        flex-shrink: 0;
+        .tag{
+          padding: 2px 10px;
+
+          position: absolute;
+          top: 0px;
+          left: -10px;
+
+          background-color: gray;
+          color: #fff;
+          font-size: 10px;
+          font-weight: 200;
+          white-space: nowrap;
+          border-radius: 3px;
+          
+          z-index: 1;
+        }
+      }
+      .name{
+        word-break : break-all;
+      }
+    }
+    .spec{
+      width: 15%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      .specButton{
+        display: none;
+        margin-bottom: 5px;
+        i{
+          transition:.3s;
+        }
+        .iActive{
+          transform: rotate(180deg);
+        }
+      }
+      .specText{
+        word-break : break-all;
+      }
+    }
+    .price{
+      width: 14%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .qty{
+      width: 17.5%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      .qtyBox{
+        display: flex;
+        justify-content: center;
+        .reduce,.add{
+          padding:3px 5px;
+          border: 1px solid #555;
+          cursor: pointer; 
+          transition: 0.3s;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          i{
+            color: #555;
+            transition: 0.3s;
+          }
+        }
+        .reduce{
+          border-radius: 5px 0px 0px 5px;
+          border-right: 1px solid transparent;
+        }
+        .add{
+          border-radius: 0px 5px 5px 0px;
+          border-left: 1px solid transparent;
+        }
+        .add:hover,.reduce:hover{
+          background-color: #555;
+          i{
+            color: white;
+          }
+        }
+        .number{
+          border:none;
+          text-align: center;
+          cursor: pointer; 
+          border: 1px solid #555;
+          padding: 5px;
+          width: 50px;
+        }
+        .qtyDisabled{
+          opacity:0.3;
+        }
+      }
+      .discontinued{
+        color: red;
+        height: 33.33px;
+        line-height: 33.33px;
+      }
+    }
+    .subtotal{
+      width: 16%;
+      
+      .priceTitle{
+        display: none;
+      }
+      .priceText{
+        white-space: nowrap;
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
+    }
+    .delete{
+      width: 10%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      .deleteButton{
+        width: 70px;
+        padding: 5px;
+
+        border-radius: 5px;
+        background-color: #f20000;
+        color: #fff;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        cursor: pointer; 
+        transition: .3s;
+      }
+      .deleteButton:hover{
+        background-color: #d20000;
+      }
+    }
+  }
+
+  .discount{
+    margin-bottom: 20px;
+
+    .notice {
+      color: red; 
+      white-space: nowrap;
+    }
+    p{
+      margin-bottom: 5px;
+    }
+    .discountBox{
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      p{
-        margin-bottom: 20px;
+      height: 30px;
+      input{
+        flex: 1 1;
+        border-radius:5px 0px 0px 5px;
+        border: 1px solid #555;
+        border-right: 0px solid #555;
+        transition: 0.5s;
+      }
+      input:focus{
+        outline: none;
+        box-shadow: 0px 0px 3px 1px rgba(63, 135, 166, 1);
       }
       .button{
+        flex: 0 0 40px;
+        
         cursor: pointer;
-        border-radius: 5px;
-        background-color:  #555;
         color: white;
-        padding: 6px 20px;
+        background-color:  rgba(63, 135, 166, 0.7);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &:last-child {
+          border-radius:0px 5px 5px 0px;
+        }
       }
       .button:hover{
-        background-color:  #222;
+        background-color:  rgba(63, 135, 166, 1);
       }
     }
+    .discountError{
+      color: red;
+    }
+  }
+  .next{
+    width: 15%;
+    height: 30px;
+    margin-left: auto;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    background-color:  #555;
 
-    .stepTwo{
-      border: 1px solid #aaa;
-      border-radius: 5px;
-      padding: 10px;
-      margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .next:hover{
+    background-color:  #222;
+  }
+}
 
-      .title{
-        background-color: #aaa;
-        color: white;
-        padding: 3px 12px;
-        margin-bottom: 20px;
+.noItem{
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 50px;
+  margin-bottom: 10px;
 
-        .a {
-          text-decoration: underline; 
-          cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  p{
+    margin-bottom: 20px;
+  }
+  .button{
+    cursor: pointer;
+    border-radius: 5px;
+    background-color:  #555;
+    color: white;
+    padding: 6px 20px;
+  }
+  .button:hover{
+    background-color:  #222;
+  }
+}
 
-          &:hover {
-            color: #ddd;
-          }
-        }
+.stepTwo{
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+
+  .title{
+    background-color: #aaa;
+    color: white;
+    padding: 3px 12px;
+    margin-bottom: 20px;
+
+    .a {
+      text-decoration: underline; 
+      cursor: pointer;
+
+      &:hover {
+        color: #ddd;
       }
-      .info{
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-around;
+    }
+  }
+  .info{
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-around;
 
-        &.login {
-          justify-content: center;
-        }
-        
-        label{
-          margin-top: 10px;
-        }
-        
-        select,input,textarea{
-          margin-top: 5px;
-          border: 1px solid #aaaaaa;
-          border-radius: 3px;
-          padding: 6px 10px;
-          transition: 0.5s;
-        }
-        input:focus, textarea:focus{
-          outline: none;
-          box-shadow: 0px 0px 3px 1px rgba(63, 135, 166, 1);
-        }
-        .info_messageLength{
-          margin-left: auto;
-          color: #ccc
-        }
-        .inputError{
-          border: 1px solid rgba(200, 0, 0, 1);
-        }
-        .inputError:focus{
-          box-shadow: 0px 0px 3px 1px rgba(200, 0, 0, 1);
-        }
+    &.login {
+      justify-content: center;
+    }
+    
+    label{
+      margin-top: 10px;
+    }
+    
+    select,input,textarea{
+      margin-top: 5px;
+      border: 1px solid #aaaaaa;
+      border-radius: 3px;
+      padding: 6px 10px;
+      transition: 0.5s;
+    }
+    input:focus, textarea:focus{
+      outline: none;
+      box-shadow: 0px 0px 3px 1px rgba(63, 135, 166, 1);
+    }
+    .info_messageLength{
+      margin-left: auto;
+      color: #ccc
+    }
+    .inputError{
+      border: 1px solid rgba(200, 0, 0, 1);
+    }
+    .inputError:focus{
+      box-shadow: 0px 0px 3px 1px rgba(200, 0, 0, 1);
+    }
 
-        .prompt{
-          color: red;
+    .prompt{
+      color: red;
+      font-size: 12px;
+    }
+
+    .address{
+      .address_title {
+        padding: 2px 10px;
+        font-size: 12px;
+      }
+      ul{
+        li{
+          padding: 2px 10px;
           font-size: 12px;
-        }
+          cursor: pointer;
 
-        .address{
-          .address_title {
-            padding: 2px 10px;
-            font-size: 12px;
+          &:hover{
+            background-color: #eee;
           }
-          ul{
-            li{
-              padding: 2px 10px;
-              font-size: 12px;
-              cursor: pointer;
 
-              &:hover{
-                background-color: #eee;
-              }
-
-              i{
-                margin-left: 10px;
-                color: rgb(63,135,166);
-              }
-            }
+          i{
+            margin-left: 10px;
+            color: rgb(63,135,166);
           }
         }
+      }
+    }
 
-        .box{
-          margin-top: 15px;
-          input[type=checkbox]{
-            background-color: rgba(63, 135, 166, 1);
-            cursor: pointer;
-            
-            &:focus {
-              box-shadow: 0px 0px 0px 0px rgba(63, 135, 166, 1);
-            }
-          }
-          label {
-            cursor: pointer;
-          }
-          input {
-            margin-top: 0;
-          }
-        }
-
-        .bonus_container {
-          font-weight: 900;
-        }
+    .box{
+      margin-top: 15px;
+      input[type=checkbox]{
+        background-color: rgba(63, 135, 166, 1);
+        cursor: pointer;
         
-        .left, .right{
-          width: 45%;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .button{
-          height: 30px;
-          cursor: pointer;
-          border-radius: 5px;
-          color: white;
-          background-color:  #555;
-    
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .button:hover{
-          background-color:  #222;
-        }
-
-        .store_info{
-          margin: 5px 0;
+        &:focus {
+          box-shadow: 0px 0px 0px 0px rgba(63, 135, 166, 1);
         }
       }
-      .buttonGroup{
+      label {
+        cursor: pointer;
+      }
+      input {
+        margin-top: 0;
+      }
+    }
+
+    .bonus_container {
+      font-weight: 900;
+    }
+    
+    .left, .right{
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .button{
+      height: 30px;
+      cursor: pointer;
+      border-radius: 5px;
+      color: white;
+      background-color:  #555;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .button:hover{
+      background-color:  #222;
+    }
+
+    .store_info{
+      margin: 5px 0;
+    }
+  }
+  .buttonGroup{
+    display: flex;
+    justify-content: space-between;
+
+    .button{
+      width: 15%;
+      height: 30px;
+      cursor: pointer;
+      border-radius: 5px;
+      color: white;
+      background-color:  #555;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .button:hover{
+      background-color:  #222;
+    }
+  }
+}
+
+.stepOne, .stepTwo {
+  .total{
+    margin-bottom: 20px;
+    background-color: rgba(63, 135, 166, 0.3);
+    border-radius: 5px;
+    padding: 20px;
+    ul{
+      li{
         display: flex;
-        justify-content: space-between;
-
-        .button{
-          width: 15%;
-          height: 30px;
-          cursor: pointer;
-          border-radius: 5px;
-          color: white;
-          background-color:  #555;
-    
-          display: flex;
-          justify-content: center;
-          align-items: center;
+        justify-content: flex-end;
+        margin: 5px;
+        .before{
+          width: 80%;
+          text-align: right;
         }
-        .button:hover{
-          background-color:  #222;
+        .after{
+          width: 20%;
+          text-align: right;
         }
       }
     }
+  }
+}
 
-    .stepOne, .stepTwo {
-      .total{
-        margin-bottom: 20px;
-        background-color: rgba(63, 135, 166, 0.3);
-        border-radius: 5px;
-        padding: 20px;
-        ul{
-          li{
-            display: flex;
-            justify-content: flex-end;
-            margin: 5px;
-            .before{
-              width: 80%;
-              text-align: right;
-            }
-            .after{
-              width: 20%;
-              text-align: right;
-            }
-          }
-        }
-      }
-    }
+.ECPay_form_container{
+  position: absolute;
+  top: 0;
+  opacity: 0;
+  z-index: -1;
+}
 
-    .ECPay_form_container{
-      position: absolute;
-      top: 0;
-      opacity: 0;
-      z-index: -1;
-    }
+.footer{
+  .top{
 
-    .footer{
-      .top{
-
-      }
-      .bottom{
-        font-size: 10px;
-        text-align: center;
-        padding: 10px 0px;
-        color: white;
-        background-color: #333;
-      }
-    }
+  }
+  .bottom{
+    font-size: 10px;
+    text-align: center;
+    padding: 10px 0px;
+    color: white;
+    background-color: #333;
   }
 }
 
@@ -1250,288 +1293,280 @@ input:focus, textarea:focus, select:focus{
   }
 }
 @include m{
-  .cart{
-    .background{
-      .step{
-        justify-content: center;
-        align-items: center;
-        .stepItem{
+  .step{
+    justify-content: center;
+    align-items: center;
+    .stepItem{
+      display: none;
+    }
+    .arrow{
+      display: none;
+    }
+    .stepItemActive{
+      display: flex;
+    }
+    .arrowActive{
+      margin-left: 10px;
+      display: flex;
+    }
+  }
+
+  .stepOne{
+    .table{
+      .thead{
+        // ...
+        .th.spec, .th.subtotal, .th.delete{
           display: none;
         }
-        .arrow{
+      }
+      .tr{
+        // ...
+        flex-wrap: wrap;
+        .td{
+          padding: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .td.spec{
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .td.subtotal{
+          padding: 0;
+        }
+        .td.jcs{
+          justify-content: flex-start;
+        }
+      }
+      .picName{
+        // ...
+        width: 33.333333%;
+        order: 1;
+      }
+      .spec{
+        // ...
+        width: 100%;
+        order: 4;
+
+        .specButton{
+          // ...
+          display: block;
+          cursor: pointer;
+        }
+        .specText{
           display: none;
         }
-        .stepItemActive{
-          display: flex;
-        }
-        .arrowActive{
-          margin-left: 10px;
-          display: flex;
+        .specText.specTextShow{
+          display: block;
         }
       }
+      .price{
+        // ...
+        width: 33.333333%;
+        order: 2;
 
-      .stepOne{
-        .table{
-          .thead{
-            // ...
-            .th.spec, .th.subtotal, .th.delete{
-              display: none;
-            }
-          }
-          .tr{
-            // ...
-            flex-wrap: wrap;
-            .td{
-              padding: 5px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
-            .td.spec{
-              flex-direction: column;
-              align-items: flex-start;
-            }
-            .td.subtotal{
-              padding: 0;
-            }
-            .td.jcs{
-              justify-content: flex-start;
-            }
-          }
-          .picName{
-            // ...
-            width: 33.333333%;
-            order: 1;
-          }
-          .spec{
-            // ...
-            width: 100%;
-            order: 4;
-
-            .specButton{
-              // ...
-              display: block;
-              cursor: pointer;
-            }
-            .specText{
-              display: none;
-            }
-            .specText.specTextShow{
-              display: block;
-            }
-          }
-          .price{
-            // ...
-            width: 33.333333%;
-            order: 2;
-
-          }
-
-          .qty{
-            // ...
-            width: 33.333333%;
-            order: 3;
-          }
-          .subtotal{
-            // ...
-            width: 66.666666%;
-            order: 5;
-            .priceTitle{
-              // ...
-              display: block;
-              margin-right: auto;
-              padding: 5px;
-            }
-            .priceText{
-              // ...
-              width: 50%;
-              text-align: center;
-              padding: 5px;
-            }
-          }
-          .delete{
-            // ...
-            width: 33.333333%;
-            order: 6;
-          }
-        }
-
-        .total{
-          ul{
-            li{
-              .before{
-                width: 65%;
-              }
-              .after{
-                width: 35%;
-              }
-            }
-          }
-        }
-        .next{
-          width: 15%;
-        }
       }
 
-      .stepTwo{
-        .total{
-          ul{
-            li{
-              .before{
-                width: 65%;
-                text-align: right;
-              }
-              .after{
-                width: 35%;
-                text-align: right;
-              }
-            }
+      .qty{
+        // ...
+        width: 33.333333%;
+        order: 3;
+      }
+      .subtotal{
+        // ...
+        width: 66.666666%;
+        order: 5;
+        .priceTitle{
+          // ...
+          display: block;
+          margin-right: auto;
+          padding: 5px;
+        }
+        .priceText{
+          // ...
+          width: 50%;
+          text-align: center;
+          padding: 5px;
+        }
+      }
+      .delete{
+        // ...
+        width: 33.333333%;
+        order: 6;
+      }
+    }
+
+    .total{
+      ul{
+        li{
+          .before{
+            width: 65%;
+          }
+          .after{
+            width: 35%;
           }
         }
-        .buttonGroup{
-          .button{
-            width: 30%;
+      }
+    }
+    .next{
+      width: 15%;
+    }
+  }
+
+  .stepTwo{
+    .total{
+      ul{
+        li{
+          .before{
+            width: 65%;
+            text-align: right;
+          }
+          .after{
+            width: 35%;
+            text-align: right;
           }
         }
+      }
+    }
+    .buttonGroup{
+      .button{
+        width: 30%;
       }
     }
   }
 }
 @include s{
-  .cart{
-    .background{
-      .stepOne{
-        .table{
-          .thead{
-            // ...
-            .th.spec, .th.subtotal, .th.delete{
-              display: none;
-            }
-          }
-          .tr{
-            // ...
-            flex-wrap: wrap;
-            .td{
-              padding: 5px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
-            .td.spec{
-              flex-direction: column;
-              align-items: flex-start;
-            }
-            .td.subtotal{
-              padding: 0;
-            }
-            .td.jcs{
-              justify-content: flex-start;
-            }
-          }
-          .picName{
-            // ...
-            width: 33.333333%;
-            order: 1;
-            .pic{
-              display: none;
-            }
-          }
-          .spec{
-            // ...
-            width: 100%;
-            order: 4;
-
-            .specButton{
-              // ...
-              display: block;
-            }
-          }
-          .price{
-            // ...
-            width: 33.333333%;
-            order: 2;
-
-          }
-
-          .qty{
-            // ...
-            width: 33.333333%;
-            order: 3;
-          }
-          .subtotal{
-            // ...
-            width: 66.666666%;
-            order: 5;
-            .priceTitle{
-              // ...
-              display: block;
-              margin-right: auto;
-              padding: 5px;
-            }
-            .priceText{
-              // ...
-              width: 50%;
-              text-align: center;
-              padding: 5px;
-            }
-          }
-          .delete{
-            // ...
-            width: 33.333333%;
-            order: 6;
-          }
-        }
-    
-        .discount{
-          p{
-            margin-left: 0px;
-          }
-        }
-        .total{
-          padding: 5px;
-          ul{
-            li{
-              .before{
-                width: 45%;
-              }
-              .after{
-                width: 55%;
-              }
-            }
-          }
-        }
-        .next{
-          width: 25%;
+  .stepOne{
+    .table{
+      .thead{
+        // ...
+        .th.spec, .th.subtotal, .th.delete{
+          display: none;
         }
       }
-
-      .stepTwo{
-        .title{
-          margin-bottom: 5px;
+      .tr{
+        // ...
+        flex-wrap: wrap;
+        .td{
+          padding: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
-        .info{
+        .td.spec{
           flex-direction: column;
-          .left, .right{
-            width: 100%;
+          align-items: flex-start;
+        }
+        .td.subtotal{
+          padding: 0;
+        }
+        .td.jcs{
+          justify-content: flex-start;
+        }
+      }
+      .picName{
+        // ...
+        width: 33.333333%;
+        order: 1;
+        .pic{
+          display: none;
+        }
+      }
+      .spec{
+        // ...
+        width: 100%;
+        order: 4;
+
+        .specButton{
+          // ...
+          display: block;
+        }
+      }
+      .price{
+        // ...
+        width: 33.333333%;
+        order: 2;
+
+      }
+
+      .qty{
+        // ...
+        width: 33.333333%;
+        order: 3;
+      }
+      .subtotal{
+        // ...
+        width: 66.666666%;
+        order: 5;
+        .priceTitle{
+          // ...
+          display: block;
+          margin-right: auto;
+          padding: 5px;
+        }
+        .priceText{
+          // ...
+          width: 50%;
+          text-align: center;
+          padding: 5px;
+        }
+      }
+      .delete{
+        // ...
+        width: 33.333333%;
+        order: 6;
+      }
+    }
+
+    .discount{
+      p{
+        margin-left: 0px;
+      }
+    }
+    .total{
+      padding: 5px;
+      ul{
+        li{
+          .before{
+            width: 45%;
+          }
+          .after{
+            width: 55%;
           }
         }
-        .total{
-          ul{
-            li{
-              .before{
-                width: 45%;
-              }
-              .after{
-                width: 55%;
-              }
-            }
+      }
+    }
+    .next{
+      width: 25%;
+    }
+  }
+
+  .stepTwo{
+    .title{
+      margin-bottom: 5px;
+    }
+    .info{
+      flex-direction: column;
+      .left, .right{
+        width: 100%;
+      }
+    }
+    .total{
+      ul{
+        li{
+          .before{
+            width: 45%;
+          }
+          .after{
+            width: 55%;
           }
         }
-        .buttonGroup{
-          .button{
-            width: 40%;
-          }
-        }
+      }
+    }
+    .buttonGroup{
+      .button{
+        width: 40%;
       }
     }
   }

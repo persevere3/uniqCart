@@ -12,7 +12,7 @@ export const useCommon = defineStore('common', () => {
 
     isShowFavorite: false,
 
-    showPage: 'main',
+    showPage: '',
 
     //
     messageArr: [],
