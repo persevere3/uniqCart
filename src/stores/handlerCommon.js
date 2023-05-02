@@ -7,13 +7,13 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
   // store ==================================================
   let { site, user_account, showPage } = storeToRefs(useCommon())
   let { getSite, getStore, showMessage } = useCommon()
-  let { isSingleProduct, category, products } = storeToRefs(useProducts())
+  let { isSingleProduct, category, products, selectProduct } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
   let { cart, cartOLength, cartLength, stepIndex, discountCode, useCodeSuccess, transport, pay_method, 
-    bonus_array, invoice_type, invoice_title, invoice_uniNumber, is_use_bonus, use_bonus
+    bonus_array, is_use_bonus, use_bonus
   } = storeToRefs(useCart())
   let { getCart, setCart, computedCartLength, filter_use_bonus, getTotal, getOthersAddPriceBuyQty } = useCart()
-  let { info } = storeToRefs(useInfo())
+  let { info, info_message, invoice_type, invoice_title, invoice_uniNumber } = storeToRefs(useInfo())
   let { getUserInfo } = useInfo()
 
   // methods ==================================================
@@ -37,9 +37,10 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
 
       getFavorite();
 
-      await methods.getCartHandler();
-
       methods.handleQuery()
+
+      if(!isSingleProduct.value) await methods.getCartHandler()
+      else await methods.getCartHandler(selectProduct.value.ID);
 
       if(showPage.value == '') showPage.value = 'main'
     },
@@ -189,7 +190,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       })
       console.log(searchObj)
 
-      let replaceUrl = process.env.NODE_ENV === 'development' ? '/' : '/cart/'
+      let replaceUrl = location.pathname
 
       // RtnMsg 付款成功
       let RtnMsg = searchObj['RtnMsg']
@@ -215,8 +216,6 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
 
             // 7-11
             methods.getConvenienceStore(storeid, storename, storeaddress, spid)
-            
-            methods.getCartHandler(selectProduct.value.ID);
 
             return
           }
@@ -250,10 +249,10 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       vm.storeaddress = decodeURI(storeaddress)
 
       if(spid) {
-        window.history.replaceState({}, document.title, `/cart/?spid=${spid}`);
+        window.history.replaceState({}, document.title, `${location.pathname}?spid=${spid}`);
       }
       else {
-        window.history.replaceState({}, document.title, "/cart/");
+        window.history.replaceState({}, document.title, `${location.pathname}`);
         showPage.value = 'cart'
         stepIndex.value = 2
       }
@@ -261,18 +260,24 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       methods.returnInfo()
     },
     pickStore() {
+      console.log(discountCode.value, useCodeSuccess.value)
+      console.log(info.value.purchaser_email.value, info.value.receiver_name.value)
+      console.log(info_message)
+      console.log(transport.value, pay_method.value)
+      console.log(transport.value, pay_method.value)
+      console.log(invoice_type.value, is_use_bonus.value)
       let order_info = {
         discountCode: discountCode.value,
         useCodeSuccess: useCodeSuccess.value,
 
         info: {
-          purchaser_email: info.value.purchaser_email,
-          purchaser_name: info.value.purchaser_name,
-          purchaser_number: info.value.purchaser_number,
-          receiver_name: info.value.receiver_name,
-          receiver_number: info.value.receiver_number,
-          info_message: info.value.info_message, 
+          purchaser_email: info.value.purchaser_email.value,
+          purchaser_name: info.value.purchaser_name.value,
+          purchaser_number: info.value.purchaser_number.value,
+          receiver_name: info.value.receiver_name.value,
+          receiver_number: info.value.receiver_number.value,
         },
+        info_message: info_message.value,
 
         transport: transport.value,
         pay_method: pay_method.value,
@@ -294,6 +299,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       useCodeSuccess.value = order_info.useCodeSuccess
 
       info.value =  order_info.info
+      info_message.value = order_info.info_message 
 
       transport.value = order_info.transport
       pay_method.value = order_info.pay_method

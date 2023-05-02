@@ -76,11 +76,11 @@
           </label>
           <select v-model="info.address.city_active" :class="{inputError: is_click_finish_order && info.address.city_active == ''}">
             <option value="" selected > 城市 </option>
-            <option :value="city" v-for="city in Object.keys(city_district)" :key="city"> {{ city }} </option>
+            <option :value="key" v-for="(value, key) in city_district" :key="key"> {{ key }} </option>
           </select>
           <select v-model="info.address.district_active" :class="{inputError: is_click_finish_order && info.address.district_active == ''}">
             <option value="" selected > 鄉鎮市區 </option>
-            <option :value="district" v-for="(district, index) in city_district[info.address.city_active]" :key="index"> {{ district }} </option>
+            <option :value="district" v-for="(zipCode, district) in city_district[info.address.city_active]" :key="district"> {{ district }} {{ zipCode }} </option>
           </select>
           <div style="display: flex;" class="input_container">
             <input style="width: 100%;" type='text' placeholder="請輸入詳細地址" v-model.trim='info.address.detail_address' :class="{inputError: is_click_finish_order && info.address.detail_address == ''}">
@@ -197,6 +197,7 @@
   import { useCart }  from '@/stores/cart'
   import { useInfo }  from '@/stores/info'
   import { useVerify }  from '@/stores/verify'
+  import { useHandlerCommon }  from '@/stores/handlerCommon'
   import { useHandlerCart }  from '@/stores/handlerCart'
 
   let { store, user_account } = storeToRefs(useCommon())
@@ -207,9 +208,10 @@
   } = storeToRefs(useCart())
   let { getTotal, filter_use_bonus } = useCart()
   let { info, has_address, is_save_address, invoice_type, invoice_title,
-    invoice_uniNumber, info_message, userInfo
+    invoice_uniNumber, info_message, userInfo, storeid, storename, storeaddress
   } = storeToRefs(useInfo())
   let { verify } = useVerify()
+  let { pickStore } = useHandlerCommon()
   let { receiver_address } = storeToRefs(useHandlerCart())
   let { checkOrder } = useHandlerCart()
 
@@ -237,10 +239,10 @@
   })
 
   watch(() => info.value.address.city_active, (newV, oldV) => {
-    for(let district of state.city_district[newV]) {
-      if(district == info.value.address.district_active) return
+    for(let key in state.city_district[newV]) {
+      if(key == info.value.address.district_active) return
     }
-    info.value.address.district_active = null
+    info.value.address.district_active = ''
   }, {deep: true})
   
   // methods ==================================================

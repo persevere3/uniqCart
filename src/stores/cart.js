@@ -79,8 +79,8 @@ export const useCart = defineStore('cart', () => {
       else {
         let key = user_account.value ? `${site.value.Name}@${user_account.value}@cart` : `${site.value.Name}@cart`
         localStorage.setItem(key, JSON.stringify(state.cart));
-        methods.computedCartLength();
       }
+      methods.computedCartLength();
     },
     computedCartLength() {
       let cartLength = 0;

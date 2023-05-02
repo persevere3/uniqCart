@@ -1,7 +1,7 @@
 <template>
   <div class="selectProduct">
     <div class="background">
-      <div class="close" click="!isSingleProduct" @click="selectProduct = {}"> <i class="fa fa-times" aria-hidden="true"></i> </div>
+      <div class="close" v-if="!isSingleProduct" @click="selectProduct = {}"> <i class="fa fa-times" aria-hidden="true"></i> </div>
       <div class="picContent">
         <div class="pic">
           <div class="mainPic" :style="{backgroundImage :`url(${selectProduct.imgArr[selectProduct.mainImgIndex]})`}"></div>
@@ -120,10 +120,10 @@
   }
   function click_share_link() {
     if(!isSingleProduct) {
-      copy( `${location.origin}/cart?id=${selectProduct.value.ID}`, '.copy_input');
+      copy( `${location.origin}${location.pathname}?id=${selectProduct.value.ID}`, '.copy_input');
     }
     else {
-      copy( `${location.origin}/cart?spid=${selectProduct.value.ID}`, '.copy_input');
+      copy( `${location.origin}${location.pathname}?spid=${selectProduct.value.ID}`, '.copy_input');
     }
     showMessage('複製分享連結', true);
   }

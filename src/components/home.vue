@@ -32,7 +32,7 @@
   import { useHandlerCommon }  from '@/stores/handlerCommon'
 
   let { user_account, isShowFavorite, showPage } = storeToRefs(useCommon())
-  let { selectProduct, favorite } = storeToRefs(useProducts())
+  let { selectProduct, isSingleProduct, favorite } = storeToRefs(useProducts())
   let { stepPage, total_bonus } = storeToRefs(useCart())
   let { info, userInfo } = storeToRefs(useInfo())
   let { getSiteHandler } = useHandlerCommon()
@@ -67,13 +67,14 @@
 
   watch(selectProduct, (newV, oldV) => {
     if(newV.ID) {
-      window.history.replaceState({}, '', `/cart?id=${newV.ID}`)
+      if(!isSingleProduct.value) window.history.replaceState({}, '', `${location.pathname}?id=${newV.ID}`)
+      else window.history.replaceState({}, '', `${location.pathname}?spid=${newV.ID}`)
       setTimeout(() => {
         let event = new Event('resize');
         window.dispatchEvent(event);
       }, 100)
     }
-    else window.history.replaceState({}, '', `/cart`)
+    else window.history.replaceState({}, '', `${location.pathname}`)
   })
 
   watch(user_account, (newV, oldV) => {

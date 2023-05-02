@@ -117,7 +117,7 @@ export const useCommon = defineStore('common', () => {
       else window.location.href = url;
     },
     getPathname(page) {
-      let uniqHost = 'uniqm.com'
+      let uniqHost = 'uniqm'
 
       let pageIndex = location.host.indexOf(uniqHost) > -1 ? 1 : 0;
 

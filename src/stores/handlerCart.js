@@ -5,6 +5,8 @@ import { useInfo } from './info'
 import { useVerify } from './verify'
 import { useHandlerCommon }  from '@/stores/handlerCommon'
 
+import city_district_json from '@/json/city_district.json'
+
 import { createOrderApi, registerApi } from '@/api/index'
 import { reactive, toRefs } from 'vue'
 
@@ -18,7 +20,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
   let { getCategories } = useProducts()
   let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
-    has_address, is_save_address, userInfo,
+    has_address, is_save_address, userInfo, storeid, storename, storeaddress
   } = storeToRefs(useInfo())
   let { getUserInfo } = useInfo()
   let { verify } = useVerify()
@@ -31,6 +33,8 @@ export const useHandlerCart = defineStore('handlerCart', () => {
     isConfirmATM: false,
     isConfirmIsRegister: false,
     isConfirmRegister: false,
+
+    city_district: city_district_json
   })
 
   // computed ==================================================  
@@ -94,6 +98,10 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       if(userInfo.value.address_obj && Object.keys(userInfo.value.address_obj).length < 3 && !has_address.value && is_save_address.value) {
         saveAddressStr = `${id}_ _${receiver_address.value.replace(/ /g, '_ _')}`
       }
+      let ZipCode = ''
+      if(userInfo.value.city_active && userInfo.value.district_active) {
+        ZipCode = state.city_district[userInfo.value.city_active][userInfo.value.district_active]
+      }
       let formDataObj = {
         // 商店
         'Site': site.value.Site,
@@ -125,6 +133,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         'ReceiverPhone': info.value.receiver_number.value,
         'Address': receiver_address.value,
         saveAddressStr,
+        ZipCode,
         'Message': info_message.value,
         'Type': invoice_type.value * 1,
         'Title': invoice_title.value,
@@ -147,9 +156,9 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       }
       // 7-11
       if(transport == 3) {
-        formDataObj['storeid'] = storeid
-        formDataObj['storename'] = storename
-        formDataObj['storeaddress'] = storeaddress
+        formDataObj['storeid'] = storeid.value
+        formDataObj['storename'] = storename.value
+        formDataObj['storeaddress'] = storeaddress.value
       }
       let formData = new FormData();
       for(let key in formDataObj) formData.append(key, formDataObj[key])
