@@ -16,6 +16,9 @@ export const useCommon = defineStore('common', () => {
 
     //
     messageArr: [],
+
+    //
+    webVersion: 'common'
   })
 
   // methods ==================================================
@@ -117,30 +120,30 @@ export const useCommon = defineStore('common', () => {
       else window.location.href = url;
     },
     getPathname(page) {
-      let uniqHost = 'uniqm'
-
-      let pageIndex = location.host.indexOf(uniqHost) > -1 ? 1 : 0;
-
       let pageObj = {
         index: {
-          0: '/',
-          1: '/'
+          'common': '/',
+          'uniqm.com': '/',
+          'uniqm.net': '/',
         },
         order: {
-          0: '/order.html',
-          1: '/shoppingOrder.html'
+          'common': '/order.html',
+          'uniqm.com': '/shoppingOrder.html',
+          'uniqm.net': '/',
         },
         user: {
-          0: '/user.html',
-          1: '/shoppingUser.html'
+          'common': '/user.html',
+          'uniqm.com': '/shoppingUser.html',
+          'uniqm.net': '/',
         },
         info: {
-          0: '/user_info.html',
-          1: '/shoppingInfo.html'
+          'common': '/info.html',
+          'uniqm.com': '/shoppingInfo.html',
+          'uniqm.net': '/',
         },
       }
 
-      return pageObj[page][pageIndex];
+      return pageObj[page][state.webVersion];
     },
   }
 

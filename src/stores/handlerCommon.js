@@ -6,10 +6,10 @@ import { useInfo } from './info'
 export const useHandlerCommon = defineStore('handlerCommon', () => {
   // store ==================================================
   let { site, user_account, showPage } = storeToRefs(useCommon())
-  let { getSite, getStore, showMessage } = useCommon()
+  let { getSite, getStore, showMessage, urlPush } = useCommon()
   let { isSingleProduct, category, products, selectProduct } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
-  let { cart, cartOLength, cartLength, stepIndex, discountCode, useCodeSuccess, transport, pay_method, 
+  let { cart, cartOLength, cartLength, stepIndex, discountCode, successUsedDiscountCode, transport, pay_method, 
     bonus_array, is_use_bonus, use_bonus
   } = storeToRefs(useCart())
   let { getCart, setCart, computedCartLength, filter_use_bonus, getTotal, getOthersAddPriceBuyQty } = useCart()
@@ -208,18 +208,17 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
 
       let spid = searchObj['spid'];
       if(spid) {
-        for(let i = 0; i < products.value.length; i++) {
-          if(products.value[i].ID == spid) {
-            isSingleProduct.value = true
+        let product = products.value.find(product => product.ID == spid)
+        if(product) {
+          window.history.replaceState({}, document.title, `${location.pathname}?spid=${spid}`);
+          isSingleProduct.value = true
+          selectProduct.value = product
 
-            selectProduct.value = products.value[i];
-
-            // 7-11
-            methods.getConvenienceStore(storeid, storename, storeaddress, spid)
-
-            return
-          }
+          // 7-11
+          if(storeid || storename || storeaddress) methods.getConvenienceStore(storeid, storename, storeaddress)
         }
+
+        return
       }
       
       // id 查看某商品
@@ -236,39 +235,30 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         showPage.value = 'cart'
       }
 
-      methods.getConvenienceStore(storeid, storename, storeaddress)
+      // 7-11
+      if(storeid || storename || storeaddress) methods.getConvenienceStore(storeid, storename, storeaddress)
     },
 
     // 7-11
-    getConvenienceStore(storeid, storename, storeaddress, spid) {
+    getConvenienceStore(storeid, storename, storeaddress) {
       let vm = this
       if(!storeid || !storename || !storeaddress) return
+
+      methods.returnInfo()
 
       vm.storeid = storeid
       vm.storename = decodeURI(storename)
       vm.storeaddress = decodeURI(storeaddress)
 
-      if(spid) {
-        window.history.replaceState({}, document.title, `${location.pathname}?spid=${spid}`);
-      }
-      else {
-        window.history.replaceState({}, document.title, `${location.pathname}`);
+      if(!isSingleProduct.value) {
         showPage.value = 'cart'
         stepIndex.value = 2
       }
-
-      methods.returnInfo()
     },
     pickStore() {
-      console.log(discountCode.value, useCodeSuccess.value)
-      console.log(info.value.purchaser_email.value, info.value.receiver_name.value)
-      console.log(info_message)
-      console.log(transport.value, pay_method.value)
-      console.log(transport.value, pay_method.value)
-      console.log(invoice_type.value, is_use_bonus.value)
       let order_info = {
         discountCode: discountCode.value,
-        useCodeSuccess: useCodeSuccess.value,
+        successUsedDiscountCode: successUsedDiscountCode.value,
 
         info: {
           purchaser_email: info.value.purchaser_email.value,
@@ -290,13 +280,19 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         use_bonus: use_bonus.value,
       }
       localStorage.setItem('order_info', JSON.stringify(order_info));
-      methods.urlPush(`https://emap.presco.com.tw/c2cemap.ashx?url=${location.origin}/interface/store/SpmarketAddress${isSingleProduct ? '?spid=' + selectProduct.value.ID : ''}`);
+      let origin = process.env.NODE_ENV === 'development' ? 'https://demo.uniqcarttest.tk' : location.origin
+      let url = `https://emap.presco.com.tw/c2cemap.ashx?url=${origin}/interface/store/SpmarketAddress${isSingleProduct.value ? '?spid=' + selectProduct.value.ID : ''}`
+      console.log(url)
+      let i = JSON.parse(localStorage.getItem('order_info'));
+      console.log(i)
+      return
+      urlPush(url);
     },
     returnInfo() {
       let order_info = JSON.parse(localStorage.getItem('order_info')) || {};
 
       discountCode.value = order_info.discountCode
-      useCodeSuccess.value = order_info.useCodeSuccess
+      successUsedDiscountCode.value = order_info.successUsedDiscountCode
 
       info.value =  order_info.info
       info_message.value = order_info.info_message 

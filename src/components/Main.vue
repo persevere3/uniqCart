@@ -3,7 +3,7 @@
     <div class="logo_name">
       <img :src="store.Logo" class="logo" v-if="store.Logo" @click="urlPush(getPathname('index'))">
     </div>
-    <div class="menu">
+    <div class="menu" v-if="webVersion != 'uniqm.net'">
       <ul>
         <li @click="urlPush(getPathname('index'))">
           <i class="fa-solid fa-house"></i> 
@@ -111,7 +111,7 @@
   import { useCommon }  from '@/stores/common/common'
   import { useProducts }  from '@/stores/products'
 
-  let { site, store, arrangement, showPage } = storeToRefs(useCommon())
+  let { site, store, arrangement, showPage, webVersion } = storeToRefs(useCommon())
   let { urlPush, getPathname } = useCommon()
   let { numberThousands } = useCommon()
   let { categories, category, products, productsRerndered, favorite } = storeToRefs(useProducts())

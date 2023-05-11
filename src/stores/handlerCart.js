@@ -18,6 +18,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
     is_use_bonus, use_bonus, member_bonus, is_click_finish_order, isOrderIng , payResult, ECPay_form_value
   } = storeToRefs(useCart())
   let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
+  let { isSingleProduct } = storeToRefs(useProducts())
   let { getCategories } = useProducts()
   let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo, storeid, storename, storeaddress
@@ -289,7 +290,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       is_use_bonus.value = false;
       use_bonus.value = 0;
 
-      if(!isSingleProduct) {
+      if(!isSingleProduct.value) {
         showPage.value = 'main'
         getCategories();
       } 

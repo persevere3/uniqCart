@@ -234,7 +234,8 @@
     verify(info.value.receiver_name, info.value.receiver_number)
   })
 
-  watch(transport, () => {
+  watch(transport, (v) => {
+    if(v == 3) pay_method.value = 'PayOnDelivery'
     getTotal(1);
   })
 
