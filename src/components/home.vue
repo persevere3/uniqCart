@@ -11,6 +11,7 @@
 
     <Confirm />
     <Message />
+    <Cookie />
   </div>
 </template>
 
@@ -23,6 +24,7 @@
   import FavoriteIcon from '@/components/FavoriteIcon.vue'
   import Confirm from '@/components/Confirm.vue'
   import Message from '@/components/Message.vue'
+  import Cookie from '@/components/Cookie.vue'
 
   // store ==================================================
   import { useCommon }  from '@/stores/common/common'

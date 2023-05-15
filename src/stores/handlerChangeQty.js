@@ -34,7 +34,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       if(spec) {
         let isMarket = await methods.getAmount(main, null, target)
         if(!isMarket) {
-          showMessage('此規格已下架', false)
+          showMessage('抱歉，您選購的規格已下架', false)
           getProductsHandler()
           return
         }
@@ -42,7 +42,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       else {
         let isMarket = await methods.getAmount(target)
         if(!isMarket) {
-          showMessage('此商品已下架', false)
+          showMessage('抱歉，您選購的商品已下架', false)
           getProductsHandler()
           return
         }
@@ -54,7 +54,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       // 庫存校驗
       if(target.Enable == 1 && qty > target.Amount * 1) {
         qty = target.Amount * 1;
-        showMessage(`目前數量僅剩 ${target.Amount < 1 ? 0 : target.Amount} 組`, false);
+        showMessage(`目前商品數量僅剩 ${target.Amount < 1 ? 0 : target.Amount} 組`, false);
       }
 
       // 動畫
@@ -134,7 +134,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       if(addPriceItemSpec) {
         let isMarket = await methods.getAmount(main, addPriceItem, target)
         if(!isMarket) {
-          showMessage('此規格已下架', false)
+          showMessage('抱歉，您選購的規格已下架', false)
           getProductsHandler()
           return
         }
@@ -142,7 +142,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       else {
         let isMarket = await methods.getAmount(main, target);
         if(!isMarket) {
-          showMessage('此商品已下架', false)
+          showMessage('抱歉，您選購的商品已下架', false)
           getProductsHandler()
           return
         }
@@ -168,7 +168,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
             if(leftBuyQty <= 0) qty = 0
             else qty = leftBuyQty
           }
-          showMessage(`目前數量僅剩 ${target.Amount * 1 < 1 ? 0 : target.Amount} 組`, false);
+          showMessage(`目前商品數量僅剩 ${target.Amount * 1 < 1 ? 0 : target.Amount} 組`, false);
         }
       }
       // 主商品總數量限制校驗

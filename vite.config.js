@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 
 import AutoImport from 'unplugin-auto-import/vite'
 
+// common, demo, uniqm.com, uniqm.net
 let webVersion = 'common'
 
 // https://vitejs.dev/config/

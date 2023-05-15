@@ -1,4 +1,4 @@
-import { loginApi, getSiteApi, getStoreApi } from '@/api/index';
+import { loginApi, getSiteApi, getGAApi, getStoreApi } from '@/api/index';
 
 import { useFilters }  from './filters'
 
@@ -52,6 +52,73 @@ export const useCommon = defineStore('common', () => {
       }
     },
 
+    appendScript(text, tag) {
+      if(!text) return
+
+      // 
+      let script_arr = [];
+
+      let scriptItems = text.split('&lt;script');
+      scriptItems.splice(0, 1);
+
+      for(let i = 0; i < scriptItems.length; i++) {
+        scriptItems[i] = '&lt;script '+ scriptItems[i].trim();
+        let attr = scriptItems[i].split('&gt;')[0];
+
+        let content = scriptItems[i].split('&gt;')[1].split("&lt;/script")[0];
+        let arr = attr.split(" ");
+        let obj = {};
+        for(let i = 0; i < arr.length; i++){
+          if(arr[i].indexOf('="') != -1){
+            obj[arr[i].split('="')[0]] = arr[i].split('="')[1].split('"')[0];
+          } 
+        }
+
+        let script = document.createElement('script');
+        for(let item in obj){
+          script.setAttribute(item, obj[item]);
+        }
+        script.textContent = content;
+
+        script_arr.push(script);
+      }
+
+      // 
+      for(let i = 0; i < script_arr.length; i++){
+        document.querySelector(tag).appendChild(script_arr[i])
+      }
+    },
+    async getGA() {
+      let formData = new FormData();
+      formData.append("WebPreview", state.site.WebPreview);
+      try {
+        let res = await getGAApi(formData)
+        if(res.data.errormessage) {
+          await methods.login();
+          methods.getGA();
+          return
+        }
+
+        let GAText = res.data.data[0].GA;
+
+        if(GAText.indexOf('GTM-') > -1) {
+          let GTMID = GAText.split('GTM-')[1].split('\')')[0]
+
+          let noscript = document.createElement('noscript');
+          noscript.setAttribute('src', `https://www.googletagmanager.com/ns.html?id=GTM-${GTMID}`);
+          noscript.setAttribute('height', '0');
+          noscript.setAttribute('width', '0');
+          noscript.setAttribute('style', 'display:none; visibility:hidden');
+
+          document.querySelector('body').insertBefore(noscript, document.querySelector('#app'));
+        }
+
+        methods.appendScript(GAText, 'head');
+      } catch (error) {
+        throw new Error(error)
+      }
+    },
+
     async getStore() {
       let params = `Preview=${state.site.Preview}`;
       try {
@@ -62,7 +129,14 @@ export const useCommon = defineStore('common', () => {
           return
         }
 
-        state.store = res.data.data[0];
+        let store = res.data.data[0]
+        store.paymethodOrder = {}
+        store.OrderPaymethod = JSON.parse(store.OrderPaymethod)
+        store.OrderPaymethod.forEach(item => {
+          store.paymethodOrder[item.name] = parseInt(item.order)
+        })
+
+        state.store = store;
         state.arrangement = state.store.Sort || "0";
         document.title = state.store.Name;
         if(process.env.NODE_ENV === 'development') state.store.Logo = 'https://demo.uniqcarttest.tk' + state.store.Logo
@@ -137,7 +211,7 @@ export const useCommon = defineStore('common', () => {
           'uniqm.net': '/',
         },
         info: {
-          'common': '/info.html',
+          'common': '/user_info.html',
           'uniqm.com': '/shoppingInfo.html',
           'uniqm.net': '/',
         },

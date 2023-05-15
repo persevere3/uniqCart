@@ -230,14 +230,14 @@ export const useCart = defineStore('cart', () => {
         if(status === '1') {
           state.successUsedDiscountCode = state.discountCode;
           state.discountErrorMessage = '';
-          showMessage('套用優惠碼成功', true);
+          showMessage('恭喜您獲得折扣', true);
         }
         else {
           state.discountCode = '';
           state.successUsedDiscountCode = '';
-          if(status === '0') state.discountErrorMessage = '查無此折扣碼' 
-          else if (status === '2') state.discountErrorMessage = '折扣碼已用完'
-          showMessage(state.discountErrorMessage, false);
+          if(status === '0') state.discountErrorMessage = '您的折扣碼無效' 
+          else if (status === '2') state.discountErrorMessage = '此折扣碼已使用完'
+          showMessage(`抱歉!${state.discountErrorMessage}，請重新輸入`, false);
         }
       } catch (error) {
         throw new Error(error)

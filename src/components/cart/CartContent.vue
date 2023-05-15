@@ -18,8 +18,9 @@
   <cartStepOne v-if="(cartLength !== 0 ) && stepPage === 1" />
   <cartStepTwo v-if="(cartLength !== 0 ) && stepPage === 2" />
   <div class="noItem" v-if="cartLength === 0">
-    <p>購物車沒有內容</p>  
-    <div class="button" @click="showPage='main';">back</div>
+    <p> 購物車是空的?? </p>  
+    <p> 趕緊手刀買起來!! </p> 
+    <div class="button" @click="showPage='main'"> 現在就去逛! </div>
   </div>
   <div class="footer">
     <div class="top"></div>

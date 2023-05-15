@@ -6,7 +6,7 @@ import { useInfo } from './info'
 export const useHandlerCommon = defineStore('handlerCommon', () => {
   // store ==================================================
   let { site, user_account, showPage } = storeToRefs(useCommon())
-  let { getSite, getStore, showMessage, urlPush } = useCommon()
+  let { getSite, getGA, getStore, showMessage, urlPush } = useCommon()
   let { isSingleProduct, category, products, selectProduct } = storeToRefs(useProducts())
   let { getCategories, getProducts, getAddPrice, getFavorite, showSelect, getMainTotalQty } = useProducts()
   let { cart, cartOLength, cartLength, stepIndex, discountCode, successUsedDiscountCode, transport, pay_method, 
@@ -22,6 +22,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       await getSite()
 
       user_account.value = localStorage.getItem('user_account')
+      getGA();
       getStore();
       getCategories();
       methods.getProductsHandler();
@@ -70,7 +71,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
 
           methods.asyncCart()
           computedCartLength();
-          if(cartOLength.value != cartLength.value) showMessage('部分商品下架，請重新確認', false);
+          if(cartOLength.value != cartLength.value) showMessage('抱歉，您選購的商品已下架', false);
           await filter_use_bonus()
           await getTotal()
           resolve()
@@ -198,7 +199,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         window.history.replaceState({}, document.title, replaceUrl);
         if(user_account.value) localStorage.removeItem(`${site.value.Name}@${user_account.value}@cart`);
         else localStorage.removeItem(`${site.value.Name}@cart`);
-        showMessage('付款成功', true)
+        showMessage('已收到您的付款！', true)
       }
 
       // 7-11

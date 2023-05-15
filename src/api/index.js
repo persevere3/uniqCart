@@ -14,6 +14,7 @@ const cartRequestFormData = axios.create({
 
 export const loginApi = data => cartRequest.post('/interface/store/UserLogin', data);
 export const getSiteApi = () => cartRequest.get('/interface/store/GetSite');
+export const getGAApi = data => cartRequestFormData.post('/interface/web/getStore', data);
 export const getStoreApi = data => cartRequest.post('/interface/store/getStore', data);
 export const getCategoriesApi = data => cartRequest.post('/interface/store/GetCategory', data);
 export const getProductsApi = data => cartRequest.post('/interface/store/storeLogin', data);

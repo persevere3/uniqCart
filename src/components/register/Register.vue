@@ -4,7 +4,7 @@
       <div class="border"></div>
       <div class="confirm_title"> 
         <i class="fas fa-registered"></i>
-        <div class="text"> 訂單完成！ </div>
+        <div class="text"> 加入會員！ </div>
       </div>
       <div class="form">
         <RegisterInput :input="r_name" />
