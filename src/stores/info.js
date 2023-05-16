@@ -124,7 +124,7 @@ export const useInfo = defineStore('info', () => {
 
           state.info.purchaser_email.value = state.userInfo.Email;
           state.info.purchaser_name.value = state.userInfo.Name;
-          state.info.purchaser_number.value = state.userInfo.Phone;
+          state.info.purchaser_number.value = state.userInfo.Phone2;
         }
         else {
           user_account.value = '';

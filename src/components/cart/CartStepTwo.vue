@@ -6,21 +6,31 @@
     <form class="info">
       <div class="left">
         <label for="email">購買人Email</label>
-        <input type="text" :readonly="userInfo.Email" id="email" placeholder="購買人Email"
-          :class="{inputError:info.purchaser_email.is_error}" v-model="info.purchaser_email.value"
-          @blur="verify(info.purchaser_email)">
+        <input type="text" id="email" placeholder="購買人Email" 
+          :readonly="`${user_account && userInfo.Registermethod == 2 ? false : !!userInfo.Email}`"
+          :class="{inputError:info.purchaser_email.is_error}"
+          v-model="info.purchaser_email.value"
+          @blur="verify(info.purchaser_email)"
+        >
         <div class="prompt">{{ info.purchaser_email.message }}</div>
 
+
         <label for="name">購買人姓名</label>
-        <input type="text" :readonly="userInfo.Name" id="name" placeholder="姓名" 
-          :class="{inputError:info.purchaser_name.is_error}" v-model="info.purchaser_name.value" 
-          @blur="verify(info.purchaser_name)" @change="input_purchaser">
+        <input type="text" id="name" placeholder="姓名"
+          :readonly="userInfo.Registermethod < 2"
+          :class="{inputError:info.purchaser_name.is_error}"
+          v-model="info.purchaser_name.value" 
+          @blur="verify(info.purchaser_name)" @change="input_purchaser"
+        >
         <div class="prompt">{{ info.purchaser_name.message }}</div>
 
         <label for="phone">購買人手機號碼</label>
-        <input type="text" :readonly="userInfo.Phone" id="phone" placeholder="購買人手機號碼" 
-          :class="{inputError:info.purchaser_number.is_error}"  v-model="info.purchaser_number.value" 
-          @blur="verify(info.purchaser_number)" @change="input_purchaser">
+        <input type="text" id="phone" placeholder="購買人手機號碼" 
+          :readonly="userInfo.Phone2"
+          :class="{inputError:info.purchaser_number.is_error}"
+          v-model="info.purchaser_number.value" 
+          @blur="verify(info.purchaser_number)" @change="input_purchaser"
+        >
         <div class="prompt">{{ info.purchaser_number.message }}</div>
 
         <div class="custom_option isSame" @click="isSame = !isSame">

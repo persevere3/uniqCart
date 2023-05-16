@@ -21,6 +21,8 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
     async getSiteHandler() {
       await getSite()
 
+      methods.handleQuery()
+
       user_account.value = localStorage.getItem('user_account')
       getGA();
       getStore();
@@ -190,8 +192,20 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         if(key && value) searchObj[key] = value
       })
       console.log(searchObj)
-
       let replaceUrl = location.pathname
+
+      // Line
+      let account = searchObj['account']
+      if(account) localStorage.setItem('user_account', account)
+      let result = searchObj['result']
+      if(result) {
+        result = JSON.parse(decodeURI(result))
+        if(!result.status) alert(result.msg)
+        else localStorage.setItem('user_account', result.account)
+
+        window.history.replaceState({}, document.title, replaceUrl);
+        return
+      }
 
       // RtnMsg 付款成功
       let RtnMsg = searchObj['RtnMsg']
@@ -207,6 +221,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
       let storename = searchObj['storename']
       let storeaddress = searchObj['storeaddress']
 
+      // spid singleProduct
       let spid = searchObj['spid'];
       if(spid) {
         let product = products.value.find(product => product.ID == spid)

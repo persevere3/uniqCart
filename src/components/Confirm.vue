@@ -53,7 +53,7 @@
       </div>
       <div class="tip">
         <i class="fas fa-exclamation-circle"></i>
-        請記得在匯款成功後前往 <div class="a" @click="urlPush(`${getPathname('order')}?phone=${info.purchaser_number.value}&mail=${info.purchaser_email.value}`, true)"> 訂單列表 </div>
+        請記得在匯款成功後前往 <div class="a" @click="urlPush(`${getPathname('order')}?phone=${info.purchaser_number.value}&email=${info.purchaser_email.value}`, true)"> 訂單列表 </div>
         輸入匯款帳戶末6碼，我們確認後將儘快為您安排出貨！
       </div>
 

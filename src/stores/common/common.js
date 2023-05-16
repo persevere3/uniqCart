@@ -131,10 +131,12 @@ export const useCommon = defineStore('common', () => {
 
         let store = res.data.data[0]
         store.paymethodOrder = {}
-        store.OrderPaymethod = JSON.parse(store.OrderPaymethod)
-        store.OrderPaymethod.forEach(item => {
-          store.paymethodOrder[item.name] = parseInt(item.order)
-        })
+        if(store.OrderPaymethod) {
+          store.OrderPaymethod = JSON.parse(store.OrderPaymethod)
+          store.OrderPaymethod.forEach(item => {
+            store.paymethodOrder[item.name] = parseInt(item.order)
+          })
+        }
 
         state.store = store;
         state.arrangement = state.store.Sort || "0";

@@ -8,7 +8,7 @@
       </div>
       <div class="form">
         <RegisterInput :input="r_name" />
-        <RegisterInput :input="r_account" />
+        <RegisterInput :input="r_phone" />
         <RegisterInput :input="r_verify_code" v-if="store.NotificationSystem == 1 || store.NotificationSystem == 2" />
         <RegisterInput :input="r_mail" />
         <RegisterInput :input="r_verify_code2" v-if="store.NotificationSystem == 0 || store.NotificationSystem == 2" />
@@ -100,7 +100,7 @@
       readonly: true,
       placeholder: '* 請輸入姓名',
     },
-    r_account: {
+    r_phone: {
       value: '',
       rules: {
         required: {
@@ -223,32 +223,32 @@
     // 會員條款與隱私權政策
     is_userModal: false,
   })
-  let { r_name, r_account, r_verify_code, r_mail, r_verify_code2, second, r_birthday, sex, r_password, r_confirm_password, r_is_agree, is_userModal } = toRefs(state)
+  let { r_name, r_phone, r_verify_code, r_mail, r_verify_code2, second, r_birthday, sex, r_password, r_confirm_password, r_is_agree, is_userModal } = toRefs(state)
   r_confirm_password.value.rules.confirm.password = r_password.value
 
   // onMounted ==================================================
   onMounted(() => {
-    state.r_account.value = info.value.purchaser_number.value;
+    state.r_phone.value = info.value.purchaser_number.value;
     state.r_name.value = info.value.purchaser_name.value;
     state.r_mail.value = info.value.purchaser_email.value;
   })
   
   // methods ==================================================
-  async function send_verify_code(){
+  async function send_verify_code() {
     if(state.second > 0) return
 
     if(store.value.NotificationSystem == 0) {
       if( !verify(state.r_mail) ) return
     }
     else if(store.value.NotificationSystem == 1) {
-      if( !verify(state.r_account) ) return
+      if( !verify(state.r_phone) ) return
     }
     else {
-      if( !verify(state.r_account) || !verify(state.r_mail) ) return
+      if( !verify(state.r_phone) || !verify(state.r_mail) ) return
     }
 
     let formData = new FormData();
-    formData.append("phone", state.r_account.value.trim());
+    formData.append("phone", state.r_phone.value.trim());
     formData.append("mail", state.r_mail.value.trim());
 
     formData.append("notificationsystem", store.value.NotificationSystem)
@@ -296,13 +296,13 @@
       verify_code.push(state.r_verify_code2)
     }
 
-    if (!verify(state.r_name, state.r_mail, state.r_birthday, state.r_account, ...verify_code, state.r_password, state.r_confirm_password)) {
+    if (!verify(state.r_name, state.r_mail, state.r_birthday, state.r_phone, ...verify_code, state.r_password, state.r_confirm_password)) {
       return
     }
     
     let formData = new FormData();
     formData.append("storeid", site.value.Name);
-    formData.append("phone", state.r_account.value);
+    formData.append("phone", state.r_phone.value);
     
     if(store.value.NotificationSystem == 0) {
       formData.append("validate2", state.r_verify_code2.value);
