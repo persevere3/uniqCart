@@ -227,8 +227,9 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         let product = products.value.find(product => product.ID == spid)
         if(product) {
           window.history.replaceState({}, document.title, `${location.pathname}?spid=${spid}`);
+
           isSingleProduct.value = true
-          selectProduct.value = product
+          showSelect(product)
 
           // 7-11
           if(storeid || storename || storeaddress) methods.getConvenienceStore(storeid, storename, storeaddress)

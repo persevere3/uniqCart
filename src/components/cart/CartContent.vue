@@ -23,8 +23,7 @@
     <div class="button" @click="showPage='main'"> 現在就去逛! </div>
   </div>
   <div class="footer">
-    <div class="top"></div>
-    <div class="bottom">POWERED AND SECURED BY UNIQ Micronet</div>
+    POWERED AND SECURED BY UNIQ Micronet
   </div>
 </template>
 

@@ -187,7 +187,7 @@ export const useHandlerChangeQty = defineStore('handlerChangeQty', () => {
       // 更新 購物車
       let cartItem = cart.value.find(cartItem => cartItem.ID == main.ID)
       if(cartItem) cartItem.addPrice = JSON.parse(JSON.stringify(product.addPrice))
-      setCartHandlerCart()
+      setCartHandler()
 
       // 取得 金額總計
       getTotal(0);

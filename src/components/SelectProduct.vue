@@ -22,14 +22,14 @@
           </div>
         </div>
         <div class="content">
-            <div class="title">{{selectProduct.Name}}</div>
+            <div class="name">{{selectProduct.Name}}</div>
             <div class="price origin">NT$ {{numberThousands(selectProduct.Price)}}</div>
             <div class="price">NT$ {{numberThousands(selectProduct.NowPrice)}}</div>
-            <div class="title"> <div v-html="unescapeEnter(selectProduct.Content)"></div> </div>
+            <div class="name"> <div v-html="unescapeEnter(selectProduct.Content)"></div> </div>
 
             <ProductBuyQtyBox :main="selectProduct" />
 
-            <div class="goToCart" v-if="!isSingleProduct && isShowGoToCart" @click="showPage = 'cart'">
+            <div class="goTo_cart_btn" v-if="!isSingleProduct && isShowGoToCart" @click="showPage = 'cart'">
               加入購物車 <i class="fa fa-shopping-cart" aria-hidden="true"></i>
             </div>
 
@@ -37,7 +37,7 @@
               加入我的最愛 <i class="fas fa-heart" :class="{is_favorite : favorite[selectProduct.ID]}"></i>
             </div>
 
-            <div class="share_link" @click="click_share_link">
+            <div class="share_link_btn" @click="click_share_link">
               分享 <i class="fas fa-share"></i>
             </div>
             <input type="text" class="copy_input hide" readonly>
@@ -57,7 +57,7 @@
               <div class="pic" :style="{backgroundImage :`url(${item.Img})`,}"></div>
             </div>
             <div class="content">
-              <div class="title">{{item.Name}}</div>
+              <div class="name">{{item.Name}}</div>
               <div class="price">NT$ {{numberThousands(item.Price)}}</div>
               <ProductBuyQtyBox :main="selectProduct" :addPrice="item"/>
             </div>
@@ -74,7 +74,7 @@
         <div v-show="isDetail" class="content ql-editor" v-html="unescapeHTML(selectProduct.Detail)"></div>
       </div>
 
-      <div class="others" v-if="isSingleProduct">
+      <div class="buyNow" v-if="isSingleProduct && getMainTotalQty(selectProduct)">
         <div class="title"> 立即購買 </div>
         
         <CartContent />

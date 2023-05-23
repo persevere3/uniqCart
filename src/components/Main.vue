@@ -58,7 +58,7 @@
           </div>
 
           <div class="content">
-            <div class="title">{{item.Name}}</div>
+            <div class="name">{{item.Name}}</div>
             <div class="price origin">NT$ {{numberThousands(item.Price)}}</div>
             <div class="price">NT$ {{numberThousands(item.NowPrice)}}</div>
             <ProductBuyQtyBox :main="item" :event="1" />
