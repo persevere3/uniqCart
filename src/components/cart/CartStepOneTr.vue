@@ -1,6 +1,6 @@
 <template>
   <div class="tr p-1">
-    <div class="td picName jcs">
+    <div class="td picName">
       <div class="pic" :style="{backgroundImage :`url(${addPrice ? product.Img : product.imgArr[0]})`}">
         <div class="tag" v-if="addPrice">加價購</div>
       </div>
@@ -40,12 +40,12 @@
       <div class="discontinued" v-show="store.Enable === '0'">停售中</div>
     </div>
     <div class="td subtotal"> 
-      <div class="priceTitle">小計</div>
-      <div class="priceText"> 
+      <div class="subtotalTitle">小計</div>
+      <div class="subtotalText"> 
         NT$ {{numberThousands(product[addPrice ? 'Price' : 'NowPrice'] * (isNaN(buyQty) ? 0 : buyQty))}} </div> 
     </div>
     <div class="td delete">
-      <div class="deleteButton"
+      <div class="button"
         @click="!addPrice ? changeMainBuyQty(product, specIndex, 0)
                           : changeAddpriceBuyQty(main, addPriceIndex, specIndex, 0)"
       > 

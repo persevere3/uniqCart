@@ -43,20 +43,20 @@
 
     <div class="discount" v-if="store">
          
-      <h5 v-show="store.Discount == 1" class="notice" >消費滿{{store.Price}}元 ，折扣{{store.Ratio}}元 。</h5>
-      <h5 v-show="store.Discount == 2" class="notice" >消費滿{{store.Price}}元 ，打{{(100 - store.Ratio) % 10 === 0 ? (100 - store.Ratio)/10 : 100 - store.Ratio }}折 。</h5>
+      <p v-show="store.Discount == 1" class="notice" >消費滿{{store.Price}}元 ，折扣{{store.Ratio}}元 。</p>
+      <p v-show="store.Discount == 2" class="notice" >消費滿{{store.Price}}元 ，打{{(100 - store.Ratio) % 10 === 0 ? (100 - store.Ratio)/10 : 100 - store.Ratio }}折 。</p>
       <p>如果要使用折扣碼，請在此填入</p>
       <div class="discountBox">
         <input type="text" v-model.trim="discountCode" @keyup.enter="discount">
         <div class="button" @click="discount">套用</div>
         <div class="button" @click="unDiscount">取消</div>
       </div>
-      <div class="discountError" v-if="discountErrorMessage">{{ discountErrorMessage }}</div>
+      <div class="discountErrorMessage" v-if="discountErrorMessage">{{ discountErrorMessage }}</div>
     </div>
 
     <CartStepTotal />
 
-    <div class="next" @click="stepPage = 2">下一步</div>
+    <div class="button" @click="stepPage = 2">下一步</div>
   </div>
 </template>
 

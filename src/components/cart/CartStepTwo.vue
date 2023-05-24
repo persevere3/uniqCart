@@ -12,7 +12,7 @@
           v-model="info.purchaser_email.value"
           @blur="verify(info.purchaser_email)"
         >
-        <div class="prompt">{{ info.purchaser_email.message }}</div>
+        <div class="errorMessage">{{ info.purchaser_email.message }}</div>
 
 
         <label for="name">購買人姓名</label>
@@ -22,7 +22,7 @@
           v-model="info.purchaser_name.value" 
           @blur="verify(info.purchaser_name)" @change="input_purchaser"
         >
-        <div class="prompt">{{ info.purchaser_name.message }}</div>
+        <div class="errorMessage">{{ info.purchaser_name.message }}</div>
 
         <label for="phone">購買人手機號碼</label>
         <input type="text" id="phone" placeholder="購買人手機號碼" 
@@ -31,7 +31,7 @@
           v-model="info.purchaser_number.value" 
           @blur="verify(info.purchaser_number)" @change="input_purchaser"
         >
-        <div class="prompt">{{ info.purchaser_number.message }}</div>
+        <div class="errorMessage">{{ info.purchaser_number.message }}</div>
 
         <div class="custom_option isSame" @click="isSame = !isSame">
           <label>收件人同購買人資料</label>
@@ -43,13 +43,13 @@
         <input type="text" id="rname" placeholder="收件人姓名"
           :class="{inputError:info.receiver_name.is_error}" v-model="info.receiver_name.value" 
           @blur="verify(info.receiver_name)">
-        <div class="prompt">{{ info.receiver_name.message }}</div>
+        <div class="errorMessage">{{ info.receiver_name.message }}</div>
 
         <label for="rphone">收件人聯絡電話</label>
         <input type="text" id="rphone" placeholder="收件人聯絡電話" 
           :class="{inputError:info.receiver_number.is_error}"  v-model="info.receiver_number.value" 
           @blur="verify(info.receiver_number)">
-        <div class="prompt">{{ info.receiver_number.message }}</div>
+        <div class="errorMessage">{{ info.receiver_number.message }}</div>
       </div>
 
       <div class="right">
@@ -69,7 +69,7 @@
           <i class="fa-regular fa-square-check" v-if="transport === '3'"></i>
           <i class="fa-regular fa-square" v-else></i>
         </div>
-        <div class="prompt" v-if="is_click_finish_order && transport === '0'"> 請選擇配送方式 </div>
+        <div class="errorMessage" v-if="is_click_finish_order && transport === '0'"> 請選擇配送方式 </div>
 
         <label for="pay_method">支付方式</label>
         <div class="custom_select">
@@ -109,7 +109,7 @@
             <i class="fa-regular fa-square" v-else></i>
           </div>
         </div>
-        <div class="prompt" v-if="is_click_finish_order && pay_method === '0'"> 請選擇支付方式 </div>
+        <div class="errorMessage" v-if="is_click_finish_order && pay_method === '0'"> 請選擇支付方式 </div>
 
         <template v-if="transport == 1">
           <label>
@@ -130,32 +130,33 @@
           <div style="display: flex;" class="input_container">
             <input style="width: 100%;" type='text' placeholder="請輸入詳細地址" v-model.trim='info.address.detail_address' :class="{inputError: is_click_finish_order && info.address.detail_address == ''}">
           </div>
-          <div class="prompt" v-if="info.address.is_error"> {{ info.address.message }} </div>
-          <div class="address" v-if="userInfo.address_obj && Object.keys(userInfo.address_obj).length">
-            <div class="address_title"> 常用地址 : </div>
-            <ul>
-              <li v-for="(item, key) in userInfo.address_obj" :key="key" 
-                  @click="info.address.city_active = item.address.split(' ')[0]; 
-                          info.address.district_active = item.address.split(' ')[1]; 
-                          info.address.detail_address = item.address.split(' ')[2];"
-              >  
-                {{ item.address }}  
+          <div class="errorMessage" v-if="info.address.is_error"> {{ info.address.message }} </div>
+
+          <div class="addressOption" v-if="userInfo.address_obj && Object.keys(userInfo.address_obj).length">
+            <label> 常用地址 : </label>
+            <div class="custom_select">
+              <div class="custom_option"  v-for="(item, key) in userInfo.address_obj" :key="key"
+                @click="info.address.city_active = item.address.split(' ')[0]; 
+                        info.address.district_active = item.address.split(' ')[1]; 
+                        info.address.detail_address = item.address.split(' ')[2];"
+              > 
+                {{ item.address }} 
                 <i class="fa-regular fa-square-check" v-if="item.address == receiver_address"></i>
                 <i class="fa-regular fa-square" v-else></i>
-              </li>
-            </ul>
+              </div>
+            </div>
           </div>
         </template>
 
         <template v-if="transport == 3">
           <label> 選擇門市 </label>
-          <div class="store_info">
+          <div class="storeInfo">
             <div v-if="storeid"> 門市店號: {{ storeid }} </div>
             <div v-if="storename"> 門市名稱: {{ storename }} </div>
             <div v-if="storeaddress"> 門市地址: {{ storeaddress }} </div>
           </div>
           <div class="button" @click="pickStore"> 搜尋門市 </div>
-          <div class="prompt" v-if="is_click_finish_order && storeaddress == ''"> 請選擇門市 </div>
+          <div class="errorMessage" v-if="is_click_finish_order && storeaddress == ''"> 請選擇門市 </div>
         </template>
 
         <label for="feedback">留言給我們</label>
@@ -174,15 +175,15 @@
             <i class="fa-regular fa-square-check" v-if="invoice_type === '2'"></i>
             <i class="fa-regular fa-square" v-else></i>
           </div>
-          <div class="prompt" v-if="invoice_type === '0'"> 請選擇發票類型 </div>
+          <div class="errorMessage" v-if="invoice_type === '0'"> 請選擇發票類型 </div>
 
           <template v-if="invoice_type==='2'">
             <label for="invoice_title">公司抬頭</label>
             <input type="text" id="invoice_title" name="公司抬頭" placeholder="公司抬頭" v-model="invoice_title">
-            <div class="prompt" v-if="invoice_title === ''"> 請填寫公司抬頭 </div>
+            <div class="errorMessage" v-if="invoice_title === ''"> 請填寫公司抬頭 </div>
             <label for="invoice_uniNumber">統一編號</label>
             <input type="text" id="invoice_uniNumber" name="統一編號" placeholder="統一編號" v-model="invoice_uniNumber">
-            <div class="prompt" v-if="invoice_uniNumber === ''"> 請填寫統一編號 </div>
+            <div class="errorMessage" v-if="invoice_uniNumber === ''"> 請填寫統一編號 </div>
           </template>
         </template>
       </div>
@@ -207,20 +208,19 @@
           </template>)
         </span>
       </div>
-      <div class="info" v-if="user_account">
-        <div class="left">
-          <div class="bonus_container">
-            購物金餘額: <span class="bonus"> {{numberThousands(total_bonus < 0 ? 0 : total_bonus)}} 點 </span>
-          </div>
-          <div class="box" v-if="total_bonus * 1">
-            <input type="checkbox" id="is_use_bonus" v-model="is_use_bonus" @change="filter_use_bonus"> 
-            <label for="is_use_bonus" > 使用購物金 </label>
-            <input type="number" placeholder="購物金" v-model="use_bonus" @blur="filter_use_bonus">
-          </div>
+      <div class="bonus" v-if="user_account">
+        <div class="leftBonus">
+          購物金餘額 : {{numberThousands(total_bonus < 0 ? 0 : total_bonus)}} 點
         </div>
-        <div class="right"></div>
+
+        <div class="custom_option" @click="is_use_bonus = !is_use_bonus" v-if="total_bonus * 1">
+          <i class="fa-regular fa-square-check" v-if="is_use_bonus"></i>
+          <i class="fa-regular fa-square" v-else></i>
+          使用購物金
+          <input type="number" placeholder="購物金" v-model="use_bonus" @click.stop @blur="filter_use_bonus">
+        </div>
       </div>
-      <div class="info login" v-else>
+      <div class="noLogin" v-else>
         請先 <span class="a" @click="urlPush(getPathname('user'))"> 登入會員 </span>
       </div>
     </template>
@@ -296,6 +296,10 @@
     }
     info.value.address.district_active = ''
   }, {deep: true})
+
+  // watch(is_use_bonus, () => {
+  //   filter_use_bonus()
+  // })
   
   // methods ==================================================
   // 同步 購買人 收件人 資訊 

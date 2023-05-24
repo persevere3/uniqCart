@@ -37,21 +37,22 @@
   <div class="confirm" v-if="isConfirmATM">
     <div class="frame">
       <div class="border"></div>
+
       <div class="confirm_title"> 
         <i class="fa fa-check-circle" aria-hidden="true"></i>  
       </div>
       <div class="message bank"> 
-        <div style="display: flex; flex-wrap: wrap;">
-          <div style="margin-right: 5px; margin-bottom: 10px;"> 匯款銀行 : </div>
-          <div style="margin-bottom: 10px;"> {{store.SelfAtmBankId}} {{bank[store.SelfAtmBankId]}}  </div>
+        <div class="bank_name">
+          <label> 匯款銀行 : </label> 
+          {{store.SelfAtmBankId}} {{bank[store.SelfAtmBankId]}}
         </div>
         <div class="bank_account">
-          <div class="bank_title"> 匯款帳號 : </div>
+          <label> 匯款帳號 : </label> 
           <input type="text" class="copy_input" readonly v-model="store.SelfAtmId">
           <div class="copy" @click="copy(store.SelfAtmId, '.copy_input')"> <i class="fas fa-copy"></i> </div>
         </div>
       </div>
-      <div class="tip">
+      <div class="notice">
         <i class="fas fa-exclamation-circle"></i>
         請記得在匯款成功後前往 <div class="a" @click="urlPush(`${getPathname('order')}?phone=${info.purchaser_number.value}&email=${info.purchaser_email.value}`, true)"> 訂單列表 </div>
         輸入匯款帳戶末6碼，我們確認後將儘快為您安排出貨！
