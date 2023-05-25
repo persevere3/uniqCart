@@ -8,8 +8,8 @@
   </div>
 
   <!-- modal -->
-  <div class="favorite_container" v-show="showPage === 'main' && Object.keys(favorite).length" :class="{hover : isShowFavorite}">
-    <ul class="favorite_items">
+  <div class="favorite_container" v-show="showPage === 'main' && Object.keys(favorite).length" :class="{show : isShowFavorite}">
+    <ul>
       <template v-for="item in favorite">
         <li @click.stop="showSelect(item)">
           <div class="img_and_name">

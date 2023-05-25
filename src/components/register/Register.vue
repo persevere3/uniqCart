@@ -54,11 +54,11 @@
     </div>
 
     <!-- 會員條款與隱私權政策 modal -->
-    <div class="user_modal_container" v-if="is_userModal">
+    <div class="member_and_privacy_container" v-if="is_userModal">
       <div class="close" @click="is_userModal = false;">
         <i class="fas fa-times"></i>
       </div>
-      <div class="user_modal">
+      <div class="modal">
         <div class="content" v-html="unescapeHTML(site.TermsNotices)"></div>
       </div>
     </div>

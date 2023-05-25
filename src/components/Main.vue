@@ -22,7 +22,7 @@
     <div class="categories">
       <ul>
         <li v-for="item in categories" :key="item.ID" 
-            :class="{categoryActive:item.ID === category}"
+            :class="{active:item.ID === category}"
             @click="category = item.ID; currentPage = 1;" 
         >
           {{item.Name}}
@@ -30,22 +30,18 @@
       </ul>
     </div>
     <div class="arrangement" v-if="pageFilterProducts.length !== 0">
-      <div>排列方式</div>
-      <div class="icon"
-        :class="{iconActive:arrangement == 0}"
-        @click="arrangement = 0" 
-      >
-        <i class="fa fa-th-large" aria-hidden="true"></i>
-      </div>
-      <div class="icon"
-        :class="{iconActive:arrangement == 1}"
-        @click="arrangement = 1"
-      >
-        <i class="fa fa-th-list" aria-hidden="true"></i>
-      </div>
+      <ul>
+        <li> 排列方式 </li>
+        <li :class="{active:arrangement == 0}" @click="arrangement = 0">
+          <i class="fa fa-th-large" aria-hidden="true"></i>
+        </li>
+        <li :class="{active:arrangement == 1}" @click="arrangement = 1">
+          <i class="fa fa-th-list" aria-hidden="true"></i>
+        </li>
+      </ul>
     </div>
 
-    <div class="products" :class="{change:arrangement == 1}">
+    <div class="products" :class="{type1:arrangement == 1}">
       <ul>
         <li v-for="item in pageFilterProducts" :key="item.ID" >
           <div class="pic_div">
@@ -65,7 +61,7 @@
           </div>
         </li>
       </ul>
-      <div class="no_item" v-if="productsRerndered && pageFilterProducts.length === 0">
+      <div class="noProduct" v-if="productsRerndered && pageFilterProducts.length === 0">
         目前沒有銷售任何產品
       </div>
     </div>
@@ -128,12 +124,8 @@
   // computed ==================================================
   const filterProducts = computed(() => {
     let arr = [];
-    if(category.value === '0') arr = products.value 
-    else {
-      arr = products.value.filter(product => {
-        return product.categoryArr.find(category => category === category)
-      })
-    }
+    if(category.value == 0) arr = products.value 
+    else arr = products.value.filter(product => product.categoryArr.find(categoryItem => categoryItem == category.value))
     state.totalPage = Math.ceil(arr.length / state.pageNum);
     return arr;
   })

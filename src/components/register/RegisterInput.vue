@@ -22,7 +22,7 @@
       </div>
     </template>
 
-    <div class="error message">
+    <div class="errorMmessage">
       <i class="error_icon fas fa-exclamation-circle"></i> 
       {{  input.message  }}
     </div>
