@@ -58,12 +58,29 @@ body, div, ul, li, p {
   }
 }
 
+$primaryColor: rgb(63, 135, 166);
+$secondColor: rgb(85, 85, 85);
+$dangerColor: rgb(220, 53, 69);
+$white: rgb(255, 255, 255);
+$black: rgb(0, 0, 0);
+
+// 
+$primaryColor: #707038;
+$secondColor: rgb(127, 118, 118);
+
+$primaryGradientColor: lighten($primaryColor, 10%);
+$primaryGradient: linear-gradient(20deg, $primaryGradientColor, $white);
+
+$secondColor_3: darken($secondColor, 13%);
+$secondColor_a: lighten($secondColor, 33%);
+$secondColor_c: lighten($secondColor, 48%);
+
 ::-webkit-scrollbar {
 	width: 8px;
 }
 ::-webkit-scrollbar-thumb {
 	border-radius: 8px;
-	background-color: rgba(63, 135, 166, 0.8);
+	background-color: lighten($primaryColor, 20%);
 }
 
 // ********************************************************************************
@@ -72,7 +89,7 @@ input, textarea, select {
 
   &:focus {
     outline: none;
-    box-shadow: 0px 0px 3px 1px rgba(63, 135, 166, 1);
+    box-shadow: 0px 0px 3px 1px $primaryColor;
   }
 }
 input[type=number] {
@@ -97,7 +114,7 @@ textarea {
   position:fixed; 
   top: 0;
   left: 0;
-  background-color: #555;
+  background-color: $secondColor;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -106,7 +123,7 @@ textarea {
   .background {
     width: 960px;
     height: 98%;
-    background-color: white;
+    background-color: $white;
     border-radius: 5px;
     padding: 25px;
     position: relative;
@@ -154,7 +171,7 @@ textarea {
     padding: 0px 20px 0px 5px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #aaaaaa;
+    border: 1px solid $secondColor_a;
     outline: none;
     position: relative;
     display: flex;
@@ -164,7 +181,7 @@ textarea {
 
     &:focus {
       outline: none;
-      box-shadow: 0px 0px 3px 1px rgba(63, 135, 166, 1);
+      box-shadow: 0px 0px 3px 1px $primaryColor;
     }
 
     .text {
@@ -191,7 +208,7 @@ textarea {
       position: absolute;
       left: -1%;
       top: 110%;
-      background-color: #fff;
+      background-color: $white;
       display: none;
       z-index: 5;
 
@@ -199,26 +216,26 @@ textarea {
         display: block;
       }
 
-      li:first-child {
-        border-top: 1px solid #ccc;
-        border-radius: 5px 5px 0px 0px ;
-      }
       li {
         width: 100%;
         padding: 5px;
         margin-bottom: 0;
         text-align: left;
         word-break : break-all;
-        border-bottom: 1px solid #ccc;
-        border-left: 1px solid #ccc;
-        border-right: 1px solid #ccc;
+        border: 1px solid $secondColor_c;
+        border-top: none;
+
+        &:first-child {
+          border-top: 1px solid $secondColor_c;
+          border-radius: 5px 5px 0px 0px ;
+        }
+        &:last-child {
+          border-radius: 0px 0px 5px 5px;
+        }
 
         &:hover {
-          background: linear-gradient(20deg, rgba(63, 135, 166, 0.3), rgba(235, 248, 225, 0.3));
+          background: $primaryGradient;
         }
-      }
-      li:last-child{
-        border-radius: 0px 0px 5px 5px;
       }
     }
   }
@@ -241,9 +258,9 @@ textarea {
       cursor: default;
 
       &:hover {
-        background-color: #fff;
+        background-color: $white;
         i {
-          color: #555;
+          color: $secondColor;
         }
       }
 
@@ -258,7 +275,7 @@ textarea {
 
   .reduce, .add {
     padding: 3px 6px;
-    border: 1px solid #555;
+    border: 1px solid $secondColor;
     flex-grow: 0;
     flex-shrink: 0;
     display: flex;
@@ -268,15 +285,15 @@ textarea {
     cursor: pointer; 
 
     &:hover {
-      background-color: #555;
+      background-color: $secondColor;
 
       i {
-        color: white;
+        color: $white;
       }
     }
 
     i {
-      color: #555;
+      color: $secondColor;
       transition: 0.3s;
     }
   }
@@ -296,7 +313,7 @@ textarea {
     padding: 0px 5px 0px 5px;
     text-align: center;
     font-size: 16px;
-    border: 1px solid #555;
+    border: 1px solid $secondColor;
     cursor: pointer;
   }
   .qtyDisabled{
@@ -307,7 +324,7 @@ textarea {
 .discontinued {
   height: 33px;
   line-height: 33px;
-  color: red;
+  color: $dangerColor;
 }
 
 // 
@@ -324,7 +341,7 @@ textarea {
       left: 50%;
       transform: translate(-50%, -50%);
 
-      border: 1px solid rgba(63, 135, 166, 1);
+      border: 1px solid $primaryColor;
     }
   }
 
@@ -356,7 +373,7 @@ textarea {
   cursor: pointer;
 
   &:hover {
-    color: #555;
+    color: $secondColor;
   }
 }
 
@@ -386,7 +403,7 @@ textarea {
           position: absolute;
           top: 0;
           left: 0;
-          color: #555;
+          color: $secondColor;
           font-size: 32px;
 
           .prev, .next {
@@ -395,7 +412,7 @@ textarea {
             cursor: pointer;
 
             &:hover {
-              color:rgba(63, 135, 166, 1);
+              color: $primaryColor;
             }
           }
           .prev {
@@ -423,7 +440,7 @@ textarea {
 
         &.origin {
           font-size: 14px;
-          color: #9e9e9e; 
+          color: $secondColor_a; 
           text-decoration: line-through; 
         }
       }
@@ -435,24 +452,24 @@ textarea {
         padding:5px 0px;
         margin-bottom: 2px;
         text-align: center;
-        background-color: #555;
-        color: white;
+        background-color: $secondColor;
+        color: $white;
         border-radius: 5px;
         cursor: pointer;
 
         i {
           margin-left: 5px;
-          color: #fff;
+          color: $white;
 
           &.is_favorite {
-            color: red;
+            color: $dangerColor;
           }
         }
       }
       .goTo_cart_btn:hover,
       .addTo_favorite_btn:hover,
       .share_link_btn:hover {
-        background-color: #333;
+        background-color: $secondColor_3;
       }
     }
   }
@@ -462,7 +479,7 @@ textarea {
       height: 30px;
       line-height: 30px;
       margin-bottom: 10px;
-      border-bottom: 1px solid #ccc;
+      border-bottom: 1px solid $secondColor_a;
       position: relative;
 
       i {
@@ -493,7 +510,8 @@ textarea {
         position: absolute;
         top: 0;
         left: 0;
-        background: rgba(255, 255, 255, 0.5);
+        background: $white;
+        opacity: .5;
         z-index: 5;
       }
 
@@ -502,7 +520,7 @@ textarea {
         padding: 5px 0px;
         margin-bottom: 1%;
         border-radius:5px;
-        border: 1px solid #aaa;
+        border: 1px solid $secondColor_a;
         display: flex;
         justify-content: space-around;
         align-items: center;
@@ -596,10 +614,10 @@ textarea {
 
     &.stepItemActive {
       .icon {
-        background-color: #555;
+        background-color: $secondColor;
       }
       p {
-        color: #555;
+        color: $secondColor;
       }
     }
 
@@ -608,22 +626,22 @@ textarea {
       height: 20px;
       margin-right: 10px;
       border-radius: 50%;
-      background-color: #aaa;
-      color: white;
+      background-color: $secondColor_a;
+      color: $white;
       display: flex;
       justify-content: center;
       align-items: center;
     }
     p {
-      color: #ccc;
+      color: $secondColor_a;
       transition: .3s;
     }
   }
   .arrow {
-    color: #ccc;
+    color: $secondColor_a;
 
     &.arrowActive {
-      color: #555;
+      color: $secondColor;
     }
   }
 }
@@ -632,7 +650,7 @@ textarea {
   padding: 50px;
   margin-bottom: 10px;
   border-radius: 5px;
-  border: 1px solid #aaa;
+  border: 1px solid $secondColor_a;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -648,7 +666,7 @@ textarea {
   }
   // noItem
   .button {
-    @include button(auto, auto, 6px 20px, 0, 5px, #333, #fff);
+    @include button(auto, auto, 6px 20px, 0, 5px, $secondColor_3, $white);
   }
 }
 
@@ -656,19 +674,24 @@ textarea {
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
-  border: 1px solid #aaa;
+  border: 1px solid $secondColor_a;
 
   .total {
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
-    background-color: rgba(63, 135, 166, 0.3);
+    background-color: lighten($primaryColor, 30%);
 
     ul {
       li {
         margin: 5px;
         display: flex;
         justify-content: flex-end;
+
+        &.line {
+          height: 1px;
+          background-color: $secondColor;
+        }
 
         .before {
           width: 80%;
@@ -683,7 +706,7 @@ textarea {
   }
 
   .button {
-    @include button(15%, 30px, 0, 0, 5px, #333, #fff);
+    @include button(15%, 30px, 0, 0, 5px, $secondColor_3, $white);
   }
 }
 
@@ -704,12 +727,12 @@ textarea {
     }
     .thead {
       display: flex;
-      background-color: #aaa;
-      color: white;
+      background-color: $secondColor;
+      color: $white;
     }
     .tr {
       display: flex;
-      border-bottom: 1px solid #aaa;
+      border-bottom: 1px solid $secondColor_a;
     }
 
     .picName, .spec, .price, .qty {
@@ -738,7 +761,7 @@ textarea {
           white-space: nowrap;
           border-radius: 3px;
           background-color: gray;
-          color: #fff;
+          color: $white;
           font-size: 10px;
           font-weight: 200;
           z-index: 1;
@@ -800,7 +823,7 @@ textarea {
 
       .button {
         width: 60px;
-        background-color: #f20000;
+        background-color: $dangerColor;
       }
     }
   }
@@ -813,7 +836,7 @@ textarea {
       margin-bottom: 5px;
     }
     .notice {
-      color: red; 
+      color: $dangerColor;
       font-weight: bolder;
     }
 
@@ -824,16 +847,17 @@ textarea {
       input {
         flex: 1 1;
         border-radius: 5px 0px 0px 5px;
-        border: 1px solid #555;
-        border-right: 0px solid #555;
+        border: 1px solid $secondColor;
+        border-right: 0px solid $secondColor;
       }
       // 套用 取消
       .button {
         width: 60px;
-        background-color:  rgba(63, 135, 166, 1);
+        background-color:  $primaryColor;
 
         &:nth-child(2) {
           border-radius: 0px 0px 0px 0px !important;
+          border-right: 1px solid $white;
         }
         &:nth-child(3) {
           border-radius: 0px 5px 5px 0px !important;
@@ -842,7 +866,7 @@ textarea {
     }
 
     .discountErrorMessage {
-      color: red;
+      color: $dangerColor;
     }
   }
 
@@ -857,8 +881,8 @@ textarea {
   .title {
     padding: 3px 12px;
     margin-bottom: 20px;
-    background-color: #aaa;
-    color: white;
+    background-color: $secondColor;
+    color: $white;
   }
 
   //
@@ -869,7 +893,7 @@ textarea {
       padding: 6px 10px;
       margin-top: 5px;
       border-radius: 3px;
-      border: 1px solid #aaaaaa;
+      border: 1px solid $secondColor_a;
     }
 
     .custom_select {
@@ -882,12 +906,12 @@ textarea {
       cursor: pointer;
   
       &:hover{
-        background-color: #eee;
+        background-color: $secondColor_c;
       }
   
       i{
         margin-left: 10px;
-        color: rgb(63,135,166);
+        color: $primaryColor;
       }
   
       &.isSame {
@@ -911,16 +935,16 @@ textarea {
     }
 
     .inputError {
-      border: 1px solid rgba(200, 0, 0, 1);
+      border: 1px solid $dangerColor;
 
       &:focus {
-        box-shadow: 0px 0px 3px 1px rgba(200, 0, 0, 1);
+        box-shadow: 0px 0px 3px 1px $dangerColor;
       }
     }
 
     .errorMessage {
       font-size: 12px;
-      color: red;
+      color: $dangerColor;
     }
 
     .addressOption {
@@ -943,7 +967,7 @@ textarea {
     // 留言字數
     .info_messageLength {
       margin-left: auto;
-      color: #ccc
+      color: $secondColor_c;
     }
 
     .left, .right {
@@ -998,8 +1022,8 @@ textarea {
   padding: 10px 0px;
   text-align: center;
   font-size: 10px;
-  background-color: #333;
-  color: white;
+  background-color: $secondColor_3;
+  color: $white;
 }//
 
 @include m {
@@ -1183,8 +1207,8 @@ textarea {
   position: fixed;
   right: 20px;
   border-radius: 50%;
-  border: 1px solid #555;
-  background: #fff;
+  border: 1px solid $secondColor;
+  background: $white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1193,7 +1217,7 @@ textarea {
   z-index: 5;
 
   i {
-    color: rgba(63, 135, 166, 0.8);
+    color: lighten($primaryColor, 10%);
   }
   .num {
     width: 25px;
@@ -1203,8 +1227,8 @@ textarea {
     right: -10px;
     font-size: 12px;
     border-radius: 50%;
-    background-color: #555;
-    color: white;
+    background-color: $secondColor;
+    color: $white;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1240,8 +1264,8 @@ textarea {
   bottom: 142px;
   right: 10px;
   transform: translateX(110%);
-  background: rgba(255, 255, 255, 0.75);
-  box-shadow: 0 0 3px 1px rgba(0, 0, 0, 0.25);
+  background: rgba($white, .8);
+  box-shadow: 0 0 3px 1px rgba($black, .5);
   transition: .5s;
   z-index: 5;
 
@@ -1255,12 +1279,12 @@ textarea {
     overflow-y: auto;
 
     li {
-      padding: 5px; 
-      border-bottom: 1px solid rgba(255, 255, 255, 0.5); 
+      padding: 5px;
+      border-bottom: 1px solid rgba($black, .3); 
       cursor: pointer;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.1);
+        background: rgba($black, .1);
       }
 
       .img_and_name {
@@ -1299,7 +1323,8 @@ textarea {
           flex-grow: 0;
           width: 50px;
           height: 100%;
-          color: rgba(256, 0, 0, 0.5);
+          color: $dangerColor;
+          opacity: .5;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -1307,7 +1332,7 @@ textarea {
           cursor: pointer;
 
           &:hover {
-            color: rgba(256, 0, 0, 1);
+            opacity: 1;
           }
         }
       }
@@ -1329,7 +1354,7 @@ textarea {
       > li {
         width:100%;
         border-radius:5px;
-        border:1px solid #aaa;
+        border:1px solid $secondColor_a;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -1382,20 +1407,20 @@ textarea {
             left: 50%;
             transform: translateX(-50%);
             border-radius: 3px;
-            background-color: rgba(63, 135, 166, 0.8);
-            color: white;
+            background-color: rgba($primaryColor, .8);
+            color: $white;
             opacity: 0;
             transition: 0.5s;
 
             i {
               margin-left: 10px;
-              color: #fff;
+              color: $white;
 
               &:hover {
                 transform: scale(1.2);
               }
               &.is_favorite {
-                color: red;
+                color: $dangerColor;
               }
             }
           }
@@ -1421,7 +1446,7 @@ textarea {
 
         &.origin {
           font-size:14px;
-          color:#9e9e9e; 
+          color: $secondColor_a; 
           text-decoration: line-through; 
         }
       }
@@ -1429,7 +1454,7 @@ textarea {
   }
 
   .noProduct {
-    color: red;
+    color: $dangerColor;
     display: flex;
     justify-content: center;
     padding: 100px 0px;
@@ -1484,14 +1509,14 @@ textarea {
       li {
         padding: 6px 10px;
         border-radius: 5px;
-        border: 1px solid rgba(63, 135, 166, 0);
+        border: 1px solid transparent;
         cursor: pointer;
 
         &:hover {
-          border: 1px solid rgba(63, 135, 166, 0.3);
+          border: 1px solid $primaryGradientColor;
         }
         &.active {
-          background: linear-gradient(20deg, rgba(63, 135, 166, 0.3), rgba(235, 248, 225, 0.3));
+          background: $primaryGradient;
         }
       }
     }
@@ -1512,18 +1537,18 @@ textarea {
       li {
         padding: 6px 10px;
         margin-right: 5px;
-        border: 1px solid #555;
+        border: 1px solid $secondColor;
         transition: 0.5s;
         cursor: pointer;
 
         &:hover, &.liActive {
-          background-color: #555;
-          color:white;
+          background-color: $secondColor;
+          color:$white;
         }
 
         &.pageDisabled {
-          background-color: #fff;
-          color: #000;
+          background-color: $white;
+          color: $black;
           opacity: 0.3;
         }
       }
@@ -1535,7 +1560,7 @@ textarea {
     height: 50px;
     margin: 0 auto;
     margin-top: 30px;
-    background: #eee;
+    background: $secondColor_c;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1545,16 +1570,12 @@ textarea {
       justify-content: center;
 
       li {
-        padding: 6px 10px; 
-        margin: 0 5px;
-        border-radius: 3px;
-        background: white;
+        @include button(auto, auto, 6px 10px, 0 5px, 3px, $white, $secondColor_3);
         opacity: 1;
-        transition: .3s;
-        cursor: pointer;
 
         &:hover {
-          opacity: 0.4;
+          background-color: $secondColor_3;
+          color: $white;
         }
       }
     }
@@ -1584,7 +1605,7 @@ textarea {
   position: fixed;
   top: 0%;
   left: 0%;
-  background:rgba(0, 0, 0, 0.4);
+  background: rgba($black, .5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1594,7 +1615,7 @@ textarea {
     width: 500px;
     position: relative;
     border-radius: 5px;
-    background: #fff;
+    background: $white;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1608,13 +1629,13 @@ textarea {
       left: 50%;
       transform: translate(-50%, -50%);
       border-radius: 5px;
-      border: 1px solid rgba(63,135,166,.7);
+      border: 1px solid lighten($primaryColor, 10%);
       z-index: 1;
     }
 
     .confirm_title {
       margin: 30px 0 20px 0;
-      color: rgba(63,135,166,.7);
+      color: lighten($primaryColor, 10%);
       font-size: 24px;
       display: flex;
       align-items: center;
@@ -1665,7 +1686,7 @@ textarea {
             height: 32px;
             margin-top: 5px;
             font-size: 20px;
-            color: rgba(63, 135, 166, 0.8);
+            color: lighten($primaryColor, 10%);
             display: flex;
             align-items: center;
             cursor: pointer;
@@ -1682,14 +1703,14 @@ textarea {
       padding: 20px 25px;
       text-align: center;
       font-size: 18px;
-      color: #333;
+      color: $secondColor_3;
       z-index: 2;
 
       .a {
-        color: #c44b50;
+        color: $dangerColor;
 
         &:hover {
-          color: lighten(#c44b50, 10%);
+          color: darken($dangerColor, 20%);
         }
       }
     }
@@ -1701,14 +1722,14 @@ textarea {
 
       // confirm
       .button {
-        @include button(auto, auto, 6px 10px, 0, 5px, #333, #fff);
+        @include button(auto, auto, 6px 10px, 0, 5px, $secondColor_3, $white);
 
         &.cancel {
           margin-right: 15px;
-          background-color: #333;
+          background-color: $secondColor_3;
         }
         &.determine {
-          background-color: rgb(63, 135, 166);
+          background-color: $primaryColor;
         }
       }
     }
@@ -1745,9 +1766,9 @@ textarea {
       margin-bottom: 5px;
       font-size: 16px;
       border-radius: 3px;
-      border: 1px solid #ddd;
+      border: 1px solid $secondColor_c;
       outline: none;
-      color: #333;
+      color: $secondColor_3;
       transition: box-shadow .3s;
       box-sizing: border-box;
     }
@@ -1757,7 +1778,7 @@ textarea {
       position: absolute;
       top: 0;
       right: 0;
-      color: rgba(63,135,166,1); 
+      color: $primaryColor; 
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1766,7 +1787,7 @@ textarea {
     .errorMmessage {
       padding: 0px 10px;
       font-size: 14px;
-      color: #dc3545;
+      color: $dangerColor;
       align-items: center;
       display: none;
 
@@ -1777,7 +1798,7 @@ textarea {
 
     &.error {
       input{
-        border: 1px solid #dc3545;
+        border: 1px solid $dangerColor;
       }
       .errorMmessage{
         display: flex
@@ -1795,7 +1816,7 @@ textarea {
       margin-right: 5px;
       position: relative;
       border-radius: 50%;
-      border: 1px solid #ddd;
+      border: 1px solid $secondColor_c;
 
       input {
         width: 100%;
@@ -1816,7 +1837,7 @@ textarea {
         left: 50%;
         transform: translate(-50%, -50%);
         border-radius: 50%;
-        background-color: rgba(63,135,166,1);
+        background-color: $primaryColor;
       }
     }
 
@@ -1838,7 +1859,7 @@ textarea {
       margin-right: 10px;
       position: relative;
       border-radius: 3px;
-      border: 1px solid #ddd;
+      border: 1px solid $secondColor_c;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -1860,7 +1881,7 @@ textarea {
         position: absolute;
         top: 0;
         left: 1.5px;
-        color: rgba(63,135,166,.7);
+        color: lighten($primaryColor, 10%);
       }
     }
     label {
@@ -1868,7 +1889,7 @@ textarea {
     }
     .modal_text {
       margin-left: 5px;
-      color: rgba(63,135,166,.7);
+      color: lighten($primaryColor, 10%);
       text-decoration: underline;
       opacity: 0.8;
       transition: .2s;
@@ -1882,7 +1903,7 @@ textarea {
 
   // 獲取驗證碼
   .button {
-    @include button(auto, 40px, 0, 0, 3px, rgb(63,135,166), #fff);
+    @include button(auto, 40px, 0, 0, 3px, $primaryColor, $white);
   }
 }
 // date
@@ -1894,22 +1915,22 @@ textarea {
   // today
   .dp__today {
     border: 1px solid transparent;
-    background-color: rgba(63, 135, 166, 0.6);
-    color: #f8f8f8;
+    background-color: lighten($primaryColor, 20%);
+    color: $white;
   }
   // month year date active
   .dp__overlay_cell_active, .dp__active_date {
-    background-color: rgb(63, 135, 166);
-    color: #f8f8f8;
+    background-color: $primaryColor;
+    color: $white;
   }
   // cancel select
   .dp__action_button {
     border: none !important;
-    background-color: rgba(35, 48, 25, 0.7);
-    color: #f8f8f8 !important;
+    background-color: $secondColor;
+    color: $white !important;
 
     &:hover {
-      background-color: rgb(63, 135, 166);
+      background-color: $primaryColor;
     }
   }
 }
@@ -1921,7 +1942,7 @@ textarea {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba($black, .5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1934,7 +1955,7 @@ textarea {
     top: 20px;
     right: 20px;
     font-size: 30px;
-    color: #fff;
+    color: $white;
     opacity: 0.8;
     transition: .2s;
     display: flex;
@@ -1954,7 +1975,7 @@ textarea {
     overflow-y: auto;
     padding: 3%;
     border-radius: 5px;
-    background: #fff;
+    background: $white;
   }
 }
 
@@ -1966,7 +1987,7 @@ textarea {
     top: 30%;
     left: 0%;
     border-radius: 3px;
-    color: white;
+    color: $white;
     transition: top 3s , opacity .5s;
     z-index: 200;
 

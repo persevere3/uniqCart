@@ -18,7 +18,7 @@
         <div class="after" v-if=" subtotal >= 0"> NT$ {{numberThousands(subtotal)}} </div>
         <div class="after" v-else> NT$ 0 </div>
       </li>
-      <hr>
+      <li class="line"></li>
       <li v-if="user_account && is_use_bonus && use_bonus > 0">
         <div class="before">- 購物金</div>
         <div class="after">NT$ {{numberThousands(use_bonus)}}</div>
