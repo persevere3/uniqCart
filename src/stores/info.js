@@ -73,7 +73,9 @@ export const useInfo = defineStore('info', () => {
       //
       address: {
         city_active: '',
+        is_show_city: false,
         district_active: '',
+        is_show_district: false,
         detail_address: '',
         rules: {
           required: {

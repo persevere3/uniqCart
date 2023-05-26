@@ -164,86 +164,99 @@ textarea {
 .spec {
   width: 100%;
   margin-bottom: 5px;
-
-  .select {
-    width: 100%;
-    height: 33px;
-    padding: 0px 20px 0px 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid $secondColor_a;
-    outline: none;
-    position: relative;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    cursor: pointer;
-
-    &:focus {
-      outline: none;
-      box-shadow: 0px 0px 3px 1px $primaryColor;
-    }
-
-    .text {
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .icon {
-      position: absolute;
-      top: 50%;
-      right: 5px;
-      transform: translateY(-50%);
-      transition: .3s;
-      
-      &.iconActive {
-        transform: translateY(-50%) rotate(180deg);
-      }
-    }
-
-    .option {
-      width: 102%;
-      position: absolute;
-      left: -1%;
-      top: 110%;
-      background-color: $white;
-      display: none;
-      z-index: 5;
-
-      &.showOption {
-        display: block;
-      }
-
-      li {
-        width: 100%;
-        padding: 5px;
-        margin-bottom: 0;
-        text-align: left;
-        word-break : break-all;
-        border: 1px solid $secondColor_c;
-        border-top: none;
-
-        &:first-child {
-          border-top: 1px solid $secondColor_c;
-          border-radius: 5px 5px 0px 0px ;
-        }
-        &:last-child {
-          border-radius: 0px 0px 5px 5px;
-        }
-
-        &:hover {
-          background: $primaryGradient;
-        }
-      }
-    }
-  }
 }
 .noSpec {
   height: 33px;
   margin-bottom: 5px;
 }
+
+// 
+.select {
+  width: 100%;
+  height: 33px;
+  padding: 0px 20px 0px 5px;
+  margin-top: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid $secondColor_a;
+  outline: none;
+  position: relative;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    box-shadow: 0px 0px 3px 1px $primaryColor;
+  }
+
+  &.selectError {
+    border: 1px solid $dangerColor;
+
+    &:focus {
+      box-shadow: 0px 0px 3px 1px $dangerColor;
+    }
+  }
+
+  .text {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    transition: .3s;
+    
+    &.iconActive {
+      transform: translateY(-50%) rotate(180deg);
+    }
+  }
+
+  .option {
+    width: 102%;
+    max-height: 165px;
+    overflow-y: auto;
+    position: absolute;
+    left: -1%;
+    top: 110%;
+    background-color: $white;
+    display: none;
+    z-index: 5;
+
+    &.showOption {
+      display: block;
+    }
+
+    li {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 0;
+      text-align: left;
+      word-break : break-all;
+      border: 1px solid $secondColor_a;
+      border-top: none;
+
+      &:first-child {
+        border-top: 1px solid $secondColor_a;
+        border-radius: 5px 5px 0px 0px ;
+      }
+      &:last-child {
+        border-radius: 0px 0px 5px 5px;
+      }
+
+      &:hover {
+        background: $primaryGradient;
+      }
+    }
+  }
+}
+
 // 
 .qtyBox {
   width: 100%;
@@ -967,7 +980,7 @@ textarea {
     // 留言字數
     .info_messageLength {
       margin-left: auto;
-      color: $secondColor_c;
+      color: $secondColor_a;
     }
 
     .left, .right {
@@ -1560,7 +1573,7 @@ textarea {
     height: 50px;
     margin: 0 auto;
     margin-top: 30px;
-    background: $secondColor_c;
+    background: $secondColor_a;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1766,7 +1779,7 @@ textarea {
       margin-bottom: 5px;
       font-size: 16px;
       border-radius: 3px;
-      border: 1px solid $secondColor_c;
+      border: 1px solid $secondColor_a;
       outline: none;
       color: $secondColor_3;
       transition: box-shadow .3s;
@@ -1816,7 +1829,7 @@ textarea {
       margin-right: 5px;
       position: relative;
       border-radius: 50%;
-      border: 1px solid $secondColor_c;
+      border: 1px solid $secondColor_a;
 
       input {
         width: 100%;
@@ -1859,7 +1872,7 @@ textarea {
       margin-right: 10px;
       position: relative;
       border-radius: 3px;
-      border: 1px solid $secondColor_c;
+      border: 1px solid $secondColor_a;
       display: flex;
       justify-content: center;
       align-items: center;

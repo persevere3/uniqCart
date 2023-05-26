@@ -6,8 +6,8 @@
     <form class="info">
       <div class="left">
         <label for="email">購買人Email</label>
-        <input type="text" id="email" placeholder="購買人Email" 
-          :readonly="`${user_account && userInfo.Registermethod == 2 ? false : !!userInfo.Email}`"
+        <input type="text" id="email" placeholder="購買人Email"
+          :readonly="(user_account && userInfo.Registermethod == 2) ? false : userInfo.Email"
           :class="{inputError:info.purchaser_email.is_error}"
           v-model="info.purchaser_email.value"
           @blur="verify(info.purchaser_email)"
@@ -119,14 +119,35 @@
               <label for="is_save_address"> 加入常用地址 </label>
             </template>
           </label>
-          <select v-model="info.address.city_active" :class="{inputError: is_click_finish_order && info.address.city_active == ''}">
-            <option value="" selected > 城市 </option>
-            <option :value="key" v-for="(value, key) in city_district" :key="key"> {{ key }} </option>
-          </select>
-          <select v-model="info.address.district_active" :class="{inputError: is_click_finish_order && info.address.district_active == ''}">
-            <option value="" selected > 鄉鎮市區 </option>
-            <option :value="district" v-for="(zipCode, district) in city_district[info.address.city_active]" :key="district"> {{ district }} {{ zipCode }} </option>
-          </select>
+
+          <div class="select"
+            :class="{selectError: is_click_finish_order && !info.address.city_active}" 
+            @click="info.address.is_show_city = !info.address.is_show_city" tabindex="0" 
+            @blur="info.address.is_show_city = false"
+          >
+            <div class="text"> {{ !info.address.city_active ? "城市 / 縣" : info.address.city_active }} </div>
+            <div class="icon" :class="{iconActive:info.address.is_show_city}"> <i class="fa fa-caret-down" aria-hidden="true"></i> </div>
+            <ul class="option" :class="{showOption:info.address.is_show_city}">                                                                  
+              <li v-for="(value, key) in city_district" :key="key" @click.stop="info.address.city_active = key; info.address.is_show_city = false;">
+                {{key}}
+              </li>
+            </ul>
+          </div>
+
+          <div class="select"
+            :class="{selectError: is_click_finish_order && !info.address.district_active}" 
+            @click="city_district[info.address.city_active] ? info.address.is_show_district = !info.address.is_show_district : ''" 
+            tabindex="0" @blur="info.address.is_show_district = false"
+          >
+            <div class="text"> {{ !info.address.district_active ? "地區" : info.address.district_active }} </div>
+            <div class="icon" :class="{iconActive:info.address.is_show_district}"> <i class="fa fa-caret-down" aria-hidden="true"></i> </div>
+            <ul class="option" :class="{showOption:info.address.is_show_district}">                                                                  
+              <li v-for="(zipCode, district) in city_district[info.address.city_active]" :key="district" @click.stop="info.address.district_active = district; info.address.is_show_district = false;">
+                {{ district }} {{ zipCode }}
+              </li>
+            </ul>
+          </div>
+
           <div style="display: flex;" class="input_container">
             <input style="width: 100%;" type='text' placeholder="請輸入詳細地址" v-model.trim='info.address.detail_address' :class="{inputError: is_click_finish_order && info.address.detail_address == ''}">
           </div>
@@ -295,6 +316,10 @@
       if(key == info.value.address.district_active) return
     }
     info.value.address.district_active = ''
+  }, {deep: true})
+
+  watch(() => [info.value.address.city_active, info.value.address.district_active, info.value.address.detail_address], () => {
+    if(is_click_finish_order.value) verify(info.value.address)
   }, {deep: true})
 
   // watch(is_use_bonus, () => {
