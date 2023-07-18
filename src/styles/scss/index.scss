@@ -454,7 +454,7 @@ textarea {
         &.origin {
           font-size: 14px;
           color: $secondColor_a; 
-          text-decoration: line-through; 
+          text-decoration: line-through;
         }
       }
 
@@ -1461,6 +1461,10 @@ textarea {
           font-size:14px;
           color: $secondColor_a; 
           text-decoration: line-through; 
+
+          &.opacity {
+            opacity: 0;
+          }
         }
       }
     }

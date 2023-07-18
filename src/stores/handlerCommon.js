@@ -297,7 +297,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         use_bonus: use_bonus.value,
       }
       localStorage.setItem('order_info', JSON.stringify(order_info));
-      let origin = process.env.NODE_ENV === 'development' ? 'https://demo.uniqcarttest.tk' : location.origin
+      let origin = process.env.NODE_ENV === 'development' ? 'https://demo.uniqcarttest.com' : location.origin
       let url = `https://emap.presco.com.tw/c2cemap.ashx?url=${origin}/interface/store/SpmarketAddress${isSingleProduct.value ? '?spid=' + selectProduct.value.ID : ''}`
       console.log(url)
       let i = JSON.parse(localStorage.getItem('order_info'));

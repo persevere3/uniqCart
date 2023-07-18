@@ -55,7 +55,8 @@
 
           <div class="content">
             <div class="name">{{item.Name}}</div>
-            <div class="price origin">NT$ {{numberThousands(item.Price)}}</div>
+            <div class="price origin" v-if="parseInt(item.Price) > -1">NT$ {{numberThousands(item.Price)}}</div>
+            <div class="price origin opacity0" v-else >NT$ {{numberThousands(item.Price)}}</div>
             <div class="price">NT$ {{numberThousands(item.NowPrice)}}</div>
             <ProductBuyQtyBox :main="item" :event="1" />
           </div>

@@ -13,7 +13,7 @@
       <template v-for="item in favorite">
         <li @click.stop="showSelect(item)">
           <div class="img_and_name">
-            <div class="img" :style="{backgroundImage: `url(${item.imgArr[0]})`}"></div>
+            <div class="img" v-if="item.imgArr" :style="{backgroundImage: `url(${item.imgArr[0]})`}"></div>
             <div class="name"> {{ item.Name }} </div>
           </div>
           <div class="price_and_delete">

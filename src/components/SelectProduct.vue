@@ -23,7 +23,7 @@
         </div>
         <div class="content">
             <div class="name">{{selectProduct.Name}}</div>
-            <div class="price origin">NT$ {{numberThousands(selectProduct.Price)}}</div>
+            <div class="price origin" v-if="parseInt(selectProduct.Price) > -1">NT$ {{numberThousands(selectProduct.Price)}}</div>
             <div class="price">NT$ {{numberThousands(selectProduct.NowPrice)}}</div>
             <div class="name"> <div v-html="unescapeEnter(selectProduct.Content)"></div> </div>
 

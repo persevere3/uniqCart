@@ -141,7 +141,7 @@ export const useCommon = defineStore('common', () => {
         state.store = store;
         state.arrangement = state.store.Sort || "0";
         document.title = state.store.Name;
-        if(process.env.NODE_ENV === 'development') state.store.Logo = 'https://demo.uniqcarttest.tk' + state.store.Logo
+        if(process.env.NODE_ENV === 'development') state.store.Logo = 'https://demo.uniqcarttest.com' + state.store.Logo
       } catch (error) {
         throw new Error(error)
       }

@@ -71,12 +71,12 @@ export const useProducts = defineStore('products', () => {
           else product.buyQty = 0;
 
           // imgArr, mainImgIndex, categoryArr, allPicLength
-          product.imgArr = [product.Img1, product.Img2, product.Img3, product.Img4, product.Img5];
-          product.imgArr = product.imgArr.filter(img => img)
-          if(process.env.NODE_ENV === 'development') product.imgArr = product.imgArr.map(img => 'https://demo.uniqcarttest.tk' + img)
+          let imgArr = [product.Img1, product.Img2, product.Img3, product.Img4, product.Img5];
+          if(process.env.NODE_ENV === 'development') imgArr = imgArr.map(img => 'https://demo.uniqcarttest.com' + img)
+          product.imgArr = imgArr.filter(img => img)
           product.mainImgIndex = 0;
-          product.categoryArr = [product.Category1, product.Category2, product.Category3, product.Category4, product.Category5]
-          product.categoryArr = product.categoryArr.filter(category => category)
+          let categoryArr = [product.Category1, product.Category2, product.Category3, product.Category4, product.Category5]
+          product.categoryArr = categoryArr.filter(category => category)
           product.allPicLength = product.categoryArr.length;
 
           product.addPrice = null
@@ -122,7 +122,7 @@ export const useProducts = defineStore('products', () => {
             addPriceItem.isShowOption = false;
           }
           else addPriceItem.buyQty = 0
-          addPriceItem.Img = 'https://demo.uniqcarttest.tk' + addPriceItem.Img
+          addPriceItem.Img = 'https://demo.uniqcarttest.com' + addPriceItem.Img
         })
 
         item.addPrice = addPrice
