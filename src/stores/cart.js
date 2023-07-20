@@ -25,9 +25,44 @@ export const useCart = defineStore('cart', () => {
     discountErrorMessage: '',
 
     // 運送方式
-    transport: '0', // 1一般宅配 2到店自取 3 7-11
+    transport: '0',
+    transport_obj: {
+      0: '',
+      1: '一般宅配',
+      2: '到店自取',
+      'UNIMARTDelivery': '7-11 取貨付款',
+      'UNIMARTC2CDelivery': '7-11 取貨付款',
+      'UNIMART': '7-11 取貨不付款',
+      'UNIMARTC2C': '7-11 取貨不付款',
+      'UNIMARTFREEZEDelivery': '7-11冷凍 取貨付款',
+      'UNIMARTFREEZE': '7-11冷凍 取貨不付款',
+
+      'FAMIDelivery': '全家 取貨付款',
+      'FAMIC2CDelivery': '全家 取貨付款',
+      'FAMI': '全家 取貨不付款',
+      'FAMIC2C': '全家 取貨不付款',
+
+      'HILIFEDelivery': '萊爾富 取貨付款',
+      'HILIFEC2CDelivery': '萊爾富 取貨付款',
+      'HILIFE': '萊爾富 取貨不付款',
+      'HILIFEC2C': '萊爾富 取貨不付款',
+
+      'OKMARTC2CDelivery': 'OK超商 取貨付款',
+      'OKMARTC2C': 'OK超商 取貨不付款',
+    },
+    is_show_transport_options: false,
     // 支付方式, PayType: store[pay_method]
-    pay_method: '0', // CreditCard ATM PayCode PayBarCode PayOnDelivery LinePay
+    pay_method: '0',
+    // pay_method_obj: {
+    //   'CreditCard': '信用卡',
+    //   'ATM': 'ATM/網路ATM',
+    //   'PayCode': '超商代碼',
+    //   'PayBarCode': '超商條碼',
+    //   'PayOnDelivery': '取貨付款',
+    //   'LinePay': 'LINE Pay',
+    //   'MartPayOnDelivery': '超商取貨付款'
+    // },
+    // is_show_pay_method_options: false,
 
     bonus_array: [],
     total_bonus: 0,
@@ -40,6 +75,7 @@ export const useCart = defineStore('cart', () => {
     payResult: {},
     bank: bank_json,
     ECPay_form_value: '',
+    ECPay_store_form_value: ''
   })
 
   // computed ==================================================
@@ -114,6 +150,11 @@ export const useCart = defineStore('cart', () => {
 
       isStepTwo = isStepTwo ? 1 : 0
 
+      let shipping
+      if(transport.value === '0') shipping = 3
+      else if(transport.value === '1') shipping = 2
+      else if(transport.value === '2') shipping = 3
+      else shipping = 4
       let paramsObj = {
         id,
         qry,
@@ -123,10 +164,12 @@ export const useCart = defineStore('cart', () => {
         specificationqty,
         type: isStepTwo,
         code: state.successUsedDiscountCode,
-        shipping: state.transport == 0 ? 0 : state.transport * 1 + 1,
+        shipping,
         memberWallet: state.is_use_bonus ? state.use_bonus : 0, 
         Preview: site.value.Preview,
       }
+      if(shipping === 4) paramsObj['Mart'] = transport.value;
+
       let params = ''
       for(let key in paramsObj) {
         let value = paramsObj[key]

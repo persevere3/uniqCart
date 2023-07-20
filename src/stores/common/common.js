@@ -138,6 +138,22 @@ export const useCommon = defineStore('common', () => {
           })
         }
 
+        let CVSSetting = JSON.parse(store.CVSSetting)
+
+        if(store.ECStatus == 0) {
+          for(let key in CVSSetting) {
+            if(key.indexOf('Shipping') > -1) {
+              CVSSetting[key] = false
+            }
+          }
+        }
+        for(let key in CVSSetting) {
+          if(key.indexOf('Shipping') > -1) continue
+          let mart = key.replace('C2CC', '').replace('C2C', '').replace('FREEZE', '').replace('Delivery', '')
+          if(!CVSSetting[`${mart}Shipping`]) CVSSetting[key] = false
+          store[key] = CVSSetting[key]
+        }
+
         state.store = store;
         state.arrangement = state.store.Sort || "0";
         document.title = state.store.Name;
@@ -199,23 +215,27 @@ export const useCommon = defineStore('common', () => {
       let pageObj = {
         index: {
           'common': '/',
+          'demo': '/',
           'uniqm.com': '/',
           'uniqm.net': '/',
         },
         order: {
           'common': '/order.html',
+          'demo': '/order.html',
           'uniqm.com': '/shoppingOrder.html',
-          'uniqm.net': '/',
+          'uniqm.net': '',
         },
         user: {
           'common': '/user.html',
+          'demo': '/user.html',
           'uniqm.com': '/shoppingUser.html',
-          'uniqm.net': '/',
+          'uniqm.net': '',
         },
         info: {
           'common': '/user_info.html',
+          'demo': '/user_info.html',
           'uniqm.com': '/shoppingInfo.html',
-          'uniqm.net': '/',
+          'uniqm.net': '',
         },
       }
 

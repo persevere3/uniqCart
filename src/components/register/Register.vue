@@ -42,7 +42,7 @@
       </div>
       <div class="buttonGroup">
         <div class="button cancel" @click="isConfirmRegister = false; toPay()"> 
-          <template v-if="pay_method != 'PayOnDelivery'">
+          <template v-if="pay_method != 'PayOnDelivery' && pay_method != 'MartPayOnDelivery'">
             前往付款頁面 
           </template>
           <template v-else>
@@ -93,6 +93,12 @@
       rules: {
         required: {
           message: '此項目為必填'
+        },
+        name: {
+          message: '請輸入全中文或全英文'
+        },
+        nameLength: {
+          message: '中文長度請介於2~5，英文長度請介於4~10'
         },
       },
       is_error: false,

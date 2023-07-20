@@ -13,7 +13,9 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
     bonus_array, is_use_bonus, use_bonus
   } = storeToRefs(useCart())
   let { getCart, setCart, computedCartLength, filter_use_bonus, getTotal, getOthersAddPriceBuyQty } = useCart()
-  let { info, info_message, invoice_type, invoice_title, invoice_uniNumber } = storeToRefs(useInfo())
+  let { info, info_message, invoice_type, personal_or_company, 
+    phone_barCode, natural_barCode, invoice_title, invoice_uniNumber 
+  } = storeToRefs(useInfo())
   let { getUserInfo } = useInfo()
 
   // methods ==================================================
@@ -216,10 +218,10 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         showMessage('已收到您的付款！', true)
       }
 
-      // 7-11
-      let storeid = searchObj['storeid']
-      let storename = searchObj['storename']
-      let storeaddress = searchObj['storeaddress']
+      // 超商取貨付款
+      let storeid = searchObj['CVSStoreID']
+      let storename = searchObj['CVSStoreName']
+      let storeaddress = searchObj['CVSAddress']
 
       // spid singleProduct
       let spid = searchObj['spid'];
@@ -252,20 +254,19 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         showPage.value = 'cart'
       }
 
-      // 7-11
+      // 超商取貨付款
       if(storeid || storename || storeaddress) methods.getConvenienceStore(storeid, storename, storeaddress)
     },
 
-    // 7-11
-    getConvenienceStore(storeid, storename, storeaddress) {
-      let vm = this
-      if(!storeid || !storename || !storeaddress) return
+    // 超商取貨付款
+    getConvenienceStore(id, name, address) {
+      if(!id || !name || !address) return
 
       methods.returnInfo()
 
-      vm.storeid = storeid
-      vm.storename = decodeURI(storename)
-      vm.storeaddress = decodeURI(storeaddress)
+      storeid.value = id
+      storename.value = decodeURI(name)
+      storeaddress.value = decodeURI(address)
 
       if(!isSingleProduct.value) {
         showPage.value = 'cart'
@@ -290,6 +291,9 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         pay_method: pay_method.value,
   
         invoice_type: invoice_type.value,
+        personal_or_company: personal_or_company.value,
+        phone_barCode: phone_barCode.value,
+        natural_barCode: natural_barCode.value,
         invoice_title: invoice_title.value,
         invoice_uniNumber: invoice_uniNumber.value,
 
@@ -297,13 +301,38 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
         use_bonus: use_bonus.value,
       }
       localStorage.setItem('order_info', JSON.stringify(order_info));
-      let origin = process.env.NODE_ENV === 'development' ? 'https://demo.uniqcarttest.com' : location.origin
-      let url = `https://emap.presco.com.tw/c2cemap.ashx?url=${origin}/interface/store/SpmarketAddress${isSingleProduct.value ? '?spid=' + selectProduct.value.ID : ''}`
-      console.log(url)
-      let i = JSON.parse(localStorage.getItem('order_info'));
-      console.log(i)
-      return
-      urlPush(url);
+
+      if(webVersion.value == 'demo') {
+        ECPay_store_form.value = `<form id="ECPay_store_form" action="https://logistics-stage.ecpay.com.tw/Express/map" method="post">`
+      } else {
+        ECPay_store_form.value = `<form id="ECPay_store_form" action="https://logistics.ecpay.com.tw/Express/map" method="post">`
+      }
+
+      let MerchantID
+      if(webVersion.value === 'demo') MerchantID = transport.value.indexOf('C2C') > -1 ? '2000933' : '2000132'
+      else MerchantID = store.value.ECStore
+      let LogisticsSubType = transport.value.replace('Delivery', '')
+      let IsCollection = transport.value.indexOf('Delivery') > -1 ? 'Y' : 'N'
+      let obj = {
+        MerchantID,
+        MerchantTradeNo: '',
+        LogisticsType: 'CVS',
+        LogisticsSubType,
+        IsCollection,
+        ServerReplyURL: `${location.origin}/interface/store/SpmarketAddress${showPage.value == 'singleProduct' ? '?spid=' + selectProduct.value.ID : ''}`,
+        ExtraData: '',
+        Device: ''
+      }
+
+      for(let key in obj) {
+        ECPay_store_form.value += `<input type="${key == 'Device' ? 'number' : 'text'}" name="${key}" value="${obj[key]}">`;
+      }
+      ECPay_store_form.value += `</form>`;
+
+      setTimeout(() => {
+        let ECPay_store_form = document.querySelector('#ECPay_store_form');
+        ECPay_store_form.submit();
+      }, 1000)
     },
     returnInfo() {
       let order_info = JSON.parse(localStorage.getItem('order_info')) || {};

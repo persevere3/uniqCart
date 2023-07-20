@@ -83,6 +83,22 @@ $secondColor_c: lighten($secondColor, 48%);
 	background-color: lighten($primaryColor, 20%);
 }
 
+//
+.px10 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.mt5 {
+  margin-top: 5px;
+}
+.mt10 {
+  margin-top: 10px;
+}
+
+.flex {
+  display: flex;
+}
+
 // ********************************************************************************
 input, textarea, select {
   transition: 0.5s;
@@ -225,6 +241,8 @@ textarea {
     position: absolute;
     left: -1%;
     top: 110%;
+    border-radius: 5px;
+    border: 1px solid $primaryColor;
     background-color: $white;
     display: none;
     z-index: 5;
@@ -256,6 +274,17 @@ textarea {
     }
   }
 }
+.cart {
+  .select {
+    height: 29px;
+    margin-top: 5px;
+
+    .option {
+      max-height: 190px;
+    }
+  }
+}
+
 
 // 
 .qtyBox {
@@ -892,6 +921,9 @@ textarea {
 .stepTwo {
   //
   .title {
+    height: auto !important;
+    line-height: normal !important;
+
     padding: 3px 12px;
     margin-bottom: 20px;
     background-color: $secondColor;
@@ -932,6 +964,34 @@ textarea {
         margin-top: 10px;
       }
     }
+
+    // 
+    .custom_option2, .button2 {
+      width: 190px;
+      height: 29px;
+      margin-top: 5px;
+      padding: 0 10px;
+      border-radius: 5px;
+      border: 1px solid #555;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      &:hover, &.active {
+        background: #555;
+        color: #fff;
+      }
+    }
+    .button2 {
+      border: none;
+      background-color: rgba(63,135,166,.7);
+      color: #fff;
+      &:hover {
+        background-color: #3f87a6;
+        color: #fff;
+      }
+    }
   }
 
   // 
@@ -958,6 +1018,16 @@ textarea {
     .errorMessage {
       font-size: 12px;
       color: $dangerColor;
+
+      span {
+        margin-left: 5px;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+          opacity: 0.7;
+        }
+      }
     }
 
     .addressOption {

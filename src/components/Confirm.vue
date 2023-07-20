@@ -8,7 +8,7 @@
         <div class="text"> 已收到您的訂單！ </div>
       </div>
       <div class="message"> 
-        <template v-if="pay_method != 'PayOnDelivery'">
+        <template v-if="pay_method != 'PayOnDelivery' && pay_method != 'MartPayOnDelivery'">
           前往付款頁面
         </template>
       </div>
@@ -77,7 +77,7 @@
       <div class="buttonGroup">
         <div class="button cancel" @click="isConfirmIsRegister = false; toPay()"> 
           否
-          <template v-if="pay_method != 'PayOnDelivery'">
+          <template v-if="pay_method != 'PayOnDelivery' && pay_method != 'MartPayOnDelivery'">
             ，前往付款頁面
           </template>
         </div>
@@ -90,6 +90,7 @@
   <Register v-if="isConfirmRegister" />
 
   <div class="ECPay_form_container" v-html="ECPay_form_value"></div>
+  <div class="ECPay_form_container" v-html="ECPay_store_form_value"></div>
 </template>
 
 <script setup>
@@ -104,7 +105,7 @@
 
   let { user_account, store } = storeToRefs(useCommon())
   let { copy, urlPush, getPathname } = useCommon()
-  let { bank, ECPay_form_value } = storeToRefs(useCart())
+  let { bank, ECPay_form_value, ECPay_store_form_value } = storeToRefs(useCart())
   let { info, pay_method } = storeToRefs(useInfo())
   let { isConfirmToPay, isConfirmDiscountCodeUsed, isConfirmATM, isConfirmIsRegister, isConfirmRegister } = storeToRefs(useHandlerCart())
   let { cancelDiscountCodeCreateOrder, toPay } = useHandlerCart()

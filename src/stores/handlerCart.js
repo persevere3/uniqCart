@@ -20,7 +20,7 @@ export const useHandlerCart = defineStore('handlerCart', () => {
   let { unDiscount, getTotal, createCartStrObj, filter_use_bonus } = useCart()
   let { isSingleProduct } = storeToRefs(useProducts())
   let { getCategories } = useProducts()
-  let { info, invoice_type, invoice_title, invoice_uniNumber, info_message,
+  let { info, invoice_type, phone_barCode, natural_barCode, invoice_title, invoice_uniNumber, info_message,
     has_address, is_save_address, userInfo, storeid, storename, storeaddress
   } = storeToRefs(useInfo())
   let { getUserInfo } = useInfo()
@@ -64,20 +64,29 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       
       is_click_finish_order.value = true;
 
+      // 資訊驗證
       let verify_arr = [info.value.purchaser_email, info.value.purchaser_name, info.value.purchaser_number, 
                         info.value.receiver_name, info.value.receiver_number]
+      // 地址驗證
       if(transport.value == 1) verify_arr.push(info.value.address)
       let v = verify(...verify_arr)
       if(v) {
-        if (transport.value !== '0' && 
-            pay_method.value !== '0' &&
-            (
-              (store.value.Receipt === '0') || 
-              (invoice_type.value === '1' || 
-                (invoice_type.value ==='2' && invoice_title.value !== '' && invoice_uniNumber.value !== '')
-              )
-            )
-          ) {
+        if (
+          // 運送驗證
+          transport.value !== '0' && 
+          // 支付驗證
+          pay_method.value !== '0' &&
+          // 發票驗證
+          (
+            (store.value.Receipt === '0') || 
+            (invoice_type.value === '1') ||
+            (invoice_type.value === '2' && invoice_title.value !== '' && invoice_uniNumber.value !== '') ||
+            (invoice_type.value === '3' && phone_barCode.value !== '') ||
+            (invoice_type.value === '4' && natural_barCode.value !== '')
+          ) &&
+          // 門市驗證
+          ( is_store.value ? storeid.value !== '' : true)
+        ) {
           await filter_use_bonus();
           methods.createOrder();
         }
@@ -94,15 +103,6 @@ export const useHandlerCart = defineStore('handlerCart', () => {
 
       let cartStrObj = createCartStrObj();
 
-      let id = new Date().getTime();
-      let saveAddressStr = '';
-      if(userInfo.value.address_obj && Object.keys(userInfo.value.address_obj).length < 3 && !has_address.value && is_save_address.value) {
-        saveAddressStr = `${id}_ _${receiver_address.value.replace(/ /g, '_ _')}`
-      }
-      let ZipCode = ''
-      if(userInfo.value.city_active && userInfo.value.district_active) {
-        ZipCode = state.city_district[userInfo.value.city_active][userInfo.value.district_active]
-      }
       let formDataObj = {
         // 商店
         'Site': site.value.Site,
@@ -124,6 +124,12 @@ export const useHandlerCart = defineStore('handlerCart', () => {
 
         // 折扣碼
         'DiscountCode': successUsedDiscountCode.value,
+
+        // 金額
+        'Discount': total.value.Discount * 1,
+        'DiscountPrice': total.value.DiscountCode * 1,
+        'Shipping': total.value.Shipping * 1,
+        'Total': total.value.Sum * 1,
   
         // 購買人
         'Email': info.value.purchaser_email.value,
@@ -132,35 +138,70 @@ export const useHandlerCart = defineStore('handlerCart', () => {
         'Phone2': info.value.purchaser_number.value,
         'Receiver': info.value.receiver_name.value,
         'ReceiverPhone': info.value.receiver_number.value,
-        'Address': receiver_address.value,
-        saveAddressStr,
-        ZipCode,
         'Message': info_message.value,
-        'Type': invoice_type.value * 1,
-        'Title': invoice_title.value,
-        'UniNumber': invoice_uniNumber.value,
-
-        // 運送方式 支付方式
-        'SendWay': transport.value * 1,
-        'PayMethod': pay_method.value,
-        'PayType': store.value[pay_method.value],
-
-        // 金額
-        'Discount': total.value.Discount * 1,
-        'DiscountPrice': total.value.DiscountCode*1,
-        'Shipping': total.value.Shipping * 1,
-        'Total': total.value.Sum * 1,
         
         // 購物金
         'MemberWallet': use_bonus.value,
         'MemberBonus': member_bonus.value,
       }
-      // 7-11
-      if(transport == 3) {
-        formDataObj['storeid'] = storeid.value
-        formDataObj['storename'] = storename.value
-        formDataObj['storeaddress'] = storeaddress.value
+
+      // 運送方式 支付方式
+      if(transport.value === '1' || transport.value === '2') {
+        formDataObj['SendWay'] = transport.value
+        formDataObj['PayMethod'] = pay_method.value
+        formDataObj['PayType'] = store.value[pay_method.value]
       }
+      else {
+        formDataObj['SendWay'] = 3
+        formDataObj['Mart'] = transport.value
+
+        if(transport.value.indexOf('Delivery') > -1) {
+          formDataObj['PayMethod'] = transport.value
+          formDataObj['PayType'] = 1
+        }
+        else {
+          formDataObj['PayMethod'] = pay_method.value
+          formDataObj['PayType'] = store.value[pay_method.value]
+        }
+
+        // 0 代收 1 不代收
+        formDataObj['IsCollection'] = transport.value.indexOf('Delivery') > -1 ? 0 : 1
+      }
+
+      // 地址 
+      if(is_store.value) formDataObj['Address'] = encodeURI(`${storeid.value} - ${storename.value} - ${storeaddress.value}`)
+      else formDataObj['Address'] = encodeURI(receiver_address.value)
+      if(userInfo.value.address_obj && Object.keys(userInfo.value.address_obj).length < 3 && !has_address.value && is_save_address.value) {
+        let id = new Date().getTime();
+        formDataObj['saveAddressStr'] = encodeURI(`${id}_ _${receiver_address.value.replace(/ /g, '_ _')}`)
+      }
+      else formDataObj['saveAddressStr'] = ''
+
+      // 郵遞區號 
+      if(userInfo.value.city_active && userInfo.value.district_active) {
+        formDataObj['ZipCode'] = state.city_district[userInfo.value.city_active][userInfo.value.district_active]
+      } else {
+        formDataObj['ZipCode'] = ''
+      }
+
+      // 超商取貨付款 
+      if(is_store.value) formDataObj['StoreID'] = storeid.value;
+
+      // 發票
+      formDataObj['Type'] = invoice_type.value * 1
+      formDataObj['Title'] = invoice_title.value * 1
+      if(invoice_type.value === '3') {
+        formDataObj['UniNumber'] = phone_barCode.value
+        formDataObj['savePhoneCode'] = phone_barCode.value
+        formDataObj['saveNatureCode'] = ''
+      }
+      else if(invoice_type.value === '4') {
+        formDataObj['UniNumber'] = natural_barCode.value
+        formDataObj['savePhoneCode'] = ''
+        formDataObj['saveNatureCode'] = natural_barCode.value
+      }
+      else formDataObj['UniNumber'] = invoice_uniNumber.value
+
       let formData = new FormData();
       for(let key in formDataObj) formData.append(key, formDataObj[key])
 
@@ -256,12 +297,12 @@ export const useHandlerCart = defineStore('handlerCart', () => {
       else if(pay_method.value == 'ATM' && store.value.ATM == 1){
         state.isConfirmATM = true;
       }
-      else if(pay_method.value == 'PayOnDelivery') {
+      else if(pay_method.value == 'PayOnDelivery' || pay_method.value == 'MartPayOnDelivery') {
 
       }
       // ecpay
       else {
-        if(location.origin.indexOf('demo.uniqcarttest') > -1){
+        if(webVersion.value === 'demo') {
           ECPay_form_value.value = `<form id="ECPay_form" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`
         } else {
           ECPay_form_value.value = `<form id="ECPay_form" action="https://payment.ecpay.com.tw/Cashier/AioCheckOut/V5" method="post">`

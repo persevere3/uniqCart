@@ -29,6 +29,12 @@ export const useInfo = defineStore('info', () => {
           required: {
             message: '此項目為必填'
           },
+          name: {
+            message: '請輸入全中文或全英文'
+          },
+          nameLength: {
+            message: '中文長度請介於2~5，英文長度請介於4~10'
+          },
         },
         is_error: false,
         message: '',
@@ -51,6 +57,12 @@ export const useInfo = defineStore('info', () => {
         rules: {
           required: {
             message: '此項目為必填'
+          },
+          name: {
+            message: '請輸入全中文或全英文'
+          },
+          nameLength: {
+            message: '中文長度請介於2~5，英文長度請介於4~10'
           },
         },
         is_error: false,
@@ -99,6 +111,10 @@ export const useInfo = defineStore('info', () => {
 
     //
     invoice_type: '0',
+    personal_or_company: '',
+    // is_show_personal_or_company_options: false,
+    phone_barCode: '',
+    natural_barCode: '',
     invoice_title: '',
     invoice_uniNumber: '',
 
@@ -122,11 +138,19 @@ export const useInfo = defineStore('info', () => {
 
         if(res.data.status) {
           state.userInfo = res.data.datas[0][0]
-          state.userInfo.address_obj = methods.createAddressObj(state.userInfo.Adress)
+          state.userInfo.address_obj = methods.createAddressObj(decodeURI(state.userInfo.Adress))
 
           state.info.purchaser_email.value = state.userInfo.Email;
           state.info.purchaser_name.value = state.userInfo.Name;
           state.info.purchaser_number.value = state.userInfo.Phone2;
+
+          state.phone_barCode   = state.userInfo.PhoneCode;
+          state.natural_barCode  = state.userInfo.NatureCode;
+          if(state.userInfo.ThreeLinkCode) {
+            let invoice_arr = state.userInfo.ThreeLinkCode.split('|')
+            if(!state.invoice_title) state.invoice_title = invoice_arr[0] || ''
+            if(!state.invoice_uniNumber) state.invoice_uniNumber = invoice_arr[1] || ''
+          }
         }
         else {
           user_account.value = '';
