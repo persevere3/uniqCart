@@ -15,7 +15,7 @@
                 <img :src="item" @click="selectProduct.mainImgIndex = index" alt="">
               </swiper-slide>
             </swiper>
-            <div class="controler">
+            <div class="controler" v-show="selectProduct.imgArr.length > 3">
               <div class="prev" @click="useSwiper.slidePrev()"> <i class="fa-solid fa-caret-left"></i> </div>
               <div class="next" @click="useSwiper.slideNext()"> <i class="fa-solid fa-caret-right"></i> </div>
             </div>
