@@ -141,7 +141,7 @@ export const useHandlerCommon = defineStore('handlerCommon', () => {
                   productAddPriceItemSpec.buyQty = cartAddPriceItemSpec.buyQty
 
                   if(productAddPriceItemSpec.Enable == 1) {
-                    let othersQty = othersAddPriceBuyQty(product.ID, productAddPriceItem, productAddPriceItemSpec);
+                    let othersQty = getOthersAddPriceBuyQty(product.ID, productAddPriceItem, productAddPriceItemSpec);
                     if(productAddPriceItemSpec.buyQty + othersQty > productAddPriceItemSpec.Amount) {
                       if(othersQty == 0) {
                         productAddPriceItemSpec.buyQty = productAddPriceItemSpec.Amount;

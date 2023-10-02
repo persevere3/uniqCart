@@ -151,9 +151,9 @@ export const useCart = defineStore('cart', () => {
       isStepTwo = isStepTwo ? 1 : 0
 
       let shipping
-      if(transport.value === '0') shipping = 3
-      else if(transport.value === '1') shipping = 2
-      else if(transport.value === '2') shipping = 3
+      if(state.transport === '0') shipping = 3
+      else if(state.transport === '1') shipping = 2
+      else if(state.transport === '2') shipping = 3
       else shipping = 4
       let paramsObj = {
         id,

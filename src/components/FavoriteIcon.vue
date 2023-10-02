@@ -17,7 +17,10 @@
             <div class="name"> {{ item.Name }} </div>
           </div>
           <div class="price_and_delete">
-            <div class="price"> NT${{numberThousands(item.NowPrice)}} </div>
+            <!-- 多價格 favorite_container 主商品 info -->
+            <div class="price" v-if="item.priceType === 'onePrice'"> NT${{ numberThousands(item.NowPrice) }} </div>
+            <div class="price" v-else> NT${{ item.nowPriceRange }} </div>
+
             <div class="delete" @click.stop="toggleFavorite(item.ID)">
               <i class="fas fa-trash-alt"></i>
             </div>

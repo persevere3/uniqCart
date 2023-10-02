@@ -1532,7 +1532,7 @@ textarea {
           color: $secondColor_a; 
           text-decoration: line-through; 
 
-          &.opacity {
+          &.opacity0 {
             opacity: 0;
           }
         }
@@ -1802,6 +1802,7 @@ textarea {
       }
     }
     .buttonGroup {
+      width: 90%;
       display: flex;
       justify-content: center;
       margin-bottom: 30px;
@@ -1810,6 +1811,7 @@ textarea {
       // confirm
       .button {
         @include button(auto, auto, 6px 10px, 0, 5px, $secondColor_3, $white);
+        max-width: calc(50% - 15px);
 
         &.cancel {
           margin-right: 15px;

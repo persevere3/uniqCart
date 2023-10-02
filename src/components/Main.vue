@@ -55,9 +55,23 @@
 
           <div class="content">
             <div class="name">{{item.Name}}</div>
-            <div class="price origin" v-if="parseInt(item.Price) > -1">NT$ {{numberThousands(item.Price)}}</div>
-            <div class="price origin opacity0" v-else >NT$ {{numberThousands(item.Price)}}</div>
-            <div class="price">NT$ {{numberThousands(item.NowPrice)}}</div>
+            
+            <!-- 多價格 products 主商品 info -->
+            <template v-if="item.priceType === 'onePrice'">
+              <div class="price origin" :class="{opacity0 : parseInt(item.Price) < 0}">NT$ {{ numberThousands(item.Price) }}</div>
+              <div class="price">NT$ {{ numberThousands(item.NowPrice) }}</div>
+            </template>
+            <template v-else>
+              <template v-if="item.selectSpecItem && item.selectSpecItem.ID">
+                <div class="price origin" :class="{opacity0 : parseInt(item.selectSpecItem.ItemPrice) < 0}">NT$ {{ numberThousands(item.selectSpecItem.ItemPrice) }}</div>
+                <div class="price">NT$ {{ numberThousands(item.selectSpecItem.ItemNowPrice) }}</div>
+              </template>
+              <template v-else>
+                <div class="price origin" :class="{opacity0 : !item.priceRange}">NT$ {{ item.priceRange }}</div>
+                <div class="price">NT$ {{ item.nowPriceRange }}</div>
+              </template>
+            </template>
+
             <ProductBuyQtyBox :main="item" :event="1" />
           </div>
         </li>
@@ -68,18 +82,32 @@
     </div>
     <div class="pages" v-if="pageFilterProducts.length !== 0">
       <ul>
-        <li :class="{'pageDisabled':currentPage === 1}" @click="changePage(currentPage - 1)">
-          Previous
+        <li :class="{pageDisabled: currentPage == 1}" 
+            @click="changePage(1)"
+        >
+          <i class="fa fa-angle-double-left" aria-hidden="true"></i>
         </li>
-
-        <li v-for="page in totalPage" :key="`page_${page}`" 
-            :class="{'liActive':currentPage === page}"
-            @click="changePage(page)">
-          {{page}}
+        <li :class="{pageDisabled: currentPage < 2}" 
+            @click="changePage(currentPage - 1)"
+        >
+          <i class="fa-solid fa-chevron-left"></i>
         </li>
-
-        <li :class="{'pageDisabled':currentPage === totalPage}" @click="changePage(currentPage + 1)">
-          Next
+        <li v-for="item in totalPage"
+            v-show="is_show_page(item, totalPage)"
+            :class="{liActive: currentPage === item}" 
+            @click="changePage(item)"
+        >
+          {{item}}
+        </li>
+        <li :class="{pageDisabled: currentPage > totalPage - 1}" 
+            @click="changePage(currentPage + 1)" 
+        > 
+          <i class="fa-solid fa-chevron-right"></i> 
+        </li>
+        <li :class="{pageDisabled: currentPage == totalPage}" 
+            @click="changePage(totalPage)" 
+        > 
+          <i class="fa fa-angle-double-right" aria-hidden="true"></i> 
         </li>
       </ul>
     </div>
@@ -145,6 +173,23 @@
   })
 
   // methods ==================================================
+  function is_show_page(item, totalpage_num) {
+    let showpage_num = 5
+
+    if(totalpage_num < showpage_num + 1) {
+      return item < totalpage_num + 1
+    }
+    else if(state.currentPage < (showpage_num / 2)) {
+      return item < showpage_num + 1
+    }
+    else if(state.currentPage > totalpage_num - (showpage_num / 2)) {
+      return item > (totalpage_num - 5) 
+    }
+    else {
+      return item >= (state.currentPage - 2) && item <= (state.currentPage + 2)
+    }
+  }
+  
   function changePage(p) {
     state.currentPage = p < 1 ? 1 : (p > state.totalPage ? state.totalPage : p);
   }

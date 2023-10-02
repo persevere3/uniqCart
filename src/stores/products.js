@@ -5,7 +5,7 @@ import { useCommon }  from '@/stores/common/common'
 export const useProducts = defineStore('products', () => {
   // store ==================================================
   let { site, user_account } = storeToRefs(useCommon())
-  let { login } = useCommon()
+  let { login, numberThousands } = useCommon()
 
   // state ==================================================
   const state = reactive({
@@ -72,7 +72,7 @@ export const useProducts = defineStore('products', () => {
 
           // imgArr, mainImgIndex, categoryArr, allPicLength
           let imgArr = [product.Img1, product.Img2, product.Img3, product.Img4, product.Img5];
-          if(process.env.NODE_ENV === 'development') imgArr = imgArr.map(img => 'https://demo.uniqcarttest.com' + img)
+          if(process.env.NODE_ENV === 'development') imgArr = imgArr.filter(img => img).map(img => 'https://demo.uniqcarttest.com' + img)
           product.imgArr = imgArr.filter(img => img)
           product.mainImgIndex = 0;
           let categoryArr = [product.Category1, product.Category2, product.Category3, product.Category4, product.Category5]
@@ -81,7 +81,33 @@ export const useProducts = defineStore('products', () => {
 
           product.addPrice = null
         });
+
+        // 多價格
+        products.forEach(product => {
+          if(product.priceType === 'multiPrice') {
+            // 建議售價
+            let itemPriceArr = product.specArr.map(spec => spec.ItemPrice * 1)
+            let lowestPrice = Math.min(...itemPriceArr)
+            let highestPrice = Math.max(...itemPriceArr)
+            // 所有規格都有填建議售價
+            if(lowestPrice > 0 && highestPrice > 0) {        
+              // 建議售價都一樣
+              if(lowestPrice === highestPrice) product.priceRange = numberThousands(lowestPrice)
+              else product.priceRange = `${numberThousands(lowestPrice)} - ${numberThousands(highestPrice)}`
+            }
+
+            // 售價
+            let itemNowPriceArr = product.specArr.map(spec => spec.ItemNowPrice * 1)
+            let lowestNowPrice = Math.min(...itemNowPriceArr)
+            let highestNowPrice = Math.max(...itemNowPriceArr)
+            // 售價都一樣
+            if(lowestNowPrice === highestNowPrice) product.nowPriceRange = numberThousands(lowestNowPrice)
+            else product.nowPriceRange = `${numberThousands(lowestNowPrice)} - ${numberThousands(highestNowPrice)}`
+          }
+        })
+
         state.products = products
+        console.log(state.products)
 
         // nextTick
         setTimeout(() => {
@@ -123,6 +149,18 @@ export const useProducts = defineStore('products', () => {
           }
           else addPriceItem.buyQty = 0
           addPriceItem.Img = 'https://demo.uniqcarttest.com' + addPriceItem.Img
+        })
+
+        // 多價格
+        addPrice.forEach(addPriceItem => {
+          if(addPriceItem.PriceType === 'multiPrice') {
+            let itemNowPriceArr = addPriceItem.specArr.map(spec => spec.ItemNowPrice * 1)
+            let lowestNowPrice = Math.min(...itemNowPriceArr)
+            let highestNowPrice = Math.max(...itemNowPriceArr)
+            // 只有1規格 or 售價都一樣
+            if(lowestNowPrice === highestNowPrice) addPriceItem.nowPriceRange = numberThousands(lowestNowPrice)
+            else addPriceItem.nowPriceRange = `${numberThousands(lowestNowPrice)} - ${numberThousands(highestNowPrice)}`
+          }
         })
 
         item.addPrice = addPrice

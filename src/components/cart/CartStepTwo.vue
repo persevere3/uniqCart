@@ -55,8 +55,8 @@
         <div class="errorMessage">{{ info.receiver_number.message }}</div>
 
         <label for="feedback">留言給我們</label>
-        <textarea name="" id="feedback" cols="30" rows="5" placeholder="留言給我們" v-model="info.info_message" @input="info_message_input"></textarea>
-        <div class="info_messageLength"> {{info.info_message.length}}/150 </div>
+        <textarea name="" id="feedback" cols="30" rows="5" placeholder="留言給我們" v-model="info_message" @input="input_info_message"></textarea>
+        <div class="info_messageLength"> {{info_message.length}}/150 </div>
       </div>
 
       <div class="right">

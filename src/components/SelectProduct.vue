@@ -23,10 +23,24 @@
         </div>
         <div class="content">
             <div class="name">{{selectProduct.Name}}</div>
-            <div class="price origin" v-if="parseInt(selectProduct.Price) > -1">NT$ {{numberThousands(selectProduct.Price)}}</div>
-            <div class="price">NT$ {{numberThousands(selectProduct.NowPrice)}}</div>
-            <div class="name"> <div v-html="unescapeEnter(selectProduct.Content)"></div> </div>
 
+            <!-- 多價格 selectProduct 主商品 info -->
+            <template v-if="selectProduct.priceType === 'onePrice'">
+              <div class="price origin" v-if="parseInt(selectProduct.Price) > -1">NT$ {{ numberThousands(selectProduct.Price) }}</div>
+              <div class="price">NT$ {{ numberThousands(selectProduct.NowPrice) }}</div>
+            </template>
+            <template v-else>
+              <template v-if="selectProduct.selectSpecItem && selectProduct.selectSpecItem.ID">
+                <div class="price origin" v-if="parseInt(selectProduct.selectSpecItem.ItemPrice) > -1">NT$ {{ numberThousands(selectProduct.selectSpecItem.ItemPrice) }}</div>
+                <div class="price">NT$ {{ numberThousands(selectProduct.selectSpecItem.ItemNowPrice) }}</div>
+              </template>
+              <template v-else>
+                <div class="price origin" v-if="selectProduct.priceRange">NT$ {{ selectProduct.priceRange }}</div>
+                <div class="price">NT$ {{ selectProduct.nowPriceRange }}</div>
+              </template>
+            </template>
+
+            <div class="name"> <div v-html="unescapeEnter(selectProduct.Content)"></div> </div>
             <ProductBuyQtyBox :main="selectProduct" />
 
             <div class="goTo_cart_btn" v-if="!isSingleProduct && isShowGoToCart" @click="showPage = 'cart'">
@@ -58,7 +72,20 @@
             </div>
             <div class="content">
               <div class="name">{{item.Name}}</div>
-              <div class="price">NT$ {{numberThousands(item.Price)}}</div>
+
+              <!-- 多價格 selectProduct 加價購 info -->
+              <template v-if="item.PriceType === 'onePrice'">
+                <div class="price">NT$ {{ numberThousands(item.Price) }}</div>
+              </template>
+              <template v-else>
+                <template v-if="item.selectSpecItem && item.selectSpecItem.ID">
+                  <div class="price">NT$ {{ numberThousands(item.selectSpecItem.ItemNowPrice) }}</div>
+                </template>
+                <template v-else>
+                  <div class="price">NT$ {{ item.nowPriceRange }}</div>
+                </template>
+              </template>
+
               <ProductBuyQtyBox :main="selectProduct" :addPrice="item"/>
             </div>
           </li>

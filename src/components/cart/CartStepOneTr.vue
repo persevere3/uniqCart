@@ -15,7 +15,11 @@
         <div class="specText" :class="{specTextShow:cartSpecCheckedId == spec.ID}"> {{spec.Name}} </div>
       </template>
     </div>
-    <div class="td price">  NT$ {{numberThousands(product[addPrice ? 'Price' : 'NowPrice'])}} </div>
+    
+    <!-- 多價格 cart table 單價 -->
+    <div class="td price" v-if="product.priceType === 'onePrice'"> NT$ {{ numberThousands(product[addPrice ? 'Price' : 'NowPrice']) }} </div>
+    <div class="td price" v-else> NT$ {{ numberThousands(productSpec.ItemNowPrice) }} </div>
+
     <div class="td qty">
       <div class="qtyBox" v-show="store.Enable === '1'">
         <template v-if="!addPrice">
@@ -41,9 +45,17 @@
     </div>
     <div class="td subtotal"> 
       <div class="subtotalTitle">小計</div>
-      <div class="subtotalText"> 
-        NT$ {{numberThousands(product[addPrice ? 'Price' : 'NowPrice'] * (isNaN(buyQty) ? 0 : buyQty))}} </div> 
+
+      <!-- 多價格 cart table 小計 -->
+      <div class="subtotalText" v-if="product.priceType === 'onePrice'"> 
+        NT$ {{ numberThousands(product[addPrice ? 'Price' : 'NowPrice'] * (isNaN(buyQty) ? 0 : buyQty)) }} 
+      </div>
+      <div class="subtotalText" v-else> 
+        NT$ {{ numberThousands(productSpec.ItemNowPrice * (isNaN(buyQty) ? 0 : buyQty)) }} 
+      </div>
+
     </div>
+
     <div class="td delete">
       <div class="button"
         @click="!addPrice ? changeMainBuyQty(product, specIndex, 0)
